@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Data Science Books</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 50px auto;
+        }
+
+        h1 {
+            color: white;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5rem;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        input {
+            flex: 1;
+            padding: 15px 20px;
+            font-size: 18px;
+            border: none;
+            border-radius: 10px;
+            outline: none;
+        }
+
+        button {
+            padding: 15px 40px;
+            font-size: 18px;
+            background: white;
+            color: #667eea;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background: #f0f0f0;
+        }
+
+        #results {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            min-height: 200px;
+        }
+
+        .result {
+            padding: 20px;
+            margin-bottom: 15px;
+            border: 2px solid #f0f0f0;
+            border-radius: 8px;
+        }
+
+        .result:hover {
+            border-color: #667eea;
+        }
+
+        .book-name {
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .similarity {
+            background: #667eea;
+            color: white;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            float: right;
+        }
+
+        .loading {
+            text-align: center;
+            color: #999;
+            padding: 40px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Search Data Science Books</h1>
+
+        <div class="search-box">
+            <input id="query" type="text" placeholder="Ask anything... e.g., 'What is machine learning?'" autofocus>
+            <button onclick="search()">Search</button>
+        </div>
+
+        <div id="results">
+            <div class="loading">Enter a question to search</div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        // PUT YOUR SUPABASE CREDENTIALS HERE
+        const SUPABASE_URL = 'YOUR_URL_HERE';
+        const SUPABASE_ANON_KEY = 'YOUR_ANON_KEY_HERE';
+
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // Search on Enter key
+        document.getElementById('query').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') search();
+        });
+
+        async function search() {
+            const query = document.getElementById('query').value;
+            if (!query) return;
+
+            const results = document.getElementById('results');
+            results.innerHTML = '<div class="loading">Searching...</div>';
+
+            try {
+                // Get embedding from OpenAI or your own API
+                // For now, using a simple text search as fallback
+                const { data, error } = await supabase
+                    .from('documents')
+                    .select('*')
+                    .textSearch('content', query)
+                    .limit(10);
+
+                if (error) throw error;
+
+                if (!data || data.length === 0) {
+                    results.innerHTML = '<div class="loading">No results found</div>';
+                    return;
+                }
+
+                // Display results
+                results.innerHTML = data.map(item => `
+                    <div class="result">
+                        <div class="book-name">
+                            ${item.book_name.replace(/_/g, ' ')}
+                            <span class="similarity">Page ${item.page_number}</span>
+                        </div>
+                        <div>${item.content.substring(0, 500)}...</div>
+                    </div>
+                `).join('');
+
+            } catch (error) {
+                results.innerHTML = `<div class="loading">Error: ${error.message}</div>`;
+            }
+        }
+    </script>
+</body>
+</html>
