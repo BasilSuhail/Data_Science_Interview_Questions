@@ -80,7 +80,7 @@
             margin-bottom: 10px;
         }
 
-        .similarity {
+        .page-badge {
             background: #667eea;
             color: white;
             padding: 3px 10px;
@@ -94,6 +94,13 @@
             color: #999;
             padding: 40px;
         }
+
+        mark {
+            background-color: #ffeb3b;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-weight: 600;
+        }
     </style>
 </head>
 <body>
@@ -101,12 +108,12 @@
         <h1>🔍 Search Data Science Books</h1>
 
         <div class="search-box">
-            <input id="query" type="text" placeholder="Ask anything... e.g., 'What is machine learning?'" autofocus>
+            <input id="query" type="text" placeholder="Search... e.g., 'machine learning', 'python', 'statistics'" autofocus>
             <button onclick="search()">Search</button>
         </div>
 
         <div id="results">
-            <div class="loading">Enter a question to search</div>
+            <div class="loading">Enter keywords to search through 2,343 chunks from 6 books</div>
         </div>
     </div>
 
@@ -124,41 +131,48 @@
         });
 
         async function search() {
-            const query = document.getElementById('query').value;
+            const query = document.getElementById('query').value.trim();
             if (!query) return;
 
             const results = document.getElementById('results');
             results.innerHTML = '<div class="loading">Searching...</div>';
 
             try {
-                // Get embedding from OpenAI or your own API
-                // For now, using a simple text search as fallback
+                // Simple text search using LIKE (works without embeddings!)
                 const { data, error } = await supabase
                     .from('documents')
                     .select('*')
-                    .textSearch('content', query)
-                    .limit(10);
+                    .ilike('content', `%${query}%`)
+                    .limit(20);
 
                 if (error) throw error;
 
                 if (!data || data.length === 0) {
-                    results.innerHTML = '<div class="loading">No results found</div>';
+                    results.innerHTML = '<div class="loading">No results found. Try different keywords.</div>';
                     return;
                 }
 
-                // Display results
-                results.innerHTML = data.map(item => `
-                    <div class="result">
-                        <div class="book-name">
-                            ${item.book_name.replace(/_/g, ' ')}
-                            <span class="similarity">Page ${item.page_number}</span>
-                        </div>
-                        <div>${item.content.substring(0, 500)}...</div>
-                    </div>
-                `).join('');
+                // Display results with highlighting
+                results.innerHTML = `<h3 style="margin-bottom: 20px; color: #333;">Found ${data.length} results</h3>` +
+                    data.map(item => {
+                        // Highlight search term
+                        let content = item.content.substring(0, 600);
+                        const regex = new RegExp(`(${query})`, 'gi');
+                        content = content.replace(regex, '<mark>$1</mark>');
+
+                        return `
+                            <div class="result">
+                                <div class="book-name">
+                                    ${item.book_name}
+                                    <span class="page-badge">Chunk ${item.page_number}</span>
+                                </div>
+                                <div>${content}...</div>
+                            </div>
+                        `;
+                    }).join('');
 
             } catch (error) {
-                results.innerHTML = `<div class="loading">Error: ${error.message}</div>`;
+                results.innerHTML = `<div class="loading">Error: ${error.message}<br><br>Make sure you've updated the credentials!</div>`;
             }
         }
     </script>
