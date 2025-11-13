@@ -1,0 +1,59 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+*.egg-info/
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Extracted text (too large for GitHub)
+extracted_text/
+
+# PDF books (too large for GitHub)
+Books used/*.pdf
+*.pdf
+
+# Vector cache
+vector_cache.pkl
+
+# Environment variables (contains secrets!)
+.env
+.env.local
+
+# OS files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Exports
+*.csv
+interview_questions_export.csv
+
+# Downloads in progress
+*.crdownload
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+tmp/
+temp/
