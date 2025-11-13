@@ -101,6 +101,62 @@
             border-radius: 3px;
             font-weight: 600;
         }
+
+        .answer-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            line-height: 1.8;
+            font-size: 16px;
+        }
+
+        .answer-box h2 {
+            margin-bottom: 15px;
+            font-size: 24px;
+        }
+
+        .answer-content {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 8px;
+            backdrop-filter: blur(10px);
+        }
+
+        .answer-content p {
+            margin-bottom: 15px;
+        }
+
+        .sources {
+            margin-top: 30px;
+        }
+
+        .sources h3 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        .source-item {
+            padding: 15px;
+            margin-bottom: 10px;
+            border-left: 4px solid #667eea;
+            background: #f8f9fa;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .source-item .source-book {
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+
+        .source-item .source-text {
+            color: #555;
+            font-style: italic;
+        }
     </style>
 </head>
 <body>
@@ -108,7 +164,7 @@
         <h1>🔍 Search Data Science Books</h1>
 
         <div class="search-box">
-            <input id="query" type="text" placeholder="Search... e.g., 'machine learning', 'python', 'statistics'" autofocus>
+            <input id="query" type="text" placeholder="Ask anything... e.g., 'what is python', 'explain machine learning', 'how does regression work'" autofocus>
             <button onclick="search()">Search</button>
         </div>
 
@@ -130,6 +186,153 @@
             if (e.key === 'Enter') search();
         });
 
+        // Extract keywords from natural language query
+        function extractKeywords(query) {
+            // Remove common question words and stop words
+            const stopWords = new Set([
+                'what', 'is', 'are', 'the', 'a', 'an', 'how', 'why', 'when', 'where',
+                'who', 'which', 'does', 'do', 'can', 'could', 'would', 'should',
+                'tell', 'me', 'about', 'explain', 'describe', 'define', 'definition',
+                'of', 'in', 'on', 'at', 'to', 'for', 'with', 'from', 'by'
+            ]);
+
+            // Split query into words and filter out stop words
+            const words = query.toLowerCase()
+                .replace(/[?.,!;:]/g, '') // Remove punctuation
+                .split(/\s+/)
+                .filter(word => word.length > 2 && !stopWords.has(word));
+
+            return words;
+        }
+
+        // Calculate relevance score for a document
+        function calculateRelevance(content, keywords) {
+            const lowerContent = content.toLowerCase();
+            let score = 0;
+
+            keywords.forEach(keyword => {
+                // Count occurrences of each keyword
+                const regex = new RegExp(keyword, 'gi');
+                const matches = lowerContent.match(regex);
+                if (matches) {
+                    score += matches.length * 10;
+
+                    // Bonus for keyword appearing early in content
+                    const firstIndex = lowerContent.indexOf(keyword);
+                    if (firstIndex < 100) score += 20;
+                    else if (firstIndex < 300) score += 10;
+                }
+
+                // Bonus for exact phrase match with surrounding words
+                if (lowerContent.includes(keyword + ' is') ||
+                    lowerContent.includes(keyword + ':') ||
+                    lowerContent.includes('definition of ' + keyword)) {
+                    score += 50;
+                }
+            });
+
+            return score;
+        }
+
+        // Clean and extract meaningful sentences from content
+        function extractMeaningfulSentences(content, keywords) {
+            // Remove page markers, excessive whitespace, and artifacts
+            let cleaned = content
+                .replace(/={10,}/g, '') // Remove separator lines
+                .replace(/PAGE \d+/gi, '')
+                .replace(/\n{3,}/g, '\n\n')
+                .replace(/\s{2,}/g, ' ')
+                .trim();
+
+            // Split into sentences
+            const sentences = cleaned.split(/[.!?]+/).map(s => s.trim()).filter(s => s.length > 20);
+
+            // Score each sentence based on keyword relevance
+            const scoredSentences = sentences.map(sentence => {
+                let score = 0;
+                const lower = sentence.toLowerCase();
+
+                keywords.forEach(keyword => {
+                    if (lower.includes(keyword)) {
+                        score += 10;
+                        // Extra points for definition patterns
+                        if (lower.includes(keyword + ' is') ||
+                            lower.includes(keyword + ' are') ||
+                            lower.includes(keyword + ':')) {
+                            score += 20;
+                        }
+                    }
+                });
+
+                return { sentence, score };
+            });
+
+            // Filter and sort by relevance
+            return scoredSentences
+                .filter(s => s.score > 0)
+                .sort((a, b) => b.score - a.score)
+                .map(s => s.sentence);
+        }
+
+        // Compose a coherent answer from multiple chunks
+        function composeAnswer(results, keywords, query) {
+            // Collect sentences from top results
+            let allSentences = [];
+            const sources = [];
+
+            results.slice(0, 5).forEach(item => {
+                const sentences = extractMeaningfulSentences(item.content, keywords);
+                sentences.slice(0, 3).forEach(sentence => {
+                    allSentences.push(sentence);
+                });
+
+                // Keep track of sources
+                if (sentences.length > 0) {
+                    sources.push({
+                        book: item.book_name,
+                        chunk: item.page_number,
+                        excerpt: sentences[0]
+                    });
+                }
+            });
+
+            // Remove duplicates and very similar sentences
+            const uniqueSentences = [];
+            allSentences.forEach(sentence => {
+                const isDuplicate = uniqueSentences.some(existing => {
+                    const similarity = calculateSimilarity(existing, sentence);
+                    return similarity > 0.8;
+                });
+                if (!isDuplicate && sentence.length > 30) {
+                    uniqueSentences.push(sentence);
+                }
+            });
+
+            // Take top 5-8 most relevant sentences
+            const finalSentences = uniqueSentences.slice(0, 8);
+
+            // Format into paragraphs (group every 2-3 sentences)
+            const paragraphs = [];
+            for (let i = 0; i < finalSentences.length; i += 2) {
+                const paragraph = finalSentences.slice(i, i + 2).join('. ') + '.';
+                paragraphs.push(paragraph);
+            }
+
+            return {
+                answer: paragraphs.length > 0 ? paragraphs.join('\n\n') : 'No clear answer found. Try rephrasing your question.',
+                sources: sources.slice(0, 3)
+            };
+        }
+
+        // Calculate similarity between two strings (simple approach)
+        function calculateSimilarity(str1, str2) {
+            const words1 = new Set(str1.toLowerCase().split(/\s+/));
+            const words2 = new Set(str2.toLowerCase().split(/\s+/));
+            const intersection = new Set([...words1].filter(x => words2.has(x)));
+            const union = new Set([...words1, ...words2]);
+            return intersection.size / union.size;
+        }
+
         async function search() {
             const query = document.getElementById('query').value.trim();
             if (!query) return;
@@ -138,38 +341,74 @@
             results.innerHTML = '<div class="loading">Searching...</div>';
 
             try {
-                // Simple text search using LIKE (works without embeddings!)
-                const { data, error } = await supabase
-                    .from('documents')
-                    .select('*')
-                    .ilike('content', `%${query}%`)
-                    .limit(20);
+                // Extract meaningful keywords from the query
+                const keywords = extractKeywords(query);
 
-                if (error) throw error;
-
-                if (!data || data.length === 0) {
-                    results.innerHTML = '<div class="loading">No results found. Try different keywords.</div>';
+                if (keywords.length === 0) {
+                    results.innerHTML = '<div class="loading">Please enter a more specific search query.</div>';
                     return;
                 }
 
-                // Display results with highlighting
-                results.innerHTML = `<h3 style="margin-bottom: 20px; color: #333;">Found ${data.length} results</h3>` +
-                    data.map(item => {
-                        // Highlight search term
-                        let content = item.content.substring(0, 600);
-                        const regex = new RegExp(`(${query})`, 'gi');
-                        content = content.replace(regex, '<mark>$1</mark>');
+                // Search for documents containing ANY of the keywords
+                let allResults = [];
 
-                        return `
-                            <div class="result">
-                                <div class="book-name">
-                                    ${item.book_name}
-                                    <span class="page-badge">Chunk ${item.page_number}</span>
+                for (const keyword of keywords) {
+                    const { data, error } = await supabase
+                        .from('documents')
+                        .select('*')
+                        .ilike('content', `%${keyword}%`)
+                        .limit(50);
+
+                    if (error) throw error;
+                    if (data) allResults = allResults.concat(data);
+                }
+
+                // Remove duplicates based on unique identifiers
+                const uniqueResults = Array.from(
+                    new Map(allResults.map(item => [`${item.book_name}-${item.page_number}`, item])).values()
+                );
+
+                if (uniqueResults.length === 0) {
+                    results.innerHTML = `<div class="loading">No results found for "${query}".<br>Try rephrasing or using different keywords.</div>`;
+                    return;
+                }
+
+                // Calculate relevance score for each result
+                const scoredResults = uniqueResults.map(item => ({
+                    ...item,
+                    relevance: calculateRelevance(item.content, keywords)
+                }));
+
+                // Sort by relevance score (highest first)
+                scoredResults.sort((a, b) => b.relevance - a.relevance);
+
+                // Take top 20 results
+                const topResults = scoredResults.slice(0, 20);
+
+                // Compose a coherent answer from top results
+                const { answer, sources } = composeAnswer(topResults, keywords, query);
+
+                // Display composed answer
+                results.innerHTML = `
+                    <div class="answer-box">
+                        <h2>Answer to: "${query}"</h2>
+                        <div class="answer-content">
+                            ${answer.split('\n\n').map(p => `<p>${p}</p>`).join('')}
+                        </div>
+                    </div>
+
+                    <div class="sources">
+                        <h3>Sources (${sources.length} books referenced)</h3>
+                        ${sources.map(source => `
+                            <div class="source-item">
+                                <div class="source-book">
+                                    📚 ${source.book} - Chunk ${source.chunk}
                                 </div>
-                                <div>${content}...</div>
+                                <div class="source-text">"${source.excerpt.substring(0, 200)}..."</div>
                             </div>
-                        `;
-                    }).join('');
+                        `).join('')}
+                    </div>
+                `;
 
             } catch (error) {
                 results.innerHTML = `<div class="loading">Error: ${error.message}<br><br>Make sure you've updated the credentials!</div>`;
