@@ -8,8 +8,8 @@ from sentence_transformers import SentenceTransformer
 from supabase import create_client
 
 # YOUR SUPABASE CREDENTIALS HERE
-SUPABASE_URL = "YOUR_URL_HERE"  # Like: https://xxxxx.supabase.co
-SUPABASE_KEY = "YOUR_SERVICE_ROLE_KEY_HERE"
+SUPABASE_URL = "https://iteavenjozhzxupbxosu.supabase.co"  # Like: https://xxxxx.supabase.co
+SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml0ZWF2ZW5qb3poenh1cGJ4b3N1Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2MzAyOTg1OCwiZXhwIjoyMDc4NjA1ODU4fQ.uzK5i3xDTNHOObMIZKffzaKODAGU-I4mRqfP-jjUzd4"
 
 print("Loading model...")
 model = SentenceTransformer('all-MiniLM-L6-v2')
