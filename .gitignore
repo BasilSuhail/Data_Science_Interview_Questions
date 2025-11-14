@@ -1,5 +1,0 @@
-# Only ignore OS files
-.DS_Store
-
-# Only ignore virtual environment
-venv/
