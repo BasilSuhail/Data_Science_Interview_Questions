@@ -6,22 +6,30 @@ Search through data science books with natural language questions and get smart,
 
 ## 🚀 How to Start the App
 
-### Step 1: Get a Free Groq API Key
+### Step 1: Set Up Configuration File
+
+1. Copy `config.example.js` to `config.js`:
+   ```bash
+   cp config.example.js config.js
+   ```
+   (Or manually copy the file if on Windows)
+
+### Step 2: Get a Free Groq API Key
 
 1. Go to https://console.groq.com/keys
 2. Sign up for a free account
 3. Create a new API key
 4. Copy the key
 
-### Step 2: Add Your API Key
+### Step 3: Add Your API Key
 
-1. Open `simple_search.html` in a text editor
-2. Replace `YOUR_GROQ_API_KEY_HERE` with your actual Groq API key in these locations:
-   - **Line 510** - For AI-powered search answers
-   - **Line 763** - For interview question generator
+1. Open `config.js` in a text editor
+2. Replace `YOUR_GROQ_API_KEY_HERE` with your actual Groq API key
 3. Save the file
 
-### Step 3: Open the App
+**⚠️ IMPORTANT:** Never commit `config.js` to Git! It's already in `.gitignore` to protect your API key.
+
+### Step 4: Open the App
 
 1. Open `simple_search.html` in any web browser
 2. That's it!

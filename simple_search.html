@@ -359,16 +359,18 @@
 
     <!--
     SETUP INSTRUCTIONS:
-    1. Get a free Groq API key from: https://console.groq.com/keys
-    2. Replace 'YOUR_GROQ_API_KEY_HERE' on line 525 with your actual API key
-    3. The interview question generator will then work!
+    1. Copy config.example.js to config.js (if you haven't already)
+    2. Get a free Groq API key from: https://console.groq.com/keys
+    3. Add your API key to config.js
+    4. Refresh this page!
     -->
 
+    <script src="config.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        // PUT YOUR SUPABASE CREDENTIALS HERE
-        const SUPABASE_URL = 'https://iteavenjozhzxupbxosu.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml0ZWF2ZW5qb3poenh1cGJ4b3N1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjMwMjk4NTgsImV4cCI6MjA3ODYwNTg1OH0.AfBGdanvvHUoFOWYF94PN0ccLlWPVJFHN1At-kjzpkE';
+        // Configuration loaded from config.js
+        const SUPABASE_URL = CONFIG.SUPABASE_URL;
+        const SUPABASE_ANON_KEY = CONFIG.SUPABASE_ANON_KEY;
 
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
@@ -403,15 +405,23 @@
 
             keywords.forEach(keyword => {
                 // Count occurrences of each keyword
-                const regex = new RegExp(keyword, 'gi');
-                const matches = lowerContent.match(regex);
-                if (matches) {
-                    score += matches.length * 10;
+                // Escape special regex characters to avoid errors
+                const escapedKeyword = keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                try {
+                    const regex = new RegExp(escapedKeyword, 'gi');
+                    const matches = lowerContent.match(regex);
+                    if (matches) {
+                        score += matches.length * 10;
 
-                    // Bonus for keyword appearing early in content
-                    const firstIndex = lowerContent.indexOf(keyword);
-                    if (firstIndex < 100) score += 20;
-                    else if (firstIndex < 300) score += 10;
+                        // Bonus for keyword appearing early in content
+                        const firstIndex = lowerContent.indexOf(keyword);
+                        if (firstIndex < 100) score += 20;
+                        else if (firstIndex < 300) score += 10;
+                    }
+                } catch (e) {
+                    // If regex still fails, fall back to simple string search
+                    const count = lowerContent.split(keyword).length - 1;
+                    score += count * 10;
                 }
 
                 // Bonus for exact phrase match with surrounding words
@@ -506,16 +516,17 @@
 
         // Generate AI-powered answer using Groq
         async function generateAIAnswer(question, bookContext) {
-            // ⚠️ REPLACE THIS WITH YOUR API KEY FROM: https://console.groq.com/keys
-            const GROQ_API_KEY = 'YOUR_GROQ_API_KEY_HERE';
+            // API key loaded from config.js
+            const GROQ_API_KEY = CONFIG.GROQ_API_KEY;
 
-            if (GROQ_API_KEY === 'YOUR_GROQ_API_KEY_HERE') {
+            if (!GROQ_API_KEY || GROQ_API_KEY === 'YOUR_GROQ_API_KEY_HERE') {
                 return `<p style="color: #ff9800;">⚠️ Please add your Groq API key to enable AI-powered answers.</p>
                         <p>Steps:</p>
                         <ol>
+                            <li>Copy config.example.js to config.js (if you haven't already)</li>
                             <li>Get a free API key from: <a href="https://console.groq.com/keys" target="_blank" style="color: #667eea;">console.groq.com/keys</a></li>
-                            <li>Replace 'YOUR_GROQ_API_KEY_HERE' on line 453 with your actual key</li>
-                            <li>Save and refresh the page</li>
+                            <li>Add your API key to config.js</li>
+                            <li>Refresh this page</li>
                         </ol>`;
             }
 
@@ -759,8 +770,8 @@ Please provide a well-structured, educational answer:`;
 
         // Generate questions using free Groq AI API
         async function generateQuestionsWithAI(topics, sampleContent) {
-            // Get your free API key from: https://console.groq.com/keys
-            const GROQ_API_KEY = 'YOUR_GROQ_API_KEY_HERE'; // Free Groq API key
+            // API key loaded from config.js
+            const GROQ_API_KEY = CONFIG.GROQ_API_KEY;
 
             // Get selected difficulty
             const selectedDifficulty = document.getElementById('difficulty-select').value;
