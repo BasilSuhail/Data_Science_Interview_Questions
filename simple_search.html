@@ -313,6 +313,33 @@
             gap: 15px;
             flex-wrap: wrap;
         }
+
+        .diagram-container {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .diagram-container h3 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 20px;
+        }
+
+        .mermaid {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 200px;
+        }
+
+        .diagram-loading {
+            text-align: center;
+            color: #999;
+            padding: 40px;
+        }
     </style>
 </head>
 <body>
@@ -367,6 +394,11 @@
 
     <script src="config.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({ startOnLoad: false, theme: 'default' });
+        window.mermaid = mermaid;
+    </script>
     <script>
         // Configuration loaded from config.js
         const SUPABASE_URL = CONFIG.SUPABASE_URL;
@@ -545,14 +577,31 @@ IMPORTANT INSTRUCTIONS:
    - Provide practical examples where relevant
    - Keep it concise but comprehensive (2-4 paragraphs)
 
-3. **Content Guidelines**:
+3. **Visual Diagrams** (IMPORTANT):
+   - For topics that would benefit from visualization (algorithms, workflows, architectures, processes, comparisons), ALWAYS include a Mermaid diagram
+   - Add the diagram AFTER your text answer using this exact format:
+
+   [MERMAID_DIAGRAM]
+   graph TD
+       A[Start] --> B[Step 1]
+       B --> C[Step 2]
+   [/MERMAID_DIAGRAM]
+
+   - Use appropriate Mermaid diagram types:
+     * flowchart/graph for processes and workflows
+     * graph LR for left-to-right flows
+     * classDiagram for object relationships
+     * sequenceDiagram for step-by-step processes
+   - Keep diagrams simple and clear (5-10 nodes maximum)
+   - Examples of topics that NEED diagrams: neural networks, gradient descent, decision trees, data pipelines, train-test split, cross-validation, ensemble methods, etc.
+
+4. **Content Guidelines**:
    - Base your answer primarily on the book excerpts provided
    - If book content is insufficient or missing, you MAY supplement with well-known data science concepts, but add a note: "(Note: Supplemented with general data science knowledge)"
    - Highlight the most important takeaways with bullet points
-   - For complex topics (algorithms, architectures, workflows), suggest: "📊 Visual aid: [brief description of what diagram would help]"
    - Provide concrete examples when possible
 
-4. **Formatting**:
+5. **Formatting**:
    - Use markdown formatting (**, bullet points, etc.)
    - Break complex concepts into digestible parts
    - End with a key takeaway if appropriate
@@ -602,7 +651,8 @@ Please provide a well-structured, educational answer:`;
                     throw new Error('Invalid API response structure');
                 }
 
-                return formatAIAnswer(result.choices[0].message.content);
+                const aiContent = result.choices[0].message.content;
+                return formatAIAnswer(aiContent);
 
             } catch (error) {
                 console.error('AI answer generation failed:', error);
@@ -618,10 +668,28 @@ Please provide a well-structured, educational answer:`;
             }
         }
 
+        // Extract Mermaid diagram from text
+        function extractMermaidDiagram(text) {
+            const mermaidRegex = /\[MERMAID_DIAGRAM\]([\s\S]*?)\[\/MERMAID_DIAGRAM\]/;
+            const match = text.match(mermaidRegex);
+
+            if (match) {
+                return {
+                    diagram: match[1].trim(),
+                    textWithoutDiagram: text.replace(mermaidRegex, '').trim()
+                };
+            }
+
+            return { diagram: null, textWithoutDiagram: text };
+        }
+
         // Format AI answer with proper HTML
         function formatAIAnswer(text) {
+            // Extract Mermaid diagram if present
+            const { diagram, textWithoutDiagram } = extractMermaidDiagram(text);
+
             // Convert markdown-style bold to HTML
-            let formatted = text.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+            let formatted = textWithoutDiagram.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
 
             // Convert inline code
             formatted = formatted.replace(/`(.+?)`/g, '<code>$1</code>');
@@ -697,7 +765,13 @@ Please provide a well-structured, educational answer:`;
                 html.push(`</${listType}>`);
             }
 
-            return html.join('');
+            const formattedHTML = html.join('');
+
+            // Return both HTML and diagram
+            return {
+                html: formattedHTML,
+                diagram: diagram
+            };
         }
 
         // Calculate similarity between two strings (simple approach)
@@ -945,15 +1019,31 @@ Generate 5 questions now:`;
                 // Compose a coherent answer from top results using AI
                 const { answer, sources } = await composeAnswer(topResults, keywords, query);
 
+                // Check if answer contains diagram
+                const answerData = typeof answer === 'object' ? answer : { html: answer, diagram: null };
+
                 // Display AI-generated answer
-                results.innerHTML = `
+                let resultsHTML = `
                     <div class="answer-box">
                         <h2>💡 Answer to: "${query}"</h2>
                         <div class="answer-content">
-                            ${answer}
+                            ${answerData.html}
                         </div>
                     </div>
+                `;
 
+                // Add diagram if present
+                if (answerData.diagram) {
+                    resultsHTML += `
+                        <div class="diagram-container">
+                            <h3>📊 Visual Diagram</h3>
+                            <div class="mermaid" id="mermaid-diagram">${answerData.diagram}</div>
+                        </div>
+                    `;
+                }
+
+                // Add sources
+                resultsHTML += `
                     <div class="sources">
                         <h3>📚 Sources (${sources.length} books referenced)</h3>
                         ${sources.map(source => `
@@ -966,6 +1056,19 @@ Generate 5 questions now:`;
                         `).join('')}
                     </div>
                 `;
+
+                results.innerHTML = resultsHTML;
+
+                // Render Mermaid diagram if present
+                if (answerData.diagram && window.mermaid) {
+                    try {
+                        await window.mermaid.run({
+                            querySelector: '#mermaid-diagram'
+                        });
+                    } catch (e) {
+                        console.error('Mermaid rendering failed:', e);
+                    }
+                }
 
             } catch (error) {
                 results.innerHTML = `<div class="loading">Error: ${error.message}<br><br>Make sure you've updated the credentials!</div>`;
