@@ -31,7 +31,7 @@ Search through data science books with natural language questions and get smart,
 
 ### Step 4: Open the App
 
-1. Open `simple_search.html` in any web browser
+1. Open `index.html` in any web browser
 2. That's it!
 
 ---

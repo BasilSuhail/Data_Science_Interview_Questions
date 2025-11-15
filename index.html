@@ -1,0 +1,1647 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI-Powered Data Science Book Search</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --bg-primary: #f5f7fa;
+            --bg-secondary: #ffffff;
+            --bg-card: #ffffff;
+            --text-primary: #1a202c;
+            --text-secondary: #4a5568;
+            --text-muted: #718096;
+            --border-color: #e2e8f0;
+            --accent-primary: #5b5ff9;
+            --accent-secondary: #b84fc0;
+            --gradient-primary: linear-gradient(135deg, #5b5ff9 0%, #b84fc0 100%);
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.1);
+            --shadow-lg: 0 10px 30px rgba(0,0,0,0.15);
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-card: #1e293b;
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --text-muted: #94a3b8;
+            --border-color: #334155;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.4);
+            --shadow-lg: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Inter', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        /* Header/Navbar */
+        .navbar {
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow-sm);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .app-label {
+            background: var(--bg-primary);
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        .app-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .navbar-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .user-info {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .theme-toggle {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 18px;
+            transition: all 0.3s;
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1);
+        }
+
+        /* Hero Section */
+        .hero {
+            background: var(--bg-primary);
+            padding: 60px 24px;
+            text-align: center;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #eff6ff;
+            color: #3b82f6;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 24px;
+        }
+
+        [data-theme="dark"] .hero-badge {
+            background: rgba(59, 130, 246, 0.2);
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-bottom: 16px;
+            line-height: 1.2;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 24px;
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+        }
+
+        /* Left Column - Main Content */
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        /* Search Card */
+        .search-card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-color);
+        }
+
+        /* Tab Navigation */
+        .tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 24px;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .tab {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 20px;
+            background: transparent;
+            border: none;
+            border-bottom: 3px solid transparent;
+            color: var(--text-muted);
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: -2px;
+        }
+
+        .tab:hover {
+            color: var(--text-primary);
+        }
+
+        .tab.active {
+            color: var(--accent-primary);
+            border-bottom-color: var(--accent-primary);
+        }
+
+        .tab-icon {
+            font-size: 18px;
+        }
+
+        /* Search Box */
+        .search-box {
+            position: relative;
+            margin-bottom: 24px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 16px 20px;
+            font-size: 16px;
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        .search-input:focus {
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 3px rgba(91, 95, 249, 0.1);
+        }
+
+        .search-button {
+            width: 100%;
+            padding: 16px;
+            font-size: 16px;
+            font-weight: 600;
+            background: var(--gradient-primary);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.3s;
+        }
+
+        .search-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(91, 95, 249, 0.3);
+        }
+
+        /* Answer Section */
+        .answer-section {
+            background: var(--bg-primary);
+            border-radius: 12px;
+            padding: 24px;
+            margin-top: 20px;
+        }
+
+        .answer-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 16px;
+        }
+
+        .answer-content {
+            color: var(--text-secondary);
+            line-height: 1.8;
+            font-size: 15px;
+        }
+
+        .answer-content p {
+            margin-bottom: 16px;
+        }
+
+        .answer-content strong {
+            color: var(--accent-primary);
+            font-weight: 700;
+        }
+
+        .answer-content ul, .answer-content ol {
+            margin: 16px 0 16px 24px;
+            line-height: 1.8;
+        }
+
+        .answer-content li {
+            margin-bottom: 10px;
+        }
+
+        .answer-content code {
+            background: var(--bg-card);
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            border: 1px solid var(--border-color);
+        }
+
+        /* AI Answer Box */
+        .ai-answer-box {
+            background: var(--gradient-primary);
+            color: white;
+            padding: 30px;
+            border-radius: 16px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .ai-answer-box h2 {
+            margin-bottom: 20px;
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        .ai-answer-content {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 24px;
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+            line-height: 1.8;
+        }
+
+        .ai-answer-content strong {
+            color: #fef08a;
+        }
+
+        /* Right Sidebar */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .info-card {
+            background: var(--gradient-primary);
+            color: white;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: var(--shadow-md);
+        }
+
+        .info-card-icon {
+            font-size: 40px;
+            margin-bottom: 16px;
+        }
+
+        .info-card h3 {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .info-card p {
+            font-size: 14px;
+            line-height: 1.6;
+            opacity: 0.95;
+        }
+
+        .info-card.purple {
+            background: linear-gradient(135deg, #b84fc0 0%, #e84fc0 100%);
+        }
+
+        /* Question Generator */
+        .question-controls {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .difficulty-select {
+            flex: 1;
+            min-width: 200px;
+            padding: 12px 16px;
+            font-size: 15px;
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            font-weight: 600;
+            cursor: pointer;
+            outline: none;
+        }
+
+        .generate-btn {
+            padding: 12px 24px;
+            font-size: 15px;
+            font-weight: 600;
+            background: var(--gradient-primary);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .generate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(91, 95, 249, 0.3);
+        }
+
+        /* Question Cards */
+        .question-card {
+            background: var(--bg-primary);
+            border: 2px solid var(--border-color);
+            border-left: 4px solid var(--accent-primary);
+            padding: 18px;
+            margin: 12px 0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .question-card:hover {
+            background: var(--bg-card);
+            transform: translateX(8px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .question-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex: 1;
+        }
+
+        .question-number {
+            color: var(--accent-primary);
+            font-weight: 700;
+            font-size: 16px;
+            min-width: 40px;
+        }
+
+        .question-text {
+            color: var(--text-primary);
+            font-size: 15px;
+            line-height: 1.5;
+        }
+
+        .difficulty-badge {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .difficulty-easy { background: #10b981; color: white; }
+        .difficulty-medium { background: #f59e0b; color: white; }
+        .difficulty-hard { background: #ef4444; color: white; }
+
+        /* Diagram Container */
+        .diagram-container {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-color);
+        }
+
+        .diagram-container h3 {
+            color: var(--accent-primary);
+            margin-bottom: 20px;
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .mermaid {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 200px;
+        }
+
+        /* Follow-up Questions */
+        .follow-up-section {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow-md);
+        }
+
+        .follow-up-section h3 {
+            color: var(--text-primary);
+            margin-bottom: 16px;
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .follow-up-question {
+            background: var(--bg-primary);
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            padding: 14px 18px;
+            margin: 10px 0;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 14px;
+        }
+
+        .follow-up-question:hover {
+            background: var(--bg-card);
+            border-color: var(--accent-primary);
+            transform: translateX(8px);
+        }
+
+        .follow-up-question::before {
+            content: '💭 ';
+            margin-right: 8px;
+        }
+
+        /* Sources */
+        .sources {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-color);
+        }
+
+        .sources h3 {
+            color: var(--text-primary);
+            margin-bottom: 20px;
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .source-item {
+            padding: 18px;
+            margin-bottom: 12px;
+            border-left: 4px solid var(--accent-primary);
+            background: var(--bg-primary);
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .source-item .source-book {
+            font-weight: 700;
+            color: var(--accent-primary);
+            margin-bottom: 8px;
+        }
+
+        .source-item .source-text {
+            color: var(--text-secondary);
+            font-style: italic;
+            line-height: 1.6;
+        }
+
+        /* Loading State */
+        .loading {
+            text-align: center;
+            color: var(--text-muted);
+            padding: 40px;
+            background: var(--bg-primary);
+            border-radius: 12px;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .empty-state-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+
+        .empty-state h3 {
+            color: var(--text-primary);
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        .empty-state p {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        .empty-state ul {
+            text-align: left;
+            max-width: 600px;
+            margin: 20px auto;
+            color: var(--text-secondary);
+            line-height: 1.8;
+        }
+
+        .empty-state li {
+            margin-bottom: 10px;
+        }
+
+        .empty-state strong {
+            color: var(--accent-primary);
+        }
+
+        /* Key Takeaway */
+        .key-takeaway {
+            background: rgba(254, 240, 138, 0.2);
+            border-left: 4px solid #fef08a;
+            padding: 16px;
+            margin-top: 16px;
+            border-radius: 8px;
+            font-style: italic;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                order: -1;
+            }
+
+            .info-card {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .hero p {
+                font-size: 1rem;
+            }
+
+            .navbar {
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .question-card {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .question-left {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+
+        /* Tab Content */
+        .tab-pane {
+            display: none;
+        }
+
+        .tab-pane.active {
+            display: block;
+            animation: fadeIn 0.4s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Made with badge */
+        .made-with {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            padding: 10px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            color: var(--text-secondary);
+            box-shadow: var(--shadow-md);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .made-with a {
+            color: var(--accent-primary);
+            text-decoration: none;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body data-theme="light">
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="navbar-left">
+            <span class="app-label">App</span>
+            <span class="app-title">AI-Powered Data Science Book Search</span>
+        </div>
+        <div class="navbar-right">
+            <span class="user-info">Welcome, Basil Suhail</span>
+            <button class="theme-toggle" onclick="toggleTheme()" id="theme-toggle">🌙</button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-badge">
+            ✨ AI-Powered Learning
+        </div>
+        <h1>Master Data Science with AI</h1>
+        <p>Search through data science books, get instant AI-powered answers, and generate personalized study questions.</p>
+    </section>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Search Card -->
+            <div class="search-card">
+                <!-- Tabs -->
+                <div class="tabs">
+                    <button class="tab active" onclick="switchTab('search')">
+                        <span class="tab-icon">🔍</span>
+                        <span>Search</span>
+                    </button>
+                    <button class="tab" onclick="switchTab('questions')">
+                        <span class="tab-icon">🎯</span>
+                        <span>Study Questions</span>
+                    </button>
+                </div>
+
+                <!-- Search Tab -->
+                <div id="search-pane" class="tab-pane active">
+                    <div class="search-box">
+                        <input
+                            id="query"
+                            class="search-input"
+                            type="text"
+                            placeholder="What is the primary goal of machine learning?"
+                            autofocus
+                        >
+                    </div>
+                    <button class="search-button" onclick="search()">
+                        🔍 Search
+                    </button>
+
+                    <div id="results"></div>
+                </div>
+
+                <!-- Questions Tab -->
+                <div id="questions-pane" class="tab-pane">
+                    <div class="question-controls">
+                        <select id="difficulty-select" class="difficulty-select">
+                            <option value="random">🎲 Random Mix</option>
+                            <option value="easy">✅ Easy</option>
+                            <option value="medium">⚡ Medium</option>
+                            <option value="hard">🔥 Hard</option>
+                        </select>
+                        <button class="generate-btn" onclick="generateQuestions()">
+                            🎲 Generate Questions
+                        </button>
+                    </div>
+
+                    <div id="generated-questions">
+                        <div class="empty-state">
+                            <div class="empty-state-icon">🎯</div>
+                            <h3>Ready to Practice?</h3>
+                            <p>Click "Generate Questions" to create AI-powered interview questions based on your data science books.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="info-card">
+                <div class="info-card-icon">📚</div>
+                <h3>Comprehensive Coverage</h3>
+                <p>Search through curated data science books and resources</p>
+            </div>
+
+            <div class="info-card purple">
+                <div class="info-card-icon">🧠</div>
+                <h3>Smart Learning</h3>
+                <p>Generate personalized study questions at your level</p>
+            </div>
+        </aside>
+    </div>
+
+    <!-- Made with badge -->
+    <div class="made-with">
+        Made with <a href="https://www.anthropic.com/claude" target="_blank">Claude Code</a>
+    </div>
+
+    <script src="config.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({
+            startOnLoad: false,
+            theme: document.body.dataset.theme === 'dark' ? 'dark' : 'default'
+        });
+        window.mermaid = mermaid;
+    </script>
+    <script>
+        // Theme Toggle
+        function toggleTheme() {
+            const body = document.body;
+            const currentTheme = body.dataset.theme;
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            body.dataset.theme = newTheme;
+
+            // Update button icon
+            const toggle = document.getElementById('theme-toggle');
+            toggle.textContent = newTheme === 'light' ? '🌙' : '☀️';
+
+            // Save preference
+            localStorage.setItem('theme', newTheme);
+
+            // Update Mermaid theme if it exists
+            if (window.mermaid) {
+                window.mermaid.initialize({
+                    theme: newTheme === 'dark' ? 'dark' : 'default'
+                });
+                // Re-render any existing diagrams
+                const diagrams = document.querySelectorAll('.mermaid');
+                diagrams.forEach(diagram => {
+                    if (diagram.getAttribute('data-processed')) {
+                        window.mermaid.init(undefined, diagram);
+                    }
+                });
+            }
+        }
+
+        // Load saved theme
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.body.dataset.theme = savedTheme;
+            const toggle = document.getElementById('theme-toggle');
+            toggle.textContent = savedTheme === 'light' ? '🌙' : '☀️';
+        });
+
+        // Tab Switching
+        function switchTab(tabName) {
+            // Update tab buttons
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.target.closest('.tab').classList.add('active');
+
+            // Update tab panes
+            document.querySelectorAll('.tab-pane').forEach(pane => {
+                pane.classList.remove('active');
+            });
+            document.getElementById(`${tabName}-pane`).classList.add('active');
+        }
+
+        window.switchTab = switchTab;
+        window.toggleTheme = toggleTheme;
+
+        // Configuration
+        const SUPABASE_URL = CONFIG.SUPABASE_URL;
+        const SUPABASE_ANON_KEY = CONFIG.SUPABASE_ANON_KEY;
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // Search on Enter key
+        document.getElementById('query').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') search();
+        });
+
+        // Extract keywords from natural language query with semantic expansion
+        function extractKeywords(query) {
+            const stopWords = new Set([
+                'what', 'is', 'are', 'the', 'a', 'an', 'how', 'why', 'when', 'where',
+                'who', 'which', 'does', 'do', 'can', 'could', 'would', 'should',
+                'tell', 'me', 'about', 'explain', 'describe', 'define', 'definition',
+                'of', 'in', 'on', 'at', 'to', 'for', 'with', 'from', 'by', 'work', 'works'
+            ]);
+
+            const semanticExpansions = {
+                'neural': ['network', 'neuron', 'deep learning', 'backpropagation', 'activation'],
+                'network': ['neural', 'architecture', 'layer', 'deep'],
+                'gradient': ['descent', 'backpropagation', 'optimization', 'learning rate'],
+                'descent': ['gradient', 'optimization', 'optimizer'],
+                'decision': ['tree', 'forest', 'random forest', 'classification'],
+                'tree': ['decision', 'random forest', 'ensemble', 'split'],
+                'random': ['forest', 'decision tree', 'ensemble', 'bagging'],
+                'forest': ['random', 'decision tree', 'ensemble', 'bagging'],
+                'machine': ['learning', 'ml', 'model', 'algorithm'],
+                'learning': ['machine', 'deep', 'supervised', 'unsupervised', 'reinforcement'],
+                'deep': ['learning', 'neural', 'network', 'cnn', 'rnn'],
+                'regression': ['linear', 'logistic', 'prediction', 'model'],
+                'classification': ['supervised', 'model', 'predict', 'label'],
+                'cross': ['validation', 'k-fold', 'training'],
+                'validation': ['cross', 'k-fold', 'test', 'train'],
+                'overfitting': ['regularization', 'validation', 'generalization', 'bias variance'],
+                'underfitting': ['bias', 'variance', 'model complexity'],
+                'adversarial': ['attack', 'example', 'robust', 'defense', 'perturbation'],
+                'attack': ['adversarial', 'security', 'defense', 'robust'],
+                'clustering': ['k-means', 'unsupervised', 'centroid', 'hierarchical'],
+                'kmeans': ['clustering', 'centroid', 'unsupervised'],
+                'pca': ['principal component', 'dimensionality reduction', 'feature'],
+                'svm': ['support vector', 'kernel', 'margin', 'classification'],
+                'cnn': ['convolutional', 'neural network', 'image', 'deep learning'],
+                'rnn': ['recurrent', 'neural network', 'sequential', 'lstm'],
+                'lstm': ['recurrent', 'rnn', 'sequential', 'memory']
+            };
+
+            const baseWords = query.toLowerCase()
+                .replace(/[?.,!;:]/g, '')
+                .split(/\s+/)
+                .filter(word => word.length > 2 && !stopWords.has(word));
+
+            const expandedKeywords = new Set(baseWords);
+            baseWords.forEach(word => {
+                if (semanticExpansions[word]) {
+                    semanticExpansions[word].forEach(related => {
+                        related.split(' ').forEach(term => {
+                            if (term.length > 2) expandedKeywords.add(term);
+                        });
+                    });
+                }
+            });
+
+            const queryLower = query.toLowerCase();
+            const phrases = [
+                'neural network', 'machine learning', 'deep learning', 'decision tree',
+                'random forest', 'gradient descent', 'cross validation', 'k-fold',
+                'support vector machine', 'principal component analysis', 'data science',
+                'feature engineering', 'model training', 'train test split',
+                'confusion matrix', 'precision recall', 'bias variance', 'batch normalization',
+                'dropout regularization', 'learning rate', 'activation function',
+                'convolutional neural', 'recurrent neural', 'adversarial attack'
+            ];
+
+            phrases.forEach(phrase => {
+                if (queryLower.includes(phrase)) {
+                    expandedKeywords.add(phrase);
+                }
+            });
+
+            return Array.from(expandedKeywords);
+        }
+
+        // Calculate relevance score
+        function calculateRelevance(content, keywords, originalQuery = '') {
+            const lowerContent = content.toLowerCase();
+            const queryLower = originalQuery.toLowerCase();
+            let score = 0;
+
+            if (queryLower && lowerContent.includes(queryLower)) {
+                score += 200;
+            }
+
+            keywords.forEach((keyword, index) => {
+                const isOriginalKeyword = index < 3;
+                const weight = isOriginalKeyword ? 15 : 8;
+
+                const escapedKeyword = keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                try {
+                    const regex = new RegExp(escapedKeyword, 'gi');
+                    const matches = lowerContent.match(regex);
+                    if (matches) {
+                        score += matches.length * weight;
+
+                        const firstIndex = lowerContent.indexOf(keyword);
+                        if (firstIndex < 100) score += 30;
+                        else if (firstIndex < 300) score += 15;
+                        else if (firstIndex < 500) score += 5;
+
+                        if (matches.length > 2) score += 20;
+                        if (matches.length > 5) score += 30;
+                    }
+                } catch (e) {
+                    const count = lowerContent.split(keyword).length - 1;
+                    score += count * weight;
+                }
+
+                const definitionPatterns = [
+                    keyword + ' is', keyword + ' are', keyword + ':',
+                    'definition of ' + keyword, keyword + ' refers to',
+                    keyword + ' means', 'what is ' + keyword
+                ];
+
+                definitionPatterns.forEach(pattern => {
+                    if (lowerContent.includes(pattern)) score += 60;
+                });
+
+                const technicalPatterns = [
+                    keyword + ' algorithm', keyword + ' method',
+                    keyword + ' technique', keyword + ' approach',
+                    'using ' + keyword, keyword + ' works by'
+                ];
+
+                technicalPatterns.forEach(pattern => {
+                    if (lowerContent.includes(pattern)) score += 40;
+                });
+            });
+
+            if (content.length < 200) score *= 0.5;
+            if (content.length > 500 && content.length < 2000) score *= 1.2;
+
+            return score;
+        }
+
+        // Extract meaningful sentences
+        function extractMeaningfulSentences(content, keywords) {
+            let cleaned = content
+                .replace(/={10,}/g, '')
+                .replace(/PAGE \d+/gi, '')
+                .replace(/\n{3,}/g, '\n\n')
+                .replace(/\s{2,}/g, ' ')
+                .trim();
+
+            const sentences = cleaned.split(/[.!?]+/).map(s => s.trim()).filter(s => s.length > 20);
+
+            const scoredSentences = sentences.map(sentence => {
+                let score = 0;
+                const lower = sentence.toLowerCase();
+
+                keywords.forEach(keyword => {
+                    if (lower.includes(keyword)) {
+                        score += 10;
+                        if (lower.includes(keyword + ' is') ||
+                            lower.includes(keyword + ' are') ||
+                            lower.includes(keyword + ':')) {
+                            score += 20;
+                        }
+                    }
+                });
+
+                return { sentence, score };
+            });
+
+            return scoredSentences
+                .filter(s => s.score > 0)
+                .sort((a, b) => b.score - a.score)
+                .map(s => s.sentence);
+        }
+
+        // Compose answer from multiple chunks
+        async function composeAnswer(results, keywords, query) {
+            const sources = [];
+            let contextContent = '';
+
+            results.slice(0, 12).forEach(item => {
+                const sentences = extractMeaningfulSentences(item.content, keywords);
+                if (sentences.length > 0) {
+                    contextContent += `\n[From: ${item.book_name}]\n${sentences.slice(0, 8).join(' ')}\n`;
+
+                    sources.push({
+                        book: item.book_name,
+                        chunk: item.page_number,
+                        excerpt: sentences[0]
+                    });
+                }
+            });
+
+            if (contextContent.trim().length === 0) {
+                return {
+                    answer: '<p>No relevant information found in the books for this question. Try rephrasing or using different keywords.</p>',
+                    sources: []
+                };
+            }
+
+            const aiAnswer = await generateAIAnswer(query, contextContent);
+
+            return {
+                answer: aiAnswer,
+                sources: sources.slice(0, 5)
+            };
+        }
+
+        // Generate AI answer using Groq
+        async function generateAIAnswer(question, bookContext) {
+            const GROQ_API_KEY = CONFIG.GROQ_API_KEY;
+
+            if (!GROQ_API_KEY || GROQ_API_KEY === 'YOUR_GROQ_API_KEY_HERE') {
+                return `<p style="color: #ef4444;">⚠️ Please add your Groq API key to enable AI-powered answers.</p>
+                        <p>Steps:</p>
+                        <ol>
+                            <li>Copy config.example.js to config.js</li>
+                            <li>Get a free API key from: <a href="https://console.groq.com/keys" target="_blank">console.groq.com/keys</a></li>
+                            <li>Add your API key to config.js</li>
+                            <li>Refresh this page</li>
+                        </ol>`;
+            }
+
+            const prompt = `You are a world-class Data Science professor with deep expertise in machine learning, statistics, and AI. A student has asked you a question, and you have access to relevant excerpts from authoritative Data Science textbooks.
+
+CRITICAL INSTRUCTIONS:
+
+1. **Question Validation**:
+   - Only answer questions relevant to data science, ML, statistics, programming, or mathematics
+   - Decline irrelevant/unethical questions politely
+
+2. **Answer Quality** (Your answer must be EXCELLENT):
+   - Begin with a clear, direct 2-3 sentence answer that fully addresses the question
+   - Use **bold** for ALL key terms, concepts, and technical vocabulary
+   - Provide 3-5 concrete, real-world examples where applicable
+   - Include mathematical intuition (not just formulas) when relevant
+   - Explain the "why" behind concepts, not just the "what"
+   - Structure: Definition → Intuition → Examples → Use Cases
+   - Length: 3-5 well-structured paragraphs with bullet points
+
+3. **Visual Diagrams** (MANDATORY for 90% of questions):
+   - ALWAYS create a Mermaid diagram unless the question is purely definitional
+   - Diagrams should be COMPREHENSIVE and DETAILED (8-15 nodes ideal)
+   - Use descriptive node labels with clear relationships
+   - Add the diagram AFTER your text answer using this EXACT format:
+
+   [MERMAID_DIAGRAM]
+   graph TD
+       A[Input Data] --> B[Preprocessing]
+       B --> C[Feature Engineering]
+       C --> D[Model Training]
+       D --> E{Validation}
+       E -->|Good| F[Deploy]
+       E -->|Poor| G[Tune Hyperparameters]
+       G --> D
+   [/MERMAID_DIAGRAM]
+
+4. **Content Excellence**:
+   - Synthesize information from multiple book excerpts
+   - Add critical insights not explicitly in the text
+   - Compare/contrast related concepts
+   - Mention common pitfalls or misconceptions
+   - If book content is limited, supplement with well-known DS concepts
+
+5. **Formatting**:
+   - Use bullet points for lists of 3+ items
+   - Use numbered lists for sequential steps
+   - Bold ALL technical terms
+   - End with "**Key Takeaway:**" highlighting the most important insight
+
+STUDENT QUESTION: "${question}"
+
+BOOK EXCERPTS:
+${bookContext}
+
+Please provide a well-structured, educational answer:`;
+
+            try {
+                const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${GROQ_API_KEY}`
+                    },
+                    body: JSON.stringify({
+                        model: 'llama-3.3-70b-versatile',
+                        messages: [{
+                            role: 'system',
+                            content: 'You are a world-class Data Science professor known for exceptionally clear explanations, comprehensive visual diagrams, and deep technical insights.'
+                        }, {
+                            role: 'user',
+                            content: prompt
+                        }],
+                        temperature: 0.8,
+                        max_tokens: 2000,
+                        top_p: 0.95
+                    })
+                });
+
+                const result = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(`API Error (${response.status}): ${result.error?.message || JSON.stringify(result)}`);
+                }
+
+                if (result.error) {
+                    throw new Error(result.error.message);
+                }
+
+                if (!result.choices || !result.choices[0] || !result.choices[0].message) {
+                    throw new Error('Invalid API response structure');
+                }
+
+                const aiContent = result.choices[0].message.content;
+                return formatAIAnswer(aiContent);
+
+            } catch (error) {
+                console.error('AI answer generation failed:', error);
+                return `<p style="color: #ef4444;">⚠️ AI answer generation failed: ${error.message}</p>
+                        <p>This could be due to:</p>
+                        <ul>
+                            <li>API key issues</li>
+                            <li>Network connectivity</li>
+                            <li>Rate limiting</li>
+                        </ul>`;
+            }
+        }
+
+        // Extract Mermaid diagram
+        function extractMermaidDiagram(text) {
+            const mermaidRegex = /\[MERMAID_DIAGRAM\]([\s\S]*?)\[\/MERMAID_DIAGRAM\]/;
+            const match = text.match(mermaidRegex);
+
+            if (match) {
+                return {
+                    diagram: match[1].trim(),
+                    textWithoutDiagram: text.replace(mermaidRegex, '').trim()
+                };
+            }
+
+            return { diagram: null, textWithoutDiagram: text };
+        }
+
+        // Format AI answer
+        function formatAIAnswer(text) {
+            const { diagram, textWithoutDiagram } = extractMermaidDiagram(text);
+
+            let formatted = textWithoutDiagram.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+            formatted = formatted.replace(/`(.+?)`/g, '<code>$1</code>');
+
+            let lines = formatted.split('\n');
+            let html = [];
+            let inList = false;
+            let listType = null;
+
+            for (let i = 0; i < lines.length; i++) {
+                let line = lines[i].trim();
+
+                if (line.match(/^[-•*]\s+(.+)/)) {
+                    if (!inList) {
+                        html.push('<ul>');
+                        inList = true;
+                        listType = 'ul';
+                    } else if (listType !== 'ul') {
+                        html.push(`</${listType}>`);
+                        html.push('<ul>');
+                        listType = 'ul';
+                    }
+                    html.push(`<li>${line.replace(/^[-•*]\s+/, '')}</li>`);
+                }
+                else if (line.match(/^\d+\.\s+(.+)/)) {
+                    if (!inList) {
+                        html.push('<ol>');
+                        inList = true;
+                        listType = 'ol';
+                    } else if (listType !== 'ol') {
+                        html.push(`</${listType}>`);
+                        html.push('<ol>');
+                        listType = 'ol';
+                    }
+                    html.push(`<li>${line.replace(/^\d+\.\s+/, '')}</li>`);
+                }
+                else if (line.length > 0) {
+                    if (inList) {
+                        html.push(`</${listType}>`);
+                        inList = false;
+                        listType = null;
+                    }
+
+                    if (line.toLowerCase().includes('key takeaway') ||
+                        line.toLowerCase().includes('important:')) {
+                        html.push(`<div class="key-takeaway">✨ ${line}</div>`);
+                    } else {
+                        html.push(`<p>${line}</p>`);
+                    }
+                }
+                else if (inList) {
+                    html.push(`</${listType}>`);
+                    inList = false;
+                    listType = null;
+                }
+            }
+
+            if (inList) {
+                html.push(`</${listType}>`);
+            }
+
+            const formattedHTML = html.join('');
+
+            return {
+                html: formattedHTML,
+                diagram: diagram
+            };
+        }
+
+        // Generate follow-up questions
+        function generateFollowUpQuestions(originalQuery) {
+            const queryLower = originalQuery.toLowerCase();
+            const followUps = [];
+
+            const topicFollowUps = {
+                'neural network': [
+                    'How does backpropagation work in neural networks?',
+                    'What are activation functions and why are they important?',
+                    'How to prevent overfitting in neural networks?',
+                    'What is the difference between CNN and RNN?'
+                ],
+                'gradient descent': [
+                    'What is the difference between batch and stochastic gradient descent?',
+                    'How to choose the right learning rate?',
+                    'What are Adam and RMSprop optimizers?',
+                    'How does momentum help gradient descent?'
+                ],
+                'decision tree': [
+                    'How does random forest improve upon decision trees?',
+                    'What is the difference between Gini impurity and entropy?',
+                    'How to prevent overfitting in decision trees?',
+                    'What is gradient boosting?'
+                ],
+                'overfitting': [
+                    'What is cross-validation and how does it help?',
+                    'How does regularization prevent overfitting?',
+                    'What is the bias-variance tradeoff?',
+                    'How to detect overfitting in practice?'
+                ],
+                'classification': [
+                    'What is the difference between precision and recall?',
+                    'How does logistic regression work?',
+                    'What is a confusion matrix?',
+                    'What is the ROC curve and AUC score?'
+                ],
+                'regression': [
+                    'What is the difference between linear and logistic regression?',
+                    'How to handle non-linear relationships?',
+                    'What is regularization (L1 vs L2)?',
+                    'How to evaluate regression models?'
+                ],
+                'clustering': [
+                    'How does k-means clustering work?',
+                    'What is hierarchical clustering?',
+                    'How to choose the number of clusters?',
+                    'What is DBSCAN?'
+                ],
+                'pca': [
+                    'How does PCA reduce dimensionality?',
+                    'What is the difference between PCA and LDA?',
+                    'When should you use PCA?',
+                    'How to interpret principal components?'
+                ]
+            };
+
+            for (const [topic, questions] of Object.entries(topicFollowUps)) {
+                if (queryLower.includes(topic)) {
+                    followUps.push(...questions.slice(0, 3));
+                    break;
+                }
+            }
+
+            if (followUps.length === 0) {
+                const keywords = extractKeywords(originalQuery).slice(0, 2);
+                if (keywords.length > 0) {
+                    followUps.push(
+                        `How is ${keywords[0]} used in practice?`,
+                        `What are common mistakes with ${keywords[0]}?`,
+                        `What are advanced techniques for ${keywords[0]}?`
+                    );
+                }
+            }
+
+            return followUps.slice(0, 4);
+        }
+
+        // Search function
+        async function search() {
+            const query = document.getElementById('query').value.trim();
+            if (!query) return;
+
+            const results = document.getElementById('results');
+            results.innerHTML = '<div class="loading">🔍 Searching...</div>';
+
+            try {
+                const keywords = extractKeywords(query);
+
+                if (keywords.length === 0) {
+                    results.innerHTML = '<div class="loading">Please enter a more specific search query.</div>';
+                    return;
+                }
+
+                let allResults = [];
+
+                for (const keyword of keywords) {
+                    const { data, error } = await supabase
+                        .from('documents')
+                        .select('*')
+                        .ilike('content', `%${keyword}%`)
+                        .limit(50);
+
+                    if (error) throw error;
+                    if (data) allResults = allResults.concat(data);
+                }
+
+                const uniqueResults = Array.from(
+                    new Map(allResults.map(item => [`${item.book_name}-${item.page_number}`, item])).values()
+                );
+
+                if (uniqueResults.length === 0) {
+                    results.innerHTML = `<div class="loading">No results found for "${query}".<br>Try rephrasing or using different keywords.</div>`;
+                    return;
+                }
+
+                const scoredResults = uniqueResults.map(item => ({
+                    ...item,
+                    relevance: calculateRelevance(item.content, keywords, query)
+                }));
+
+                scoredResults.sort((a, b) => b.relevance - a.relevance);
+
+                const topResults = scoredResults.slice(0, 20);
+
+                results.innerHTML = '<div class="loading">🤖 AI is analyzing your question and generating a detailed answer...</div>';
+
+                const { answer, sources } = await composeAnswer(topResults, keywords, query);
+
+                const answerData = typeof answer === 'object' ? answer : { html: answer, diagram: null };
+
+                let resultsHTML = `
+                    <div class="ai-answer-box">
+                        <h2>💡 Answer to: "${query}"</h2>
+                        <div class="ai-answer-content">
+                            ${answerData.html}
+                        </div>
+                    </div>
+                `;
+
+                if (answerData.diagram) {
+                    resultsHTML += `
+                        <div class="diagram-container">
+                            <h3>📊 Visual Diagram</h3>
+                            <div class="mermaid" id="mermaid-diagram">${answerData.diagram}</div>
+                        </div>
+                    `;
+                }
+
+                const followUps = generateFollowUpQuestions(query);
+                if (followUps.length > 0) {
+                    resultsHTML += `
+                        <div class="follow-up-section">
+                            <h3>🔍 Explore Related Topics</h3>
+                            ${followUps.map(q => `
+                                <div class="follow-up-question" onclick="searchQuestion('${q.replace(/'/g, "\\'")}')">
+                                    ${q}
+                                </div>
+                            `).join('')}
+                        </div>
+                    `;
+                }
+
+                resultsHTML += `
+                    <div class="sources">
+                        <h3>📚 Sources (${sources.length} books referenced)</h3>
+                        ${sources.map(source => `
+                            <div class="source-item">
+                                <div class="source-book">
+                                    📖 ${source.book} - Chunk ${source.chunk}
+                                </div>
+                                <div class="source-text">"${source.excerpt.substring(0, 200)}..."</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+
+                results.innerHTML = resultsHTML;
+
+                if (answerData.diagram && window.mermaid) {
+                    try {
+                        await window.mermaid.run({
+                            querySelector: '#mermaid-diagram'
+                        });
+                    } catch (e) {
+                        console.error('Mermaid rendering failed:', e);
+                    }
+                }
+
+            } catch (error) {
+                results.innerHTML = `<div class="loading">Error: ${error.message}</div>`;
+            }
+        }
+
+        window.search = search;
+
+        // Search question helper
+        function searchQuestion(question) {
+            // Switch to search tab
+            switchTab('search');
+            document.querySelectorAll('.tab')[0].classList.add('active');
+            document.querySelectorAll('.tab')[1].classList.remove('active');
+
+            document.getElementById('query').value = question;
+            search();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        window.searchQuestion = searchQuestion;
+
+        // Generate questions
+        async function generateQuestions() {
+            const questionsDiv = document.getElementById('generated-questions');
+            questionsDiv.innerHTML = '<div class="loading">🤔 Generating questions...</div>';
+
+            try {
+                const { count } = await supabase
+                    .from('documents')
+                    .select('*', { count: 'exact', head: true });
+
+                const randomOffset = Math.floor(Math.random() * (count - 20));
+
+                const { data, error } = await supabase
+                    .from('documents')
+                    .select('*')
+                    .range(randomOffset, randomOffset + 19)
+                    .limit(20);
+
+                if (error) throw error;
+
+                const shuffledData = data.sort(() => Math.random() - 0.5);
+                const allContent = shuffledData.map(d => d.content).join(' ');
+                const topics = extractTopics(allContent);
+
+                const questions = await generateQuestionsWithAI(topics, allContent.substring(0, 2000));
+
+                displayQuestions(questions);
+
+            } catch (error) {
+                questionsDiv.innerHTML = `<div class="loading">Error generating questions: ${error.message}</div>`;
+            }
+        }
+
+        window.generateQuestions = generateQuestions;
+
+        // Extract topics
+        function extractTopics(content) {
+            const topicKeywords = [
+                'machine learning', 'neural network', 'regression', 'classification',
+                'clustering', 'deep learning', 'statistics', 'probability', 'python',
+                'data cleaning', 'feature engineering', 'cross validation', 'overfitting',
+                'gradient descent', 'decision tree', 'random forest', 'SVM', 'PCA',
+                'supervised learning', 'unsupervised learning', 'bias', 'variance'
+            ];
+
+            const foundTopics = topicKeywords.filter(topic =>
+                content.toLowerCase().includes(topic)
+            );
+
+            return foundTopics.slice(0, 5);
+        }
+
+        // Generate questions with AI
+        async function generateQuestionsWithAI(topics, sampleContent) {
+            const GROQ_API_KEY = CONFIG.GROQ_API_KEY;
+            const selectedDifficulty = document.getElementById('difficulty-select').value;
+
+            let difficultyInstruction = '';
+            if (selectedDifficulty === 'easy') {
+                difficultyInstruction = 'Generate 5 EASY level questions - focus on basic definitions, fundamental concepts, and simple explanations.';
+            } else if (selectedDifficulty === 'medium') {
+                difficultyInstruction = 'Generate 5 MEDIUM level questions - focus on understanding concepts, comparisons, and practical applications.';
+            } else if (selectedDifficulty === 'hard') {
+                difficultyInstruction = 'Generate 5 HARD level questions - focus on complex scenarios, edge cases, implementation details, and advanced concepts.';
+            } else {
+                difficultyInstruction = 'Generate 5 diverse interview questions with mixed difficulty levels.';
+            }
+
+            const prompt = `Based on these data science topics: ${topics.join(', ')},
+${difficultyInstruction}
+Include a mix of conceptual, practical, and scenario-based questions.
+Format each question on a new line starting with a number.
+
+Example format:
+1. What is the difference between supervised and unsupervised learning?
+2. How would you handle missing data in a dataset?
+
+Generate 5 questions now:`;
+
+            try {
+                const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${GROQ_API_KEY}`
+                    },
+                    body: JSON.stringify({
+                        model: 'llama-3.3-70b-versatile',
+                        messages: [{ role: 'user', content: prompt }],
+                        temperature: 1.2,
+                        max_tokens: 500,
+                        top_p: 0.9
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.error) {
+                    throw new Error(result.error.message);
+                }
+
+                const generatedText = result.choices[0].message.content;
+                const questionLines = generatedText.split('\n').filter(line => line.match(/^\d+\./));
+
+                return questionLines.map(line => {
+                    const match = line.match(/^\d+\.\s*(.+)$/);
+                    return match ? match[1].trim() : line.trim();
+                });
+
+            } catch (error) {
+                console.error('AI generation failed:', error);
+                return [
+                    'What is the difference between supervised and unsupervised learning?',
+                    'Explain the bias-variance tradeoff in machine learning',
+                    'How do you handle imbalanced datasets?',
+                    'What is regularization and why is it important?',
+                    'Explain the concept of cross-validation'
+                ];
+            }
+        }
+
+        // Display questions
+        function displayQuestions(questions) {
+            const questionsDiv = document.getElementById('generated-questions');
+            const selectedDifficulty = document.getElementById('difficulty-select').value;
+
+            let difficulties;
+            if (selectedDifficulty === 'random') {
+                const difficultyOptions = ['easy', 'medium', 'hard'];
+                difficulties = questions.map(() =>
+                    difficultyOptions[Math.floor(Math.random() * difficultyOptions.length)]
+                );
+            } else {
+                difficulties = questions.map(() => selectedDifficulty);
+            }
+
+            questionsDiv.innerHTML = questions.map((question, index) => `
+                <div class="question-card" onclick="searchQuestion('${question.replace(/'/g, "\\'")}')">
+                    <div class="question-left">
+                        <span class="question-number">Q${index + 1}</span>
+                        <span class="question-text">${question}</span>
+                    </div>
+                    <span class="difficulty-badge difficulty-${difficulties[index]}">${difficulties[index]}</span>
+                </div>
+            `).join('');
+        }
+    </script>
+</body>
+</html>
