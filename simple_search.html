@@ -340,6 +340,43 @@
             color: #999;
             padding: 40px;
         }
+
+        .follow-up-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+
+        .follow-up-section h3 {
+            color: white;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        .follow-up-question {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            padding: 12px 15px;
+            margin: 8px 0;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 14px;
+        }
+
+        .follow-up-question:hover {
+            background: rgba(255, 255, 255, 0.25);
+            border-color: rgba(255, 255, 255, 0.5);
+            transform: translateX(5px);
+        }
+
+        .follow-up-question::before {
+            content: '💭 ';
+            margin-right: 8px;
+        }
     </style>
 </head>
 <body>
@@ -411,31 +448,101 @@
             if (e.key === 'Enter') search();
         });
 
-        // Extract keywords from natural language query
+        // Extract keywords from natural language query with semantic expansion
         function extractKeywords(query) {
             // Remove common question words and stop words
             const stopWords = new Set([
                 'what', 'is', 'are', 'the', 'a', 'an', 'how', 'why', 'when', 'where',
                 'who', 'which', 'does', 'do', 'can', 'could', 'would', 'should',
                 'tell', 'me', 'about', 'explain', 'describe', 'define', 'definition',
-                'of', 'in', 'on', 'at', 'to', 'for', 'with', 'from', 'by'
+                'of', 'in', 'on', 'at', 'to', 'for', 'with', 'from', 'by', 'work', 'works'
             ]);
 
+            // Semantic keyword expansion - related terms that often appear together
+            const semanticExpansions = {
+                'neural': ['network', 'neuron', 'deep learning', 'backpropagation', 'activation'],
+                'network': ['neural', 'architecture', 'layer', 'deep'],
+                'gradient': ['descent', 'backpropagation', 'optimization', 'learning rate'],
+                'descent': ['gradient', 'optimization', 'optimizer'],
+                'decision': ['tree', 'forest', 'random forest', 'classification'],
+                'tree': ['decision', 'random forest', 'ensemble', 'split'],
+                'random': ['forest', 'decision tree', 'ensemble', 'bagging'],
+                'forest': ['random', 'decision tree', 'ensemble', 'bagging'],
+                'machine': ['learning', 'ml', 'model', 'algorithm'],
+                'learning': ['machine', 'deep', 'supervised', 'unsupervised', 'reinforcement'],
+                'deep': ['learning', 'neural', 'network', 'cnn', 'rnn'],
+                'regression': ['linear', 'logistic', 'prediction', 'model'],
+                'classification': ['supervised', 'model', 'predict', 'label'],
+                'cross': ['validation', 'k-fold', 'training'],
+                'validation': ['cross', 'k-fold', 'test', 'train'],
+                'overfitting': ['regularization', 'validation', 'generalization', 'bias variance'],
+                'underfitting': ['bias', 'variance', 'model complexity'],
+                'adversarial': ['attack', 'example', 'robust', 'defense', 'perturbation'],
+                'attack': ['adversarial', 'security', 'defense', 'robust'],
+                'clustering': ['k-means', 'unsupervised', 'centroid', 'hierarchical'],
+                'kmeans': ['clustering', 'centroid', 'unsupervised'],
+                'pca': ['principal component', 'dimensionality reduction', 'feature'],
+                'svm': ['support vector', 'kernel', 'margin', 'classification'],
+                'cnn': ['convolutional', 'neural network', 'image', 'deep learning'],
+                'rnn': ['recurrent', 'neural network', 'sequential', 'lstm'],
+                'lstm': ['recurrent', 'rnn', 'sequential', 'memory']
+            };
+
             // Split query into words and filter out stop words
-            const words = query.toLowerCase()
+            const baseWords = query.toLowerCase()
                 .replace(/[?.,!;:]/g, '') // Remove punctuation
                 .split(/\s+/)
                 .filter(word => word.length > 2 && !stopWords.has(word));
 
-            return words;
+            // Add semantic expansions
+            const expandedKeywords = new Set(baseWords);
+            baseWords.forEach(word => {
+                if (semanticExpansions[word]) {
+                    semanticExpansions[word].forEach(related => {
+                        // Add related terms (they'll be weighted lower in search)
+                        related.split(' ').forEach(term => {
+                            if (term.length > 2) expandedKeywords.add(term);
+                        });
+                    });
+                }
+            });
+
+            // Also check for common multi-word phrases
+            const queryLower = query.toLowerCase();
+            const phrases = [
+                'neural network', 'machine learning', 'deep learning', 'decision tree',
+                'random forest', 'gradient descent', 'cross validation', 'k-fold',
+                'support vector machine', 'principal component analysis', 'data science',
+                'feature engineering', 'model training', 'train test split',
+                'confusion matrix', 'precision recall', 'bias variance', 'batch normalization',
+                'dropout regularization', 'learning rate', 'activation function',
+                'convolutional neural', 'recurrent neural', 'adversarial attack'
+            ];
+
+            phrases.forEach(phrase => {
+                if (queryLower.includes(phrase)) {
+                    expandedKeywords.add(phrase);
+                }
+            });
+
+            return Array.from(expandedKeywords);
         }
 
-        // Calculate relevance score for a document
-        function calculateRelevance(content, keywords) {
+        // Calculate relevance score for a document with advanced scoring
+        function calculateRelevance(content, keywords, originalQuery = '') {
             const lowerContent = content.toLowerCase();
+            const queryLower = originalQuery.toLowerCase();
             let score = 0;
 
-            keywords.forEach(keyword => {
+            // Boost score if the exact query phrase appears
+            if (queryLower && lowerContent.includes(queryLower)) {
+                score += 200; // Big boost for exact query match
+            }
+
+            keywords.forEach((keyword, index) => {
+                const isOriginalKeyword = index < 3; // First 3 keywords are from original query
+                const weight = isOriginalKeyword ? 15 : 8; // Weight original keywords higher
+
                 // Count occurrences of each keyword
                 // Escape special regex characters to avoid errors
                 const escapedKeyword = keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -443,26 +550,65 @@
                     const regex = new RegExp(escapedKeyword, 'gi');
                     const matches = lowerContent.match(regex);
                     if (matches) {
-                        score += matches.length * 10;
+                        score += matches.length * weight;
 
                         // Bonus for keyword appearing early in content
                         const firstIndex = lowerContent.indexOf(keyword);
-                        if (firstIndex < 100) score += 20;
-                        else if (firstIndex < 300) score += 10;
+                        if (firstIndex < 100) score += 30;
+                        else if (firstIndex < 300) score += 15;
+                        else if (firstIndex < 500) score += 5;
+
+                        // Bonus for multiple occurrences close together (indicates topic focus)
+                        if (matches.length > 2) score += 20;
+                        if (matches.length > 5) score += 30;
                     }
                 } catch (e) {
                     // If regex still fails, fall back to simple string search
                     const count = lowerContent.split(keyword).length - 1;
-                    score += count * 10;
+                    score += count * weight;
                 }
 
-                // Bonus for exact phrase match with surrounding words
-                if (lowerContent.includes(keyword + ' is') ||
-                    lowerContent.includes(keyword + ':') ||
-                    lowerContent.includes('definition of ' + keyword)) {
-                    score += 50;
-                }
+                // Bonus for definitional content patterns
+                const definitionPatterns = [
+                    keyword + ' is',
+                    keyword + ' are',
+                    keyword + ':',
+                    'definition of ' + keyword,
+                    keyword + ' refers to',
+                    keyword + ' means',
+                    'what is ' + keyword,
+                    keyword + ' can be defined'
+                ];
+
+                definitionPatterns.forEach(pattern => {
+                    if (lowerContent.includes(pattern)) {
+                        score += 60; // Higher bonus for definition patterns
+                    }
+                });
+
+                // Bonus for technical/explanatory content
+                const technicalPatterns = [
+                    keyword + ' algorithm',
+                    keyword + ' method',
+                    keyword + ' technique',
+                    keyword + ' approach',
+                    'using ' + keyword,
+                    keyword + ' works by',
+                    'how ' + keyword + ' works'
+                ];
+
+                technicalPatterns.forEach(pattern => {
+                    if (lowerContent.includes(pattern)) {
+                        score += 40;
+                    }
+                });
             });
+
+            // Penalty for very short content (likely not informative)
+            if (content.length < 200) score *= 0.5;
+
+            // Bonus for moderate length content (sweet spot for explanations)
+            if (content.length > 500 && content.length < 2000) score *= 1.2;
 
             return score;
         }
@@ -513,10 +659,10 @@
             const sources = [];
             let contextContent = '';
 
-            results.slice(0, 8).forEach(item => {
+            results.slice(0, 12).forEach(item => {
                 const sentences = extractMeaningfulSentences(item.content, keywords);
                 if (sentences.length > 0) {
-                    contextContent += `\n[From: ${item.book_name}]\n${sentences.slice(0, 5).join(' ')}\n`;
+                    contextContent += `\n[From: ${item.book_name}]\n${sentences.slice(0, 8).join(' ')}\n`;
 
                     sources.push({
                         book: item.book_name,
@@ -562,49 +708,67 @@
                         </ol>`;
             }
 
-            const prompt = `You are an expert Data Science instructor. A student has asked you a question, and you have access to relevant excerpts from Data Science textbooks.
+            const prompt = `You are a world-class Data Science professor with deep expertise in machine learning, statistics, and AI. A student has asked you a question, and you have access to relevant excerpts from authoritative Data Science textbooks.
 
-IMPORTANT INSTRUCTIONS:
-1. **Question Validation**: First, assess if the question is:
-   - Relevant to data science, machine learning, statistics, or programming
-   - Ethical and appropriate for educational purposes
-   - If the question is irrelevant, unethical, or inappropriate, respond with: "I cannot answer this question as it is not relevant to data science education or may be inappropriate. Please ask a data science related question."
+CRITICAL INSTRUCTIONS:
 
-2. **Answer Structure** (if question is valid):
-   - Start with a clear, direct answer to the question
-   - Use **bold** for key terms and concepts
-   - Organize information with bullet points or numbered lists when helpful
-   - Provide practical examples where relevant
-   - Keep it concise but comprehensive (2-4 paragraphs)
+1. **Question Validation**:
+   - Only answer questions relevant to data science, ML, statistics, programming, or mathematics
+   - Decline irrelevant/unethical questions politely
 
-3. **Visual Diagrams** (IMPORTANT):
-   - For topics that would benefit from visualization (algorithms, workflows, architectures, processes, comparisons), ALWAYS include a Mermaid diagram
-   - Add the diagram AFTER your text answer using this exact format:
+2. **Answer Quality** (Your answer must be EXCELLENT):
+   - Begin with a clear, direct 2-3 sentence answer that fully addresses the question
+   - Use **bold** for ALL key terms, concepts, and technical vocabulary
+   - Provide 3-5 concrete, real-world examples where applicable
+   - Include mathematical intuition (not just formulas) when relevant
+   - Explain the "why" behind concepts, not just the "what"
+   - Structure: Definition → Intuition → Examples → Use Cases
+   - Length: 3-5 well-structured paragraphs with bullet points
+
+3. **Visual Diagrams** (MANDATORY for 90% of questions):
+   - ALWAYS create a Mermaid diagram unless the question is purely definitional
+   - Diagrams should be COMPREHENSIVE and DETAILED (8-15 nodes ideal)
+   - Use descriptive node labels with clear relationships
+   - Add the diagram AFTER your text answer using this EXACT format:
 
    [MERMAID_DIAGRAM]
    graph TD
-       A[Start] --> B[Step 1]
-       B --> C[Step 2]
+       A[Input Data] --> B[Preprocessing]
+       B --> C[Feature Engineering]
+       C --> D[Model Training]
+       D --> E{Validation}
+       E -->|Good| F[Deploy]
+       E -->|Poor| G[Tune Hyperparameters]
+       G --> D
    [/MERMAID_DIAGRAM]
 
-   - Use appropriate Mermaid diagram types:
-     * flowchart/graph for processes and workflows
-     * graph LR for left-to-right flows
-     * classDiagram for object relationships
-     * sequenceDiagram for step-by-step processes
-   - Keep diagrams simple and clear (5-10 nodes maximum)
-   - Examples of topics that NEED diagrams: neural networks, gradient descent, decision trees, data pipelines, train-test split, cross-validation, ensemble methods, etc.
+   **Mermaid Diagram Types & When to Use**:
+   - **graph TD** (Top-Down): Workflows, pipelines, sequential processes
+   - **graph LR** (Left-Right): Comparisons, parallel processes, hierarchies
+   - **flowchart TD**: Algorithms with decision points (use {}) for decisions
+   - **Examples of MUST-HAVE diagrams**: Any algorithm, architecture, process, comparison, workflow, data flow, training loop, etc.
 
-4. **Content Guidelines**:
-   - Base your answer primarily on the book excerpts provided
-   - If book content is insufficient or missing, you MAY supplement with well-known data science concepts, but add a note: "(Note: Supplemented with general data science knowledge)"
-   - Highlight the most important takeaways with bullet points
-   - Provide concrete examples when possible
+   **Diagram Style Guidelines**:
+   - Use decision nodes {} for conditional logic
+   - Use rounded nodes () for processes
+   - Use rectangular nodes [] for data/states
+   - Add descriptive arrows with labels: -->|label text|
+   - Include feedback loops where relevant
+   - Show inputs, processes, decisions, and outputs clearly
+
+4. **Content Excellence**:
+   - Synthesize information from multiple book excerpts
+   - Add critical insights not explicitly in the text
+   - Compare/contrast related concepts (e.g., "Unlike X, Y does...")
+   - Mention common pitfalls or misconceptions
+   - Suggest when to use vs. when not to use a technique
+   - If book content is limited, supplement with well-known DS concepts + add: "(Note: Enhanced with established ML principles)"
 
 5. **Formatting**:
-   - Use markdown formatting (**, bullet points, etc.)
-   - Break complex concepts into digestible parts
-   - End with a key takeaway if appropriate
+   - Use bullet points for lists of 3+ items
+   - Use numbered lists for sequential steps
+   - Bold ALL technical terms
+   - End with "**Key Takeaway:**" highlighting the most important insight
 
 STUDENT QUESTION: "${question}"
 
@@ -624,14 +788,14 @@ Please provide a well-structured, educational answer:`;
                         model: 'llama-3.3-70b-versatile',
                         messages: [{
                             role: 'system',
-                            content: 'You are an expert Data Science instructor who provides clear, structured, and educational answers. You validate questions for relevance and ethics before answering.'
+                            content: 'You are a world-class Data Science professor known for exceptionally clear explanations, comprehensive visual diagrams, and deep technical insights. Your answers are the gold standard in data science education.'
                         }, {
                             role: 'user',
                             content: prompt
                         }],
-                        temperature: 0.7,
-                        max_tokens: 1000,
-                        top_p: 0.9
+                        temperature: 0.8,
+                        max_tokens: 2000,
+                        top_p: 0.95
                     })
                 });
 
@@ -772,6 +936,86 @@ Please provide a well-structured, educational answer:`;
                 html: formattedHTML,
                 diagram: diagram
             };
+        }
+
+        // Generate intelligent follow-up questions based on the original query
+        function generateFollowUpQuestions(originalQuery) {
+            const queryLower = originalQuery.toLowerCase();
+            const followUps = [];
+
+            // Topic-specific follow-up patterns
+            const topicFollowUps = {
+                'neural network': [
+                    'How does backpropagation work in neural networks?',
+                    'What are activation functions and why are they important?',
+                    'How to prevent overfitting in neural networks?',
+                    'What is the difference between CNN and RNN?'
+                ],
+                'gradient descent': [
+                    'What is the difference between batch and stochastic gradient descent?',
+                    'How to choose the right learning rate?',
+                    'What are Adam and RMSprop optimizers?',
+                    'How does momentum help gradient descent?'
+                ],
+                'decision tree': [
+                    'How does random forest improve upon decision trees?',
+                    'What is the difference between Gini impurity and entropy?',
+                    'How to prevent overfitting in decision trees?',
+                    'What is gradient boosting?'
+                ],
+                'overfitting': [
+                    'What is cross-validation and how does it help?',
+                    'How does regularization prevent overfitting?',
+                    'What is the bias-variance tradeoff?',
+                    'How to detect overfitting in practice?'
+                ],
+                'classification': [
+                    'What is the difference between precision and recall?',
+                    'How does logistic regression work?',
+                    'What is a confusion matrix?',
+                    'What is the ROC curve and AUC score?'
+                ],
+                'regression': [
+                    'What is the difference between linear and logistic regression?',
+                    'How to handle non-linear relationships?',
+                    'What is regularization (L1 vs L2)?',
+                    'How to evaluate regression models?'
+                ],
+                'clustering': [
+                    'How does k-means clustering work?',
+                    'What is hierarchical clustering?',
+                    'How to choose the number of clusters?',
+                    'What is DBSCAN?'
+                ],
+                'pca': [
+                    'How does PCA reduce dimensionality?',
+                    'What is the difference between PCA and LDA?',
+                    'When should you use PCA?',
+                    'How to interpret principal components?'
+                ]
+            };
+
+            // Check which topics are mentioned in the query
+            for (const [topic, questions] of Object.entries(topicFollowUps)) {
+                if (queryLower.includes(topic)) {
+                    followUps.push(...questions.slice(0, 3));
+                    break;
+                }
+            }
+
+            // If no specific topic matched, generate generic deep-dive questions
+            if (followUps.length === 0) {
+                const keywords = extractKeywords(originalQuery).slice(0, 2);
+                if (keywords.length > 0) {
+                    followUps.push(
+                        `How is ${keywords[0]} used in practice?`,
+                        `What are common mistakes with ${keywords[0]}?`,
+                        `What are advanced techniques for ${keywords[0]}?`
+                    );
+                }
+            }
+
+            return followUps.slice(0, 4); // Return max 4 follow-up questions
         }
 
         // Calculate similarity between two strings (simple approach)
@@ -1004,7 +1248,7 @@ Generate 5 questions now:`;
                 // Calculate relevance score for each result
                 const scoredResults = uniqueResults.map(item => ({
                     ...item,
-                    relevance: calculateRelevance(item.content, keywords)
+                    relevance: calculateRelevance(item.content, keywords, query)
                 }));
 
                 // Sort by relevance score (highest first)
@@ -1038,6 +1282,21 @@ Generate 5 questions now:`;
                         <div class="diagram-container">
                             <h3>📊 Visual Diagram</h3>
                             <div class="mermaid" id="mermaid-diagram">${answerData.diagram}</div>
+                        </div>
+                    `;
+                }
+
+                // Generate and add follow-up questions
+                const followUps = generateFollowUpQuestions(query);
+                if (followUps.length > 0) {
+                    resultsHTML += `
+                        <div class="follow-up-section">
+                            <h3>🔍 Explore Related Topics</h3>
+                            ${followUps.map(q => `
+                                <div class="follow-up-question" onclick="searchQuestion('${q.replace(/'/g, "\\'")}')">
+                                    ${q}
+                                </div>
+                            `).join('')}
                         </div>
                     `;
                 }
