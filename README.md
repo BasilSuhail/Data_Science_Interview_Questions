@@ -16,9 +16,10 @@ Search through data science books with natural language questions and get smart,
 ### Step 2: Add Your API Key
 
 1. Open `simple_search.html` in a text editor
-2. Find line 532 where it says `YOUR_GROQ_API_KEY_HERE`
-3. Replace it with your actual Groq API key
-4. Save the file
+2. Replace `YOUR_GROQ_API_KEY_HERE` with your actual Groq API key in these locations:
+   - **Line 510** - For AI-powered search answers
+   - **Line 763** - For interview question generator
+3. Save the file
 
 ### Step 3: Open the App
 

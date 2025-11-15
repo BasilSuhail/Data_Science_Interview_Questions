@@ -126,6 +126,55 @@
 
         .answer-content p {
             margin-bottom: 15px;
+            line-height: 1.8;
+        }
+
+        .answer-content strong {
+            color: #ffeb3b;
+            font-weight: 700;
+        }
+
+        .answer-content ul, .answer-content ol {
+            margin: 15px 0 15px 20px;
+            line-height: 1.8;
+        }
+
+        .answer-content li {
+            margin-bottom: 8px;
+        }
+
+        .answer-content code {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .key-takeaway {
+            background: rgba(255, 235, 59, 0.2);
+            border-left: 4px solid #ffeb3b;
+            padding: 15px;
+            margin-top: 15px;
+            border-radius: 5px;
+            font-style: italic;
+        }
+
+        .visual-suggestion {
+            background: rgba(103, 126, 234, 0.2);
+            border-left: 4px solid #667eea;
+            padding: 12px;
+            margin: 15px 0;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .insufficient-info {
+            background: rgba(255, 152, 0, 0.2);
+            border-left: 4px solid #ff9800;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+            font-style: italic;
         }
 
         .sources {
@@ -296,7 +345,15 @@
         </div>
 
         <div id="results">
-            <div class="loading">Enter keywords to search through the database</div>
+            <div class="loading">
+                <h3 style="margin-bottom: 15px;">💡 How to use AI-powered search:</h3>
+                <div style="text-align: left; max-width: 600px; margin: 0 auto;">
+                    <p style="margin-bottom: 10px;"><strong>Ask natural questions:</strong> "What is machine learning?", "Explain gradient descent"</p>
+                    <p style="margin-bottom: 10px;"><strong>Get structured answers:</strong> AI will organize information with key points, examples, and highlights</p>
+                    <p style="margin-bottom: 10px;"><strong>Smart filtering:</strong> Irrelevant or inappropriate questions will be politely declined</p>
+                    <p><strong>Visual suggestions:</strong> AI may suggest diagrams for complex topics</p>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -408,20 +465,17 @@
                 .map(s => s.sentence);
         }
 
-        // Compose a coherent answer from multiple chunks
-        function composeAnswer(results, keywords, query) {
-            // Collect sentences from top results
-            let allSentences = [];
+        // Compose a coherent answer from multiple chunks using AI
+        async function composeAnswer(results, keywords, query) {
+            // Collect relevant content from top results
             const sources = [];
+            let contextContent = '';
 
-            results.slice(0, 5).forEach(item => {
+            results.slice(0, 8).forEach(item => {
                 const sentences = extractMeaningfulSentences(item.content, keywords);
-                sentences.slice(0, 3).forEach(sentence => {
-                    allSentences.push(sentence);
-                });
-
-                // Keep track of sources
                 if (sentences.length > 0) {
+                    contextContent += `\n[From: ${item.book_name}]\n${sentences.slice(0, 5).join(' ')}\n`;
+
                     sources.push({
                         book: item.book_name,
                         chunk: item.page_number,
@@ -430,32 +484,209 @@
                 }
             });
 
-            // Remove duplicates and very similar sentences
-            const uniqueSentences = [];
-            allSentences.forEach(sentence => {
-                const isDuplicate = uniqueSentences.some(existing => {
-                    const similarity = calculateSimilarity(existing, sentence);
-                    return similarity > 0.8;
-                });
-                if (!isDuplicate && sentence.length > 30) {
-                    uniqueSentences.push(sentence);
-                }
-            });
+            console.log('Context content length:', contextContent.length); // Debug logging
+            console.log('Number of sources:', sources.length); // Debug logging
 
-            // Take top 5-8 most relevant sentences
-            const finalSentences = uniqueSentences.slice(0, 8);
-
-            // Format into paragraphs (group every 2-3 sentences)
-            const paragraphs = [];
-            for (let i = 0; i < finalSentences.length; i += 2) {
-                const paragraph = finalSentences.slice(i, i + 2).join('. ') + '.';
-                paragraphs.push(paragraph);
+            // Check if we have any context
+            if (contextContent.trim().length === 0) {
+                return {
+                    answer: '<p>No relevant information found in the books for this question. Try rephrasing or using different keywords.</p>',
+                    sources: []
+                };
             }
 
+            // Use AI to generate a comprehensive answer
+            const aiAnswer = await generateAIAnswer(query, contextContent);
+
             return {
-                answer: paragraphs.length > 0 ? paragraphs.join('\n\n') : 'No clear answer found. Try rephrasing your question.',
-                sources: sources.slice(0, 3)
+                answer: aiAnswer,
+                sources: sources.slice(0, 5)
             };
+        }
+
+        // Generate AI-powered answer using Groq
+        async function generateAIAnswer(question, bookContext) {
+            // ⚠️ REPLACE THIS WITH YOUR API KEY FROM: https://console.groq.com/keys
+            const GROQ_API_KEY = 'YOUR_GROQ_API_KEY_HERE';
+
+            if (GROQ_API_KEY === 'YOUR_GROQ_API_KEY_HERE') {
+                return `<p style="color: #ff9800;">⚠️ Please add your Groq API key to enable AI-powered answers.</p>
+                        <p>Steps:</p>
+                        <ol>
+                            <li>Get a free API key from: <a href="https://console.groq.com/keys" target="_blank" style="color: #667eea;">console.groq.com/keys</a></li>
+                            <li>Replace 'YOUR_GROQ_API_KEY_HERE' on line 453 with your actual key</li>
+                            <li>Save and refresh the page</li>
+                        </ol>`;
+            }
+
+            const prompt = `You are an expert Data Science instructor. A student has asked you a question, and you have access to relevant excerpts from Data Science textbooks.
+
+IMPORTANT INSTRUCTIONS:
+1. **Question Validation**: First, assess if the question is:
+   - Relevant to data science, machine learning, statistics, or programming
+   - Ethical and appropriate for educational purposes
+   - If the question is irrelevant, unethical, or inappropriate, respond with: "I cannot answer this question as it is not relevant to data science education or may be inappropriate. Please ask a data science related question."
+
+2. **Answer Structure** (if question is valid):
+   - Start with a clear, direct answer to the question
+   - Use **bold** for key terms and concepts
+   - Organize information with bullet points or numbered lists when helpful
+   - Provide practical examples where relevant
+   - Keep it concise but comprehensive (2-4 paragraphs)
+
+3. **Content Guidelines**:
+   - Base your answer primarily on the book excerpts provided
+   - If book content is insufficient or missing, you MAY supplement with well-known data science concepts, but add a note: "(Note: Supplemented with general data science knowledge)"
+   - Highlight the most important takeaways with bullet points
+   - For complex topics (algorithms, architectures, workflows), suggest: "📊 Visual aid: [brief description of what diagram would help]"
+   - Provide concrete examples when possible
+
+4. **Formatting**:
+   - Use markdown formatting (**, bullet points, etc.)
+   - Break complex concepts into digestible parts
+   - End with a key takeaway if appropriate
+
+STUDENT QUESTION: "${question}"
+
+BOOK EXCERPTS:
+${bookContext}
+
+Please provide a well-structured, educational answer:`;
+
+            try {
+                const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${GROQ_API_KEY}`
+                    },
+                    body: JSON.stringify({
+                        model: 'llama-3.3-70b-versatile',
+                        messages: [{
+                            role: 'system',
+                            content: 'You are an expert Data Science instructor who provides clear, structured, and educational answers. You validate questions for relevance and ethics before answering.'
+                        }, {
+                            role: 'user',
+                            content: prompt
+                        }],
+                        temperature: 0.7,
+                        max_tokens: 1000,
+                        top_p: 0.9
+                    })
+                });
+
+                const result = await response.json();
+
+                console.log('Groq API Response:', result); // Debug logging
+
+                if (!response.ok) {
+                    throw new Error(`API Error (${response.status}): ${result.error?.message || JSON.stringify(result)}`);
+                }
+
+                if (result.error) {
+                    throw new Error(result.error.message);
+                }
+
+                if (!result.choices || !result.choices[0] || !result.choices[0].message) {
+                    throw new Error('Invalid API response structure');
+                }
+
+                return formatAIAnswer(result.choices[0].message.content);
+
+            } catch (error) {
+                console.error('AI answer generation failed:', error);
+                // Fallback to basic extraction if AI fails
+                return `<p style="color: #ff6b6b;">⚠️ AI answer generation failed: ${error.message}</p>
+                        <p>This could be due to:</p>
+                        <ul>
+                            <li>API key issues</li>
+                            <li>Network connectivity</li>
+                            <li>Rate limiting</li>
+                        </ul>
+                        <p>Check the browser console (F12) for more details.</p>`;
+            }
+        }
+
+        // Format AI answer with proper HTML
+        function formatAIAnswer(text) {
+            // Convert markdown-style bold to HTML
+            let formatted = text.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+
+            // Convert inline code
+            formatted = formatted.replace(/`(.+?)`/g, '<code>$1</code>');
+
+            // Split into lines for processing
+            let lines = formatted.split('\n');
+            let html = [];
+            let inList = false;
+            let listType = null;
+
+            for (let i = 0; i < lines.length; i++) {
+                let line = lines[i].trim();
+
+                // Handle bullet points
+                if (line.match(/^[-•*]\s+(.+)/)) {
+                    if (!inList) {
+                        html.push('<ul>');
+                        inList = true;
+                        listType = 'ul';
+                    } else if (listType !== 'ul') {
+                        html.push(`</${listType}>`);
+                        html.push('<ul>');
+                        listType = 'ul';
+                    }
+                    html.push(`<li>${line.replace(/^[-•*]\s+/, '')}</li>`);
+                }
+                // Handle numbered lists
+                else if (line.match(/^\d+\.\s+(.+)/)) {
+                    if (!inList) {
+                        html.push('<ol>');
+                        inList = true;
+                        listType = 'ol';
+                    } else if (listType !== 'ol') {
+                        html.push(`</${listType}>`);
+                        html.push('<ol>');
+                        listType = 'ol';
+                    }
+                    html.push(`<li>${line.replace(/^\d+\.\s+/, '')}</li>`);
+                }
+                // Handle regular paragraphs
+                else if (line.length > 0) {
+                    if (inList) {
+                        html.push(`</${listType}>`);
+                        inList = false;
+                        listType = null;
+                    }
+
+                    // Check for special indicators
+                    if (line.toLowerCase().includes('key takeaway') ||
+                        line.toLowerCase().includes('important:')) {
+                        html.push(`<div class="key-takeaway">✨ ${line}</div>`);
+                    } else if (line.toLowerCase().includes('📊 visual aid') ||
+                               line.toLowerCase().includes('visual:') ||
+                               line.toLowerCase().includes('diagram:')) {
+                        html.push(`<div class="visual-suggestion">${line}</div>`);
+                    } else if (line.toLowerCase().includes('note:') ||
+                               line.toLowerCase().includes('supplemented with')) {
+                        html.push(`<div class="insufficient-info">ℹ️ ${line}</div>`);
+                    } else {
+                        html.push(`<p>${line}</p>`);
+                    }
+                }
+                // Empty line
+                else if (inList) {
+                    html.push(`</${listType}>`);
+                    inList = false;
+                    listType = null;
+                }
+            }
+
+            // Close any remaining list
+            if (inList) {
+                html.push(`</${listType}>`);
+            }
+
+            return html.join('');
         }
 
         // Calculate similarity between two strings (simple approach)
@@ -529,7 +760,7 @@
         // Generate questions using free Groq AI API
         async function generateQuestionsWithAI(topics, sampleContent) {
             // Get your free API key from: https://console.groq.com/keys
-            const GROQ_API_KEY = '  '; // Free Groq API key
+            const GROQ_API_KEY = 'YOUR_GROQ_API_KEY_HERE'; // Free Groq API key
 
             // Get selected difficulty
             const selectedDifficulty = document.getElementById('difficulty-select').value;
@@ -697,24 +928,27 @@ Generate 5 questions now:`;
                 // Take top 20 results
                 const topResults = scoredResults.slice(0, 20);
 
-                // Compose a coherent answer from top results
-                const { answer, sources } = composeAnswer(topResults, keywords, query);
+                // Show loading state while AI generates answer
+                results.innerHTML = '<div class="loading">🤖 AI is analyzing your question and generating a detailed answer...</div>';
 
-                // Display composed answer
+                // Compose a coherent answer from top results using AI
+                const { answer, sources } = await composeAnswer(topResults, keywords, query);
+
+                // Display AI-generated answer
                 results.innerHTML = `
                     <div class="answer-box">
-                        <h2>Answer to: "${query}"</h2>
+                        <h2>💡 Answer to: "${query}"</h2>
                         <div class="answer-content">
-                            ${answer.split('\n\n').map(p => `<p>${p}</p>`).join('')}
+                            ${answer}
                         </div>
                     </div>
 
                     <div class="sources">
-                        <h3>Sources (${sources.length} books referenced)</h3>
+                        <h3>📚 Sources (${sources.length} books referenced)</h3>
                         ${sources.map(source => `
                             <div class="source-item">
                                 <div class="source-book">
-                                    📚 ${source.book} - Chunk ${source.chunk}
+                                    📖 ${source.book} - Chunk ${source.chunk}
                                 </div>
                                 <div class="source-text">"${source.excerpt.substring(0, 200)}..."</div>
                             </div>
