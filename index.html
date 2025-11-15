@@ -891,16 +891,16 @@ Answer:`;
 
         window.searchQuestion = searchQuestion;
 
-        // Book cover image mapping
-        const bookCovers = {
-            'A Mathematical Introduction to Data Science': 'book-covers/mathematical-intro.jpg',
-            'Data Science': 'book-covers/data-science.jpg',
-            'Data Science in Practice': 'book-covers/data-science-practice.jpg',
-            'Data Science: Foundations and Hands-on Experience': 'book-covers/data-science-foundations.jpg',
-            'Introduction to Data Science': 'book-covers/intro-data-science.jpg',
-            'Materials Data Science': 'book-covers/materials-data-science.jpg',
-            'Python for Data Science': 'book-covers/python-data-science.jpg'
-        };
+        // Book cover image mapping - all available books
+        const allBooks = [
+            { name: 'A Mathematical Introduction to Data Science', cover: 'book-covers/mathematical-intro.jpg' },
+            { name: 'Data Science: An Introduction to Statistics and Machine Learning', cover: 'book-covers/data-science.jpg' },
+            { name: 'Data Science in Practice', cover: 'book-covers/data-science-practice.jpg' },
+            { name: 'Data Science: Foundations and Hands-on Experience', cover: 'book-covers/data-science-foundations.jpg' },
+            { name: 'Introduction to Data Science', cover: 'book-covers/intro-data-science.jpg' },
+            { name: 'Materials Data Science', cover: 'book-covers/materials-data-science.jpg' },
+            { name: 'Python for Data Science', cover: 'book-covers/python-data-science.jpg' }
+        ];
 
         // Search for book summary
         async function searchBookSummary(bookName) {
@@ -923,29 +923,13 @@ Answer:`;
         // Load Book Carousel
         async function loadBookCarousel() {
             try {
-                const { data, error } = await supabase
-                    .from('documents')
-                    .select('book_name')
-                    .limit(1000);
-
-                if (error) throw error;
-
-                // Get unique book names
-                const uniqueBooks = [...new Set(data.map(item => item.book_name))];
-
-                if (uniqueBooks.length === 0) {
-                    document.getElementById('book-carousel').style.display = 'none';
-                    return;
-                }
-
                 const track = document.getElementById('book-track');
 
-                // Create book cards
-                const bookCards = uniqueBooks.map(bookName => {
-                    const coverImage = bookCovers[bookName] || 'book-covers/default.jpg';
+                // Create book cards from all available books
+                const bookCards = allBooks.map(book => {
                     return `
-                        <div class="book" onclick="searchBookSummary('${bookName.replace(/'/g, "\\'")}')">
-                            <img src="${coverImage}" alt="${bookName}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22140%22 height=%22200%22%3E%3Crect fill=%22%236366f1%22 width=%22140%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 fill=%22white%22 text-anchor=%22middle%22 dy=%22.3em%22 font-family=%22sans-serif%22 font-size=%2214%22%3E${bookName.substring(0, 20)}...%3C/text%3E%3C/svg%3E'">
+                        <div class="book" onclick="searchBookSummary('${book.name.replace(/'/g, "\\'")}')">
+                            <img src="${book.cover}" alt="${book.name}">
                         </div>
                     `;
                 }).join('');
