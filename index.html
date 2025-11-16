@@ -681,20 +681,107 @@
 
         /* Question Card */
         .question-card {
-            padding: 1rem;
-            border: 1px solid var(--border);
+            border: 2px solid var(--border);
             border-radius: 0.5rem;
             margin-bottom: 0.75rem;
             cursor: pointer;
-            transition: all 0.2s;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+            background: var(--bg);
         }
 
         .question-card:hover {
             border-color: var(--accent);
             background: var(--bg-secondary);
+        }
+
+        .question-card.expanded {
+            border-color: var(--accent);
+        }
+
+        .question-header {
+            padding: 1.25rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .question-actions {
+            display: flex;
+            gap: 0.75rem;
+            align-items: center;
+        }
+
+        .expand-icon {
+            font-size: 1.25rem;
+            transition: transform 0.3s;
+            color: var(--text-light);
+        }
+
+        .question-card.expanded .expand-icon {
+            transform: rotate(180deg);
+        }
+
+        /* Answer accordion section */
+        .question-answer {
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                        opacity 0.3s ease,
+                        padding 0.3s ease;
+            padding: 0 1.25rem;
+        }
+
+        .question-card.expanded .question-answer {
+            max-height: 2000px;
+            opacity: 1;
+            padding: 0 1.25rem 1.25rem 1.25rem;
+        }
+
+        .answer-content {
+            background: var(--bg-secondary);
+            border-radius: 0.5rem;
+            padding: 1.25rem;
+            border: 1px solid var(--border);
+        }
+
+        .answer-content h4 {
+            margin-bottom: 0.75rem;
+            font-size: 1rem;
+            color: var(--accent);
+        }
+
+        .answer-content p {
+            margin-bottom: 0.75rem;
+            line-height: 1.6;
+        }
+
+        .answer-content ul, .answer-content ol {
+            margin-left: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .answer-content li {
+            margin-bottom: 0.5rem;
+        }
+
+        .answer-content strong {
+            color: var(--accent);
+        }
+
+        .answer-content code {
+            background: var(--bg);
+            padding: 0.2rem 0.4rem;
+            border-radius: 0.25rem;
+            font-size: 0.9em;
+            border: 1px solid var(--border);
+        }
+
+        .answer-loading {
+            text-align: center;
+            color: var(--text-light);
+            padding: 2rem;
         }
 
         .question-text {
@@ -1105,6 +1192,12 @@
                     <option value="medium">Medium</option>
                     <option value="hard">Hard</option>
                 </select>
+                <select id="question-count" class="select">
+                    <option value="5">5 Questions</option>
+                    <option value="10">10 Questions</option>
+                    <option value="15">15 Questions</option>
+                    <option value="20">20 Questions</option>
+                </select>
                 <button class="btn" onclick="generateQuestions()">Generate</button>
             </div>
             <div id="questions">
@@ -1149,8 +1242,22 @@
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
             document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
 
-            event.target.classList.add('active');
+            // Update active tab UI
+            if (event && event.target) {
+                event.target.classList.add('active');
+            } else {
+                // Called programmatically, update tab buttons manually
+                const tabButtons = document.querySelectorAll('.tab');
+                if (tab === 'search') tabButtons[0].classList.add('active');
+                if (tab === 'questions') tabButtons[1].classList.add('active');
+            }
+
             document.getElementById(`${tab}-tab`).classList.add('active');
+
+            // Update previousTab only when manually switching tabs
+            if (event && event.target) {
+                previousTab = tab;
+            }
         }
 
         window.switchTab = switchTab;
@@ -1170,7 +1277,10 @@
             }
         });
 
-        // Clear search function - HOME button
+        // Track which tab user came from (for better navigation)
+        let previousTab = 'search';
+
+        // Clear search function - HOME button (goes back to previous tab)
         function clearSearch() {
             const query = document.getElementById('query');
             const results = document.getElementById('results');
@@ -1191,6 +1301,11 @@
                 // Show everything back (HOME state)
                 tabs.classList.remove('hidden');
                 carousel.classList.remove('hidden');
+
+                // Switch back to previous tab if it was questions
+                if (previousTab === 'questions') {
+                    switchTab('questions');
+                }
             }, 300);
 
             // Smooth scroll to top
@@ -1529,31 +1644,64 @@ Answer:`;
 
         window.search = search;
 
-        // Generate Questions
+        // Company-specific question patterns
+        const COMPANY_PATTERNS = {
+            'Meta': 'Meta/Facebook focuses on: A/B testing, metrics design, product analytics, causal inference, and SQL optimization. Emphasize practical scenarios with real user data.',
+            'Google': 'Google emphasizes: scalability, distributed systems, algorithm optimization, statistics fundamentals, and system design. Questions should involve large-scale thinking.',
+            'Amazon': 'Amazon focuses on: customer obsession, leadership principles applied to data, SQL expertise, bias in ML models, and practical business impact. Include behavioral aspects.',
+            'Apple': 'Apple emphasizes: privacy-preserving ML, on-device analytics, production ML systems, and elegant solutions to complex problems.',
+            'Netflix': 'Netflix focuses on: experimentation at scale, recommendation systems, personalization, streaming data analytics, and causal inference.',
+            'Microsoft': 'Microsoft emphasizes: Azure ML, productionizing models, MLOps, statistics, and traditional CS fundamentals with data science.',
+            'Tesla': 'Tesla focuses on: computer vision, real-time ML, autonomous systems, time-series analysis, and sensor data processing.',
+            'Uber': 'Uber emphasizes: marketplace dynamics, geospatial analysis, surge pricing algorithms, experimentation, and real-time systems.',
+            'Airbnb': 'Airbnb focuses on: trust & safety ML, search ranking, pricing optimization, experimentation, and user behavior analytics.',
+            'LinkedIn': 'LinkedIn emphasizes: recommendation systems, network effects, feed ranking, NLP, and professional network analytics.',
+            'Spotify': 'Spotify focuses on: recommendation systems, audio processing, personalization at scale, and user engagement metrics.',
+            'McKinsey': 'McKinsey emphasizes: business case analysis, hypothesis-driven problem solving, client communication, and ROI-focused analytics.',
+            'BCG': 'BCG focuses on: strategic analytics, market sizing, competitive analysis, and translating data insights to C-suite recommendations.',
+            'Goldman Sachs': 'Goldman Sachs emphasizes: quantitative finance, risk modeling, time-series forecasting, algorithmic trading, and regulatory compliance.',
+            'JP Morgan': 'JP Morgan focuses on: credit risk modeling, fraud detection, financial forecasting, and large-scale data infrastructure.'
+        };
+
+        // Experience-level adjustments
+        const EXPERIENCE_CONTEXT = {
+            'junior': {
+                prefix: 'for a JUNIOR data scientist (0-2 years experience)',
+                focus: 'Focus on foundational concepts, definitions, when to use different techniques, and basic implementation questions. Keep scenarios straightforward.',
+                complexity: 'Questions should test understanding of core concepts without requiring deep experience.'
+            },
+            'mid': {
+                prefix: 'for a MID-LEVEL data scientist (3-5 years experience)',
+                focus: 'Focus on practical tradeoffs, debugging production issues, choosing between approaches, and cross-functional collaboration.',
+                complexity: 'Questions should involve real-world complexity, multiple valid approaches, and business context.'
+            },
+            'senior': {
+                prefix: 'for a SENIOR data scientist (6+ years experience)',
+                focus: 'Focus on architecture decisions, team leadership, strategic impact, scaling systems, and mentoring scenarios.',
+                complexity: 'Questions should involve ambiguity, stakeholder management, long-term technical decisions, and org-level impact.'
+            }
+        };
+
+        // Topic-specific instructions
+        const TOPIC_INSTRUCTIONS = {
+            'coding': 'Include Python/SQL coding problems, data manipulation challenges, algorithm implementation.',
+            'stats': 'Include statistics and probability questions. For mathematical questions, provide ONLY the formula/theorem needed - DO NOT solve the problem. Format: "Question? [Formula: formula here]"',
+            'ml': 'Include machine learning algorithms, model selection, hyperparameter tuning, evaluation metrics.',
+            'case': 'Include business case studies, metric design, A/B test interpretation, stakeholder scenarios.',
+            'communication': 'Include explaining technical concepts to non-technical stakeholders, presenting findings, handling objections.'
+        };
+
+        // Generate Questions with Profile Intelligence
         async function generateQuestions() {
             const questionsDiv = document.getElementById('questions');
-            questionsDiv.innerHTML = '<div class="loading">Generating...</div>';
+            questionsDiv.innerHTML = '<div class="loading">Generating personalized questions...</div>';
 
             try {
-                const { count } = await supabase
-                    .from('documents')
-                    .select('*', { count: 'exact', head: true });
-
-                const offset = Math.floor(Math.random() * (count - 20));
-                const { data, error } = await supabase
-                    .from('documents')
-                    .select('*')
-                    .range(offset, offset + 19);
-
-                if (error) throw error;
-
-                const content = data.map(d => d.content).join(' ');
                 const difficulty = document.getElementById('difficulty').value;
+                const questionCount = parseInt(document.getElementById('question-count').value);
 
-                let instruction = 'Generate 5 data science interview questions. Each question must be a complete question ending with a question mark. Format as numbered list: 1. Question? 2. Question? etc.';
-                if (difficulty === 'easy') instruction = 'Generate 5 EASY data science interview questions for beginners. Each must be a complete question ending with a question mark. Focus on basic concepts like mean, median, supervised learning, overfitting. Format: 1. Question? 2. Question?';
-                if (difficulty === 'medium') instruction = 'Generate 5 MEDIUM data science interview questions. Each must be a complete question ending with a question mark. Focus on practical applications like model evaluation, feature engineering, cross-validation. Format: 1. Question? 2. Question?';
-                if (difficulty === 'hard') instruction = 'Generate 5 HARD data science interview questions. Each must be a complete question ending with a question mark. Focus on advanced topics like gradient descent optimization, ensemble methods, bias-variance tradeoff. Format: 1. Question? 2. Question?';
+                // Build personalized instruction based on profile
+                let instruction = buildPersonalizedInstruction(difficulty, questionCount);
 
                 const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
                     method: 'POST',
@@ -1564,8 +1712,8 @@ Answer:`;
                     body: JSON.stringify({
                         model: 'llama-3.3-70b-versatile',
                         messages: [{ role: 'user', content: instruction }],
-                        temperature: 1.0,
-                        max_tokens: 400
+                        temperature: 0.9,
+                        max_tokens: questionCount * 60 // Scale tokens with question count
                     })
                 });
 
@@ -1579,9 +1727,89 @@ Answer:`;
             }
         }
 
+        // Build personalized instruction based on user profile
+        function buildPersonalizedInstruction(difficulty, questionCount = 5) {
+            const exp = userProfile.experience || 'junior';
+            const companies = userProfile.companies || [];
+            const weakAreas = userProfile.weakAreas || [];
+            const interviewDate = userProfile.interviewDate;
+            const mode = userProfile.interviewMode;
+
+            // Start with base instruction
+            let instruction = `Generate ${questionCount} data science interview questions ${EXPERIENCE_CONTEXT[exp].prefix}. Each question must be a complete question ending with a question mark.\n\n`;
+
+            // Add difficulty context
+            const difficultyMap = {
+                'easy': 'EASY/FOUNDATIONAL level',
+                'medium': 'MEDIUM/INTERMEDIATE level',
+                'hard': 'HARD/ADVANCED level',
+                'random': 'MIXED difficulty levels (easy, medium, hard)'
+            };
+            instruction += `Difficulty: ${difficultyMap[difficulty] || 'MEDIUM'}.\n\n`;
+
+            // Add experience-level context
+            instruction += `${EXPERIENCE_CONTEXT[exp].focus}\n${EXPERIENCE_CONTEXT[exp].complexity}\n\n`;
+
+            // Add company-specific context if set
+            if (companies.length > 0) {
+                const primaryCompany = companies[0];
+                const companyContext = COMPANY_PATTERNS[primaryCompany];
+
+                if (companyContext) {
+                    instruction += `Target Company: ${primaryCompany}\n${companyContext}\n\n`;
+                } else {
+                    instruction += `Target Company: ${primaryCompany}\nTailor questions to this company's known interview style and domain.\n\n`;
+                }
+
+                if (companies.length > 1) {
+                    instruction += `Also preparing for: ${companies.slice(1, 3).join(', ')}\n\n`;
+                }
+            }
+
+            // Add focus area weighting (CRITICAL for personalization)
+            if (weakAreas.length > 0) {
+                instruction += `FOCUS AREAS (user needs practice in these): ${weakAreas.map(a => a.toUpperCase()).join(', ')}\n`;
+                instruction += `Generate MORE questions from these weak areas. `;
+
+                // Add topic-specific instructions
+                weakAreas.forEach(area => {
+                    if (TOPIC_INSTRUCTIONS[area]) {
+                        instruction += `${TOPIC_INSTRUCTIONS[area]} `;
+                    }
+                });
+                instruction += '\n\n';
+
+                // Special handling for stats/math questions
+                if (weakAreas.includes('stats')) {
+                    instruction += `IMPORTANT: For statistics/probability/math questions, provide the relevant formula or theorem but DO NOT calculate the answer. Format as: "Question? [Formula: relevant formula]"\n\n`;
+                }
+            } else {
+                instruction += `Cover a balanced mix of: coding, statistics, ML algorithms, case studies, and communication.\n\n`;
+            }
+
+            // Add urgency context if interview is scheduled
+            if (mode === 'scheduled' && interviewDate) {
+                const today = new Date();
+                const interview = new Date(interviewDate);
+                const daysLeft = Math.ceil((interview - today) / (1000 * 60 * 60 * 24));
+
+                if (daysLeft <= 7) {
+                    instruction += `⚠️ URGENT: Interview is in ${daysLeft} days! Focus on high-impact, commonly asked questions.\n\n`;
+                } else if (daysLeft <= 30) {
+                    instruction += `Interview is in ${daysLeft} days. Prioritize practical, scenario-based questions.\n\n`;
+                }
+            }
+
+            // Final formatting instruction
+            instruction += `Format your response as a numbered list (1. Question? 2. Question? etc.) with ${questionCount} total questions. Each question must end with a question mark.`;
+
+            console.log('Generated instruction:', instruction); // Debug
+            return instruction;
+        }
+
         window.generateQuestions = generateQuestions;
 
-        // Display Questions
+        // Display Questions with Accordion
         function displayQuestions(questions, difficulty) {
             const questionsDiv = document.getElementById('questions');
             const difficulties = difficulty === 'random'
@@ -1596,19 +1824,95 @@ Answer:`;
                 text = text.replace(/`/g, ''); // Remove ` code formatting
                 text = text.trim();
 
-                return `<div class="question-card" onclick="searchQuestion('${text.replace(/'/g, "\\'")}')">
-                    <div class="question-text">${text}</div>
-                    <span class="badge badge-${difficulties[i]}">${difficulties[i]}</span>
+                return `<div class="question-card" id="question-${i}">
+                    <div class="question-header" onclick="toggleQuestionAnswer(${i}, '${text.replace(/'/g, "\\'")}')">
+                        <div class="question-text">${text}</div>
+                        <div class="question-actions">
+                            <span class="badge badge-${difficulties[i]}">${difficulties[i]}</span>
+                            <span class="expand-icon">▼</span>
+                        </div>
+                    </div>
+                    <div class="question-answer" id="answer-${i}">
+                        <!-- Answer will be loaded here -->
+                    </div>
                 </div>`;
             }).join('');
         }
 
-        // Search Question
+        // Toggle Question Answer (Accordion)
+        async function toggleQuestionAnswer(index, questionText) {
+            const card = document.getElementById(`question-${index}`);
+            const answerDiv = document.getElementById(`answer-${index}`);
+
+            // If already expanded, collapse it
+            if (card.classList.contains('expanded')) {
+                card.classList.remove('expanded');
+                return;
+            }
+
+            // Collapse all other questions first
+            document.querySelectorAll('.question-card').forEach(c => c.classList.remove('expanded'));
+
+            // Expand this question
+            card.classList.add('expanded');
+
+            // If answer already fetched, don't fetch again
+            if (answerDiv.dataset.loaded === 'true') {
+                return;
+            }
+
+            // Show loading state
+            answerDiv.innerHTML = '<div class="answer-loading">Loading answer...</div>';
+
+            try {
+                // Fetch answer using existing search logic
+                const keywords = extractKeywords(questionText);
+
+                const { data, error } = await supabase
+                    .from('documents')
+                    .select('*');
+
+                if (error) throw error;
+
+                // Score and rank results
+                const scored = data
+                    .map(doc => ({
+                        ...doc,
+                        score: calculateRelevance(doc.content, keywords, questionText)
+                    }))
+                    .filter(doc => doc.score > 0)
+                    .sort((a, b) => b.score - a.score)
+                    .slice(0, 5);
+
+                // Generate answer
+                const { answer } = await composeAnswer(scored, keywords, questionText);
+
+                // Display answer
+                answerDiv.innerHTML = `<div class="answer-content">${answer.html}</div>`;
+                answerDiv.dataset.loaded = 'true';
+
+            } catch (error) {
+                answerDiv.innerHTML = `<div class="answer-content"><p style="color: #ef4444;">Error loading answer: ${error.message}</p></div>`;
+            }
+        }
+
+        window.toggleQuestionAnswer = toggleQuestionAnswer;
+
+        // Search Question (kept for backwards compatibility, but not used in new accordion UI)
         function searchQuestion(question) {
+            // Remember we came from questions tab
+            previousTab = 'questions';
+
             switchTab('search');
             document.querySelectorAll('.tab')[0].classList.add('active');
             document.querySelectorAll('.tab')[1].classList.remove('active');
-            document.getElementById('query').value = question;
+
+            // Set query and show clear button
+            const queryInput = document.getElementById('query');
+            const clearBtn = document.getElementById('clear-btn');
+            queryInput.value = question;
+            clearBtn.classList.add('visible'); // Show the clear button
+
             search();
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
