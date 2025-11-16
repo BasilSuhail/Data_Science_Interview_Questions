@@ -913,69 +913,6 @@
             color: var(--text-light);
         }
 
-        /* Book Carousel */
-        .book-carousel {
-            position: relative;
-            overflow: hidden;
-            padding: 2rem 0;
-            margin-bottom: 2rem;
-            mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
-            max-height: 300px;
-            opacity: 1;
-            transition: max-height 0.8s cubic-bezier(0.4, 0, 0.2, 1),
-                        opacity 0.6s ease,
-                        margin-bottom 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .book-carousel.hidden {
-            max-height: 0;
-            opacity: 0;
-            margin-bottom: 0;
-            overflow: hidden;
-        }
-
-        .book-track {
-            display: flex;
-            gap: 1.5rem;
-            animation: scroll 30s linear infinite;
-        }
-
-        .book-track:hover {
-            animation-play-state: paused;
-        }
-
-        @keyframes scroll {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
-        }
-
-        .book {
-            flex-shrink: 0;
-            width: 140px;
-            height: 200px;
-            border-radius: 0.5rem;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            cursor: pointer;
-            transition: transform 0.3s, box-shadow 0.3s;
-            overflow: hidden;
-            background: var(--bg-secondary);
-        }
-
-        .book:hover {
-            transform: translateY(-8px) scale(1.05);
-            box-shadow: 0 8px 24px rgba(0,0,0,0.25);
-        }
-
-        .book img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .carousel-hidden {
-            display: none;
-        }
-
         /* Responsive */
         @media (max-width: 640px) {
             .title {
@@ -995,15 +932,6 @@
                 align-items: flex-start;
                 gap: 0.5rem;
             }
-
-            .book {
-                width: 120px;
-                height: 170px;
-            }
-
-            .book-title {
-                font-size: 0.75rem;
-            }
         }
     </style>
 </head>
@@ -1016,6 +944,52 @@
             <button class="theme-toggle" onclick="toggleTheme()" id="theme-btn">🌙</button>
         </div>
     </nav>
+
+    <!-- Onboarding Modal -->
+    <div class="modal-overlay" id="onboarding-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="modal-title">Welcome to Data Science Interview Coach!</h2>
+            </div>
+            <div class="modal-body">
+                <p style="margin-bottom: 1.5rem; line-height: 1.8;">
+                    Get personalized interview practice tailored to your experience level and target companies.
+                </p>
+                <div style="background: var(--bg-secondary); padding: 1.5rem; border-radius: 0.5rem; margin-bottom: 1.5rem;">
+                    <h3 style="margin-bottom: 1rem; font-size: 1.125rem;">What you'll get:</h3>
+                    <ul style="list-style: none; padding: 0;">
+                        <li style="margin-bottom: 0.75rem; padding-left: 1.5rem; position: relative;">
+                            <span style="position: absolute; left: 0;">✓</span>
+                            Company-specific questions (Meta, Google, Amazon, etc.)
+                        </li>
+                        <li style="margin-bottom: 0.75rem; padding-left: 1.5rem; position: relative;">
+                            <span style="position: absolute; left: 0;">✓</span>
+                            Experience-level targeting (Junior, Mid, Senior)
+                        </li>
+                        <li style="margin-bottom: 0.75rem; padding-left: 1.5rem; position: relative;">
+                            <span style="position: absolute; left: 0;">✓</span>
+                            Focus on your weak areas
+                        </li>
+                        <li style="margin-bottom: 0.75rem; padding-left: 1.5rem; position: relative;">
+                            <span style="position: absolute; left: 0;">✓</span>
+                            Interview countdown and urgency-based prep
+                        </li>
+                        <li style="padding-left: 1.5rem; position: relative;">
+                            <span style="position: absolute; left: 0;">✓</span>
+                            Instant AI-powered answers from textbooks
+                        </li>
+                    </ul>
+                </div>
+                <p style="color: var(--text-light); font-size: 0.9rem;">
+                    Set up your profile now to get started, or skip to practice with default settings.
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeOnboarding()">Skip for now</button>
+                <button class="btn btn-primary" onclick="startOnboarding()">Setup Profile</button>
+            </div>
+        </div>
+    </div>
 
     <!-- Profile Modal -->
     <div class="modal-overlay" id="profile-modal">
@@ -1150,21 +1124,8 @@
             </div>
         </div>
 
-        <!-- Book Carousel -->
-        <div class="book-carousel" id="book-carousel">
-            <div class="book-track" id="book-track">
-                <!-- Books will be loaded here -->
-            </div>
-        </div>
-
-        <!-- Tabs -->
-        <div class="tabs">
-            <button class="tab active" onclick="switchTab('search')">Search</button>
-            <button class="tab" onclick="switchTab('questions')">Study Questions</button>
-        </div>
-
-        <!-- Search Tab -->
-        <div id="search-tab" class="tab-content active">
+        <!-- Search Tab (hidden, used internally by accordion answers) -->
+        <div id="search-tab" class="tab-content" style="display: none;">
             <div class="search-wrapper" id="search-wrapper">
                 <div class="search-container">
                     <div class="search-icon" onclick="search()">🔍</div>
@@ -1184,8 +1145,16 @@
         </div>
 
         <!-- Questions Tab -->
-        <div id="questions-tab" class="tab-content">
+        <div id="questions-tab" class="tab-content active">
             <div class="controls">
+                <select id="interview-type" class="select">
+                    <option value="mixed">Mixed Practice</option>
+                    <option value="coding">Coding Interview</option>
+                    <option value="stats">Statistics & Probability</option>
+                    <option value="ml">Machine Learning</option>
+                    <option value="case">Case Study</option>
+                    <option value="behavioral">Behavioral</option>
+                </select>
                 <select id="difficulty" class="select">
                     <option value="random">Random Mix</option>
                     <option value="easy">Easy</option>
@@ -1285,7 +1254,6 @@
             const query = document.getElementById('query');
             const results = document.getElementById('results');
             const clearBtn = document.getElementById('clear-btn');
-            const carousel = document.getElementById('book-carousel');
             const tabs = document.querySelector('.tabs');
 
             // Clear input and hide clear button
@@ -1298,9 +1266,8 @@
             setTimeout(() => {
                 results.innerHTML = '';
 
-                // Show everything back (HOME state)
+                // Show tabs back (HOME state)
                 tabs.classList.remove('hidden');
-                carousel.classList.remove('hidden');
 
                 // Switch back to previous tab if it was questions
                 if (previousTab === 'questions') {
@@ -1540,12 +1507,10 @@ Answer:`;
             if (!query) return;
 
             const results = document.getElementById('results');
-            const carousel = document.getElementById('book-carousel');
             const tabs = document.querySelector('.tabs');
 
-            // Hide everything - tabs and carousel smoothly
+            // Hide tabs smoothly
             tabs.classList.add('hidden');
-            carousel.classList.add('hidden');
 
             // Fade out old results
             results.classList.remove('visible');
@@ -1697,11 +1662,12 @@ Answer:`;
             questionsDiv.innerHTML = '<div class="loading">Generating personalized questions...</div>';
 
             try {
+                const interviewType = document.getElementById('interview-type').value;
                 const difficulty = document.getElementById('difficulty').value;
                 const questionCount = parseInt(document.getElementById('question-count').value);
 
                 // Build personalized instruction based on profile
-                let instruction = buildPersonalizedInstruction(difficulty, questionCount);
+                let instruction = buildPersonalizedInstruction(difficulty, questionCount, interviewType);
 
                 const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
                     method: 'POST',
@@ -1713,13 +1679,21 @@ Answer:`;
                         model: 'llama-3.3-70b-versatile',
                         messages: [{ role: 'user', content: instruction }],
                         temperature: 0.9,
-                        max_tokens: questionCount * 60 // Scale tokens with question count
+                        max_tokens: Math.max(questionCount * 150, 1000) // Increased token limit to prevent cutoff
                     })
                 });
 
                 const result = await response.json();
                 const text = result.choices[0].message.content;
-                const questions = text.split('\n').filter(line => line.match(/^\d+\./));
+
+                // Filter out incomplete questions (must end with ? or .)
+                const questions = text.split('\n')
+                    .filter(line => line.match(/^\d+\./))
+                    .filter(q => {
+                        const trimmed = q.trim();
+                        // Question should end with ? or have complete sentence structure
+                        return trimmed.endsWith('?') || trimmed.endsWith('.') || trimmed.match(/[.?!]$/);
+                    });
 
                 displayQuestions(questions, difficulty);
             } catch (error) {
@@ -1728,7 +1702,7 @@ Answer:`;
         }
 
         // Build personalized instruction based on user profile
-        function buildPersonalizedInstruction(difficulty, questionCount = 5) {
+        function buildPersonalizedInstruction(difficulty, questionCount = 5, interviewType = 'mixed') {
             const exp = userProfile.experience || 'junior';
             const companies = userProfile.companies || [];
             const weakAreas = userProfile.weakAreas || [];
@@ -1737,6 +1711,19 @@ Answer:`;
 
             // Start with base instruction
             let instruction = `Generate ${questionCount} data science interview questions ${EXPERIENCE_CONTEXT[exp].prefix}. Each question must be a complete question ending with a question mark.\n\n`;
+
+            // Add interview type focus
+            const interviewTypeFocus = {
+                'mixed': 'Mix of all interview types: coding, statistics, ML algorithms, case studies, and behavioral.',
+                'coding': 'Focus ONLY on coding/programming questions: Python, SQL, data manipulation, algorithms, LeetCode-style problems.',
+                'stats': 'Focus ONLY on statistics and probability questions. For math questions, provide ONLY the formula - DO NOT solve.',
+                'ml': 'Focus ONLY on machine learning: algorithms, model selection, evaluation metrics, hyperparameter tuning, ML theory.',
+                'case': 'Focus ONLY on business case studies: product metrics, A/B testing, stakeholder scenarios, business impact.',
+                'behavioral': 'Focus ONLY on behavioral questions: past experiences, team conflicts, project challenges, leadership scenarios.'
+            };
+            if (interviewType && interviewTypeFocus[interviewType]) {
+                instruction += `Interview Type: ${interviewTypeFocus[interviewType]}\n\n`;
+            }
 
             // Add difficulty context
             const difficultyMap = {
@@ -1801,13 +1788,23 @@ Answer:`;
             }
 
             // Final formatting instruction
-            instruction += `Format your response as a numbered list (1. Question? 2. Question? etc.) with ${questionCount} total questions. Each question must end with a question mark.`;
+            instruction += `\n\nCRITICAL FORMATTING RULES:
+1. Format as a numbered list (1. Question? 2. Question? etc.)
+2. Generate EXACTLY ${questionCount} complete questions
+3. Each question MUST end with a question mark (?)
+4. Each question MUST be a complete sentence - do not truncate or cut off mid-sentence
+5. If a question is complex, keep it complete even if long
+
+Double-check that all ${questionCount} questions are complete before finishing your response.`;
 
             console.log('Generated instruction:', instruction); // Debug
             return instruction;
         }
 
         window.generateQuestions = generateQuestions;
+
+        // Store questions globally to avoid onclick parameter issues
+        let currentQuestions = [];
 
         // Display Questions with Accordion
         function displayQuestions(questions, difficulty) {
@@ -1816,16 +1813,18 @@ Answer:`;
                 ? questions.map(() => ['easy', 'medium', 'hard'][Math.floor(Math.random() * 3)])
                 : questions.map(() => difficulty);
 
-            questionsDiv.innerHTML = questions.map((q, i) => {
-                // Clean up the question text - remove numbering and markdown formatting
+            // Store questions globally
+            currentQuestions = questions.map(q => {
                 let text = q.replace(/^\d+\.\s*/, ''); // Remove numbering
                 text = text.replace(/\*\*/g, ''); // Remove ** markdown bold
                 text = text.replace(/\*/g, ''); // Remove * markdown italic
                 text = text.replace(/`/g, ''); // Remove ` code formatting
-                text = text.trim();
+                return text.trim();
+            });
 
+            questionsDiv.innerHTML = currentQuestions.map((text, i) => {
                 return `<div class="question-card" id="question-${i}">
-                    <div class="question-header" onclick="toggleQuestionAnswer(${i}, '${text.replace(/'/g, "\\'")}')">
+                    <div class="question-header" onclick="toggleQuestionAnswer(${i})">
                         <div class="question-text">${text}</div>
                         <div class="question-actions">
                             <span class="badge badge-${difficulties[i]}">${difficulties[i]}</span>
@@ -1840,7 +1839,7 @@ Answer:`;
         }
 
         // Toggle Question Answer (Accordion)
-        async function toggleQuestionAnswer(index, questionText) {
+        async function toggleQuestionAnswer(index) {
             const card = document.getElementById(`question-${index}`);
             const answerDiv = document.getElementById(`answer-${index}`);
 
@@ -1861,6 +1860,13 @@ Answer:`;
                 return;
             }
 
+            // Get question text from global array
+            const questionText = currentQuestions[index];
+            if (!questionText) {
+                answerDiv.innerHTML = '<div class="answer-content"><p style="color: #ef4444;">Error: Question not found</p></div>';
+                return;
+            }
+
             // Show loading state
             answerDiv.innerHTML = '<div class="answer-loading">Loading answer...</div>';
 
@@ -1868,11 +1874,22 @@ Answer:`;
                 // Fetch answer using existing search logic
                 const keywords = extractKeywords(questionText);
 
+                if (!keywords || keywords.length === 0) {
+                    throw new Error('Could not extract keywords from question');
+                }
+
                 const { data, error } = await supabase
                     .from('documents')
                     .select('*');
 
-                if (error) throw error;
+                if (error) {
+                    console.error('Supabase error:', error);
+                    throw new Error(`Database error: ${error.message}`);
+                }
+
+                if (!data || data.length === 0) {
+                    throw new Error('No documents found in database');
+                }
 
                 // Score and rank results
                 const scored = data
@@ -1884,6 +1901,12 @@ Answer:`;
                     .sort((a, b) => b.score - a.score)
                     .slice(0, 5);
 
+                if (scored.length === 0) {
+                    answerDiv.innerHTML = '<div class="answer-content"><p>No relevant information found in textbooks. Try rephrasing the question or generating different questions.</p></div>';
+                    answerDiv.dataset.loaded = 'true';
+                    return;
+                }
+
                 // Generate answer
                 const { answer } = await composeAnswer(scored, keywords, questionText);
 
@@ -1892,7 +1915,12 @@ Answer:`;
                 answerDiv.dataset.loaded = 'true';
 
             } catch (error) {
-                answerDiv.innerHTML = `<div class="answer-content"><p style="color: #ef4444;">Error loading answer: ${error.message}</p></div>`;
+                console.error('Answer loading error:', error);
+                answerDiv.innerHTML = `<div class="answer-content">
+                    <p style="color: #ef4444; margin-bottom: 0.5rem;"><strong>Error loading answer:</strong></p>
+                    <p style="font-size: 0.9rem;">${error.message}</p>
+                    <p style="font-size: 0.85rem; color: var(--text-light); margin-top: 0.5rem;">This may be a network issue or the question is too specific for the available textbooks.</p>
+                </div>`;
             }
         }
 
@@ -1918,163 +1946,6 @@ Answer:`;
         }
 
         window.searchQuestion = searchQuestion;
-
-        // Book cover image mapping - all available books
-        const allBooks = [
-            { name: 'A Mathematical Introduction to Data Science', cover: 'book-covers/mathematical-intro.jpg' },
-            { name: 'Data Science: An Introduction to Statistics and Machine Learning', cover: 'book-covers/data-science.jpg' },
-            { name: 'Data Science in Practice', cover: 'book-covers/data-science-practice.jpg' },
-            { name: 'Data Science: Foundations and Hands-on Experience', cover: 'book-covers/data-science-foundations.jpg' },
-            { name: 'Introduction to Data Science', cover: 'book-covers/intro-data-science.jpg' },
-            { name: 'Materials Data Science', cover: 'book-covers/materials-data-science.jpg' },
-            { name: 'Python for Data Science', cover: 'book-covers/python-data-science.jpg' }
-        ];
-
-        // Search for book summary
-        async function searchBookSummary(bookName) {
-            // Switch to search tab
-            switchTab('search');
-            document.querySelectorAll('.tab')[0].classList.add('active');
-            document.querySelectorAll('.tab')[1].classList.remove('active');
-
-            // Set query - just the book name (short and clean)
-            document.getElementById('query').value = bookName;
-
-            // Trigger clear button visibility
-            document.getElementById('clear-btn').classList.add('visible');
-
-            // Perform search with full query but display short name
-            const results = document.getElementById('results');
-            const carousel = document.getElementById('book-carousel');
-            const tabs = document.querySelector('.tabs');
-
-            // Hide everything - tabs and carousel smoothly
-            tabs.classList.add('hidden');
-            carousel.classList.add('hidden');
-
-            // Fade out old results
-            results.classList.remove('visible');
-
-            setTimeout(() => {
-                results.innerHTML = '<div class="loading">Searching...</div>';
-                results.classList.add('visible');
-            }, 300);
-
-            try {
-                // Use full query for actual search
-                const fullQuery = `Give me a summary of the book "${bookName}" including author, key topics, and what it covers`;
-                const keywords = extractKeywords(fullQuery);
-
-                let allResults = [];
-                for (const keyword of keywords) {
-                    const { data, error } = await supabase
-                        .from('documents')
-                        .select('*')
-                        .ilike('content', `%${keyword}%`)
-                        .limit(50);
-
-                    if (error) throw error;
-                    if (data) allResults = allResults.concat(data);
-                }
-
-                const unique = Array.from(
-                    new Map(allResults.map(item => [`${item.book_name}-${item.page_number}`, item])).values()
-                );
-
-                if (unique.length === 0) {
-                    results.innerHTML = '<div class="empty">No results found</div>';
-                    return;
-                }
-
-                const scored = unique
-                    .map(item => ({ ...item, relevance: calculateRelevance(item.content, keywords, fullQuery) }))
-                    .sort((a, b) => b.relevance - a.relevance)
-                    .slice(0, 20);
-
-                results.classList.remove('visible');
-
-                setTimeout(() => {
-                    results.innerHTML = '<div class="loading">Generating answer...</div>';
-                    results.classList.add('visible');
-                }, 300);
-
-                const { answer, sources } = await composeAnswer(scored, keywords, fullQuery);
-
-                results.classList.remove('visible');
-
-                setTimeout(async () => {
-                    let html = `<div class="answer">
-                        <h3>Answer</h3>
-                        ${answer.html}
-                    </div>`;
-
-                    if (answer.diagram) {
-                        html += `<div class="diagram">
-                            <h3>Diagram</h3>
-                            <div class="mermaid" id="diagram">${answer.diagram}</div>
-                        </div>`;
-                    }
-
-                    if (sources.length > 0) {
-                        html += '<div class="sources"><h3>Sources</h3>';
-                        sources.forEach(source => {
-                            html += `<div class="source">
-                                <div class="source-title">${source.book} - Chunk ${source.chunk}</div>
-                                <div class="source-text">${source.excerpt.substring(0, 200)}...</div>
-                            </div>`;
-                        });
-                        html += '</div>';
-                    }
-
-                    results.innerHTML = html;
-                    results.classList.add('visible');
-
-                    if (answer.diagram && window.mermaid) {
-                        await window.mermaid.run({ querySelector: '#diagram' });
-                    }
-
-                    // Smooth scroll to results
-                    setTimeout(() => {
-                        window.scrollTo({ top: 0, behavior: 'smooth' });
-                    }, 100);
-                }, 300);
-
-            } catch (error) {
-                results.innerHTML = `<div class="empty">Error: ${error.message}</div>`;
-                results.classList.add('visible');
-            }
-
-            // Scroll to top
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        // Load Book Carousel
-        async function loadBookCarousel() {
-            try {
-                const track = document.getElementById('book-track');
-
-                // Create book cards from all available books
-                const bookCards = allBooks.map(book => {
-                    return `
-                        <div class="book" onclick="searchBookSummary('${book.name.replace(/'/g, "\\'")}')">
-                            <img src="${book.cover}" alt="${book.name}">
-                        </div>
-                    `;
-                }).join('');
-
-                // Duplicate the books to create seamless loop
-                track.innerHTML = bookCards + bookCards;
-
-            } catch (error) {
-                console.error('Error loading books:', error);
-                document.getElementById('book-carousel').style.display = 'none';
-            }
-        }
-
-        window.searchBookSummary = searchBookSummary;
-
-        // Load carousel on page load
-        loadBookCarousel();
 
         // ========================================
         // PROFILE MANAGEMENT
@@ -2378,6 +2249,40 @@ Answer:`;
 
         // Load profile on page load
         loadProfile();
+
+        // ========================================
+        // ONBOARDING
+        // ========================================
+
+        // Check if first visit and show onboarding
+        function checkOnboarding() {
+            const hasSeenOnboarding = localStorage.getItem('hasSeenOnboarding');
+            const hasProfile = localStorage.getItem('userProfile');
+
+            // Show onboarding if it's first visit (no onboarding flag and no profile)
+            if (!hasSeenOnboarding && !hasProfile) {
+                document.getElementById('onboarding-modal').classList.add('active');
+            }
+        }
+
+        // Start onboarding (open profile setup)
+        function startOnboarding() {
+            document.getElementById('onboarding-modal').classList.remove('active');
+            localStorage.setItem('hasSeenOnboarding', 'true');
+            openProfileModal();
+        }
+
+        // Close onboarding and mark as seen
+        function closeOnboarding() {
+            document.getElementById('onboarding-modal').classList.remove('active');
+            localStorage.setItem('hasSeenOnboarding', 'true');
+        }
+
+        window.startOnboarding = startOnboarding;
+        window.closeOnboarding = closeOnboarding;
+
+        // Check onboarding on page load
+        checkOnboarding();
     </script>
 </body>
 </html>
