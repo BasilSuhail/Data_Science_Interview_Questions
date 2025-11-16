@@ -90,6 +90,18 @@
             gap: 1rem;
             margin-bottom: 2rem;
             border-bottom: 1px solid var(--border);
+            max-height: 100px;
+            opacity: 1;
+            transition: max-height 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+                        opacity 0.5s ease,
+                        margin-bottom 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .tabs.hidden {
+            max-height: 0;
+            opacity: 0;
+            margin-bottom: 0;
+            overflow: hidden;
         }
 
         .tab {
@@ -114,10 +126,15 @@
         }
 
         /* Search */
+        .search-wrapper {
+            transition: none;
+        }
+
         .search-container {
             display: flex;
             gap: 0.75rem;
             margin-bottom: 2rem;
+            position: relative;
         }
 
         .search-icon {
@@ -139,9 +156,15 @@
             color: white;
         }
 
-        .search-input {
+        .search-input-wrapper {
             flex: 1;
-            padding: 0 1rem;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 0 3rem 0 1rem;
+            height: 48px;
             border: 1px solid var(--border);
             border-radius: 0.5rem;
             font-size: 0.9375rem;
@@ -153,6 +176,36 @@
 
         .search-input:focus {
             border-color: var(--accent);
+        }
+
+        .clear-btn {
+            position: absolute;
+            right: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%) scale(0);
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--text-light);
+            color: var(--bg);
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1rem;
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .clear-btn.visible {
+            transform: translateY(-50%) scale(1);
+            opacity: 1;
+        }
+
+        .clear-btn:hover {
+            background: var(--accent);
+            transform: translateY(-50%) scale(1.1);
         }
 
         /* Question Generator */
@@ -309,6 +362,18 @@
             color: var(--text-light);
         }
 
+        /* Results Animation */
+        #results {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        #results.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
         /* Tab Content */
         .tab-content {
             display: none;
@@ -332,6 +397,18 @@
             padding: 2rem 0;
             margin-bottom: 2rem;
             mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+            max-height: 300px;
+            opacity: 1;
+            transition: max-height 0.8s cubic-bezier(0.4, 0, 0.2, 1),
+                        opacity 0.6s ease,
+                        margin-bottom 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .book-carousel.hidden {
+            max-height: 0;
+            opacity: 0;
+            margin-bottom: 0;
+            overflow: hidden;
         }
 
         .book-track {
@@ -434,15 +511,20 @@
 
         <!-- Search Tab -->
         <div id="search-tab" class="tab-content active">
-            <div class="search-container">
-                <div class="search-icon" onclick="search()">🔍</div>
-                <input
-                    id="query"
-                    class="search-input"
-                    type="text"
-                    placeholder="Ask anything about data science..."
-                    autofocus
-                >
+            <div class="search-wrapper" id="search-wrapper">
+                <div class="search-container">
+                    <div class="search-icon" onclick="search()">🔍</div>
+                    <div class="search-input-wrapper">
+                        <input
+                            id="query"
+                            class="search-input"
+                            type="text"
+                            placeholder="Ask anything about data science..."
+                            autofocus
+                        >
+                        <button class="clear-btn" id="clear-btn" onclick="clearSearch()">✕</button>
+                    </div>
+                </div>
             </div>
             <div id="results"></div>
         </div>
@@ -510,6 +592,45 @@
         document.getElementById('query').addEventListener('keypress', (e) => {
             if (e.key === 'Enter') search();
         });
+
+        // Show/hide clear button based on input
+        document.getElementById('query').addEventListener('input', (e) => {
+            const clearBtn = document.getElementById('clear-btn');
+            if (e.target.value.length > 0) {
+                clearBtn.classList.add('visible');
+            } else {
+                clearBtn.classList.remove('visible');
+            }
+        });
+
+        // Clear search function - HOME button
+        function clearSearch() {
+            const query = document.getElementById('query');
+            const results = document.getElementById('results');
+            const clearBtn = document.getElementById('clear-btn');
+            const carousel = document.getElementById('book-carousel');
+            const tabs = document.querySelector('.tabs');
+
+            // Clear input and hide clear button
+            query.value = '';
+            clearBtn.classList.remove('visible');
+
+            // Fade out results
+            results.classList.remove('visible');
+
+            setTimeout(() => {
+                results.innerHTML = '';
+
+                // Show everything back (HOME state)
+                tabs.classList.remove('hidden');
+                carousel.classList.remove('hidden');
+            }, 300);
+
+            // Smooth scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        window.clearSearch = clearSearch;
 
         // Extract keywords
         function extractKeywords(query) {
@@ -737,7 +858,20 @@ Answer:`;
             if (!query) return;
 
             const results = document.getElementById('results');
-            results.innerHTML = '<div class="loading">Searching...</div>';
+            const carousel = document.getElementById('book-carousel');
+            const tabs = document.querySelector('.tabs');
+
+            // Hide everything - tabs and carousel smoothly
+            tabs.classList.add('hidden');
+            carousel.classList.add('hidden');
+
+            // Fade out old results
+            results.classList.remove('visible');
+
+            setTimeout(() => {
+                results.innerHTML = '<div class="loading">Searching...</div>';
+                results.classList.add('visible');
+            }, 300);
 
             try {
                 const keywords = extractKeywords(query);
@@ -772,40 +906,57 @@ Answer:`;
                     .sort((a, b) => b.relevance - a.relevance)
                     .slice(0, 20);
 
-                results.innerHTML = '<div class="loading">Generating answer...</div>';
+                results.classList.remove('visible');
+
+                setTimeout(() => {
+                    results.innerHTML = '<div class="loading">Generating answer...</div>';
+                    results.classList.add('visible');
+                }, 300);
 
                 const { answer, sources } = await composeAnswer(scored, keywords, query);
 
-                let html = `<div class="answer">
-                    <h3>Answer</h3>
-                    ${answer.html}
-                </div>`;
+                results.classList.remove('visible');
 
-                if (answer.diagram) {
-                    html += `<div class="diagram">
-                        <h3>Diagram</h3>
-                        <div class="mermaid" id="diagram">${answer.diagram}</div>
+                setTimeout(async () => {
+                    let html = `<div class="answer">
+                        <h3>Answer</h3>
+                        ${answer.html}
                     </div>`;
-                }
 
-                if (sources.length > 0) {
-                    html += '<div class="sources"><h3>Sources</h3>';
-                    sources.forEach(source => {
-                        html += `<div class="source">
-                            <div class="source-title">${source.book} - Chunk ${source.chunk}</div>
-                            <div class="source-text">${source.excerpt.substring(0, 200)}...</div>
+                    if (answer.diagram) {
+                        html += `<div class="diagram">
+                            <h3>Diagram</h3>
+                            <div class="mermaid" id="diagram">${answer.diagram}</div>
                         </div>`;
-                    });
-                    html += '</div>';
-                }
+                    }
 
-                results.innerHTML = html;
+                    if (sources.length > 0) {
+                        html += '<div class="sources"><h3>Sources</h3>';
+                        sources.forEach(source => {
+                            html += `<div class="source">
+                                <div class="source-title">${source.book} - Chunk ${source.chunk}</div>
+                                <div class="source-text">${source.excerpt.substring(0, 200)}...</div>
+                            </div>`;
+                        });
+                        html += '</div>';
+                    }
 
-                if (answer.diagram && window.mermaid) {
-                    await window.mermaid.run({ querySelector: '#diagram' });
-                }
+                    results.innerHTML = html;
+                    results.classList.add('visible');
+
+                    if (answer.diagram && window.mermaid) {
+                        await window.mermaid.run({ querySelector: '#diagram' });
+                    }
+
+                    // Smooth scroll to results
+                    setTimeout(() => {
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }, 100);
+                }, 300);
+
             } catch (error) {
                 results.innerHTML = `<div class="empty">Error: ${error.message}</div>`;
+                results.classList.add('visible');
             }
         }
 
@@ -832,10 +983,10 @@ Answer:`;
                 const content = data.map(d => d.content).join(' ');
                 const difficulty = document.getElementById('difficulty').value;
 
-                let instruction = 'Generate 5 data science interview questions.';
-                if (difficulty === 'easy') instruction = 'Generate 5 EASY questions about basic concepts.';
-                if (difficulty === 'medium') instruction = 'Generate 5 MEDIUM questions about practical applications.';
-                if (difficulty === 'hard') instruction = 'Generate 5 HARD questions about advanced concepts.';
+                let instruction = 'Generate 5 data science interview questions. Each question must be a complete question ending with a question mark. Format as numbered list: 1. Question? 2. Question? etc.';
+                if (difficulty === 'easy') instruction = 'Generate 5 EASY data science interview questions for beginners. Each must be a complete question ending with a question mark. Focus on basic concepts like mean, median, supervised learning, overfitting. Format: 1. Question? 2. Question?';
+                if (difficulty === 'medium') instruction = 'Generate 5 MEDIUM data science interview questions. Each must be a complete question ending with a question mark. Focus on practical applications like model evaluation, feature engineering, cross-validation. Format: 1. Question? 2. Question?';
+                if (difficulty === 'hard') instruction = 'Generate 5 HARD data science interview questions. Each must be a complete question ending with a question mark. Focus on advanced topics like gradient descent optimization, ensemble methods, bias-variance tradeoff. Format: 1. Question? 2. Question?';
 
                 const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
                     method: 'POST',
@@ -871,7 +1022,13 @@ Answer:`;
                 : questions.map(() => difficulty);
 
             questionsDiv.innerHTML = questions.map((q, i) => {
-                const text = q.replace(/^\d+\.\s*/, '');
+                // Clean up the question text - remove numbering and markdown formatting
+                let text = q.replace(/^\d+\.\s*/, ''); // Remove numbering
+                text = text.replace(/\*\*/g, ''); // Remove ** markdown bold
+                text = text.replace(/\*/g, ''); // Remove * markdown italic
+                text = text.replace(/`/g, ''); // Remove ` code formatting
+                text = text.trim();
+
                 return `<div class="question-card" onclick="searchQuestion('${text.replace(/'/g, "\\'")}')">
                     <div class="question-text">${text}</div>
                     <span class="badge badge-${difficulties[i]}">${difficulties[i]}</span>
@@ -909,12 +1066,112 @@ Answer:`;
             document.querySelectorAll('.tab')[0].classList.add('active');
             document.querySelectorAll('.tab')[1].classList.remove('active');
 
-            // Set query
-            const query = `Give me a summary of the book "${bookName}" including author, key topics, and what it covers`;
-            document.getElementById('query').value = query;
+            // Set query - just the book name (short and clean)
+            document.getElementById('query').value = bookName;
 
-            // Perform search
-            await search();
+            // Trigger clear button visibility
+            document.getElementById('clear-btn').classList.add('visible');
+
+            // Perform search with full query but display short name
+            const results = document.getElementById('results');
+            const carousel = document.getElementById('book-carousel');
+            const tabs = document.querySelector('.tabs');
+
+            // Hide everything - tabs and carousel smoothly
+            tabs.classList.add('hidden');
+            carousel.classList.add('hidden');
+
+            // Fade out old results
+            results.classList.remove('visible');
+
+            setTimeout(() => {
+                results.innerHTML = '<div class="loading">Searching...</div>';
+                results.classList.add('visible');
+            }, 300);
+
+            try {
+                // Use full query for actual search
+                const fullQuery = `Give me a summary of the book "${bookName}" including author, key topics, and what it covers`;
+                const keywords = extractKeywords(fullQuery);
+
+                let allResults = [];
+                for (const keyword of keywords) {
+                    const { data, error } = await supabase
+                        .from('documents')
+                        .select('*')
+                        .ilike('content', `%${keyword}%`)
+                        .limit(50);
+
+                    if (error) throw error;
+                    if (data) allResults = allResults.concat(data);
+                }
+
+                const unique = Array.from(
+                    new Map(allResults.map(item => [`${item.book_name}-${item.page_number}`, item])).values()
+                );
+
+                if (unique.length === 0) {
+                    results.innerHTML = '<div class="empty">No results found</div>';
+                    return;
+                }
+
+                const scored = unique
+                    .map(item => ({ ...item, relevance: calculateRelevance(item.content, keywords, fullQuery) }))
+                    .sort((a, b) => b.relevance - a.relevance)
+                    .slice(0, 20);
+
+                results.classList.remove('visible');
+
+                setTimeout(() => {
+                    results.innerHTML = '<div class="loading">Generating answer...</div>';
+                    results.classList.add('visible');
+                }, 300);
+
+                const { answer, sources } = await composeAnswer(scored, keywords, fullQuery);
+
+                results.classList.remove('visible');
+
+                setTimeout(async () => {
+                    let html = `<div class="answer">
+                        <h3>Answer</h3>
+                        ${answer.html}
+                    </div>`;
+
+                    if (answer.diagram) {
+                        html += `<div class="diagram">
+                            <h3>Diagram</h3>
+                            <div class="mermaid" id="diagram">${answer.diagram}</div>
+                        </div>`;
+                    }
+
+                    if (sources.length > 0) {
+                        html += '<div class="sources"><h3>Sources</h3>';
+                        sources.forEach(source => {
+                            html += `<div class="source">
+                                <div class="source-title">${source.book} - Chunk ${source.chunk}</div>
+                                <div class="source-text">${source.excerpt.substring(0, 200)}...</div>
+                            </div>`;
+                        });
+                        html += '</div>';
+                    }
+
+                    results.innerHTML = html;
+                    results.classList.add('visible');
+
+                    if (answer.diagram && window.mermaid) {
+                        await window.mermaid.run({ querySelector: '#diagram' });
+                    }
+
+                    // Smooth scroll to results
+                    setTimeout(() => {
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }, 100);
+                }, 300);
+
+            } catch (error) {
+                results.innerHTML = `<div class="empty">Error: ${error.message}</div>`;
+                results.classList.add('visible');
+            }
 
             // Scroll to top
             window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -947,16 +1204,6 @@ Answer:`;
 
         // Load carousel on page load
         loadBookCarousel();
-
-        // Hide carousel when showing search results
-        const originalSearch = window.search;
-        window.search = async function() {
-            await originalSearch();
-            const carousel = document.getElementById('book-carousel');
-            if (document.getElementById('results').innerHTML.includes('class="answer"')) {
-                carousel.classList.add('carousel-hidden');
-            }
-        };
     </script>
 </body>
 </html>

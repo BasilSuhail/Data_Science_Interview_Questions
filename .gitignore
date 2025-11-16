@@ -1,6 +1,9 @@
 # API Keys and Secrets
 config.js
 
+# Planning Documents
+THE ROADMAP.md
+
 # Python
 __pycache__/
 *.py[cod]
