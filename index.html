@@ -50,7 +50,13 @@
             color: var(--text);
         }
 
-        .theme-toggle {
+        .nav-actions {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .profile-btn, .theme-toggle {
             background: none;
             border: none;
             font-size: 1.5rem;
@@ -58,10 +64,344 @@
             padding: 0.5rem;
             border-radius: 0.5rem;
             transition: background 0.2s;
+            color: var(--text);
         }
 
-        .theme-toggle:hover {
+        .profile-btn:hover, .theme-toggle:hover {
             background: var(--bg-secondary);
+        }
+
+        /* Profile Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: var(--bg);
+            border-radius: 1rem;
+            max-width: 600px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: modalSlideIn 0.3s ease;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-light);
+            padding: 0.25rem;
+            border-radius: 0.5rem;
+            transition: all 0.2s;
+        }
+
+        .modal-close:hover {
+            background: var(--bg-secondary);
+            color: var(--text);
+        }
+
+        .modal-body {
+            padding: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+        }
+
+        .form-hint {
+            display: block;
+            font-size: 0.875rem;
+            color: var(--text-light);
+            margin-top: 0.25rem;
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .radio-option {
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .radio-option input[type="radio"] {
+            display: none;
+        }
+
+        .radio-option label {
+            display: block;
+            padding: 0.75rem 1rem;
+            border: 2px solid var(--border);
+            border-radius: 0.5rem;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+        }
+
+        .radio-option input[type="radio"]:checked + label {
+            border-color: var(--accent);
+            background: var(--accent);
+            color: white;
+        }
+
+        .radio-option label:hover {
+            border-color: var(--accent-light);
+        }
+
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 0.75rem;
+        }
+
+        .checkbox-option {
+            position: relative;
+        }
+
+        .checkbox-option input[type="checkbox"] {
+            display: none;
+        }
+
+        .checkbox-option label {
+            display: block;
+            padding: 0.75rem 1rem;
+            border: 2px solid var(--border);
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+        }
+
+        .checkbox-option input[type="checkbox"]:checked + label {
+            border-color: var(--accent);
+            background: var(--accent);
+            color: white;
+        }
+
+        .checkbox-option label:hover {
+            border-color: var(--accent-light);
+        }
+
+        .company-select {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .company-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            min-height: 2.5rem;
+            padding: 0.5rem;
+            border: 2px solid var(--border);
+            border-radius: 0.5rem;
+        }
+
+        .company-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.25rem 0.75rem;
+            background: var(--accent);
+            color: white;
+            border-radius: 1rem;
+            font-size: 0.875rem;
+        }
+
+        .company-tag button {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            padding: 0;
+            font-size: 1rem;
+            line-height: 1;
+        }
+
+        .company-dropdown {
+            position: relative;
+        }
+
+        .company-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid var(--border);
+            border-radius: 0.5rem;
+            background: var(--bg);
+            color: var(--text);
+            font-size: 1rem;
+            transition: border-color 0.2s;
+        }
+
+        .company-input:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .company-options {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: var(--bg);
+            border: 2px solid var(--border);
+            border-radius: 0.5rem;
+            margin-top: 0.25rem;
+            max-height: 200px;
+            overflow-y: auto;
+            display: none;
+            z-index: 10;
+        }
+
+        .company-options.active {
+            display: block;
+        }
+
+        .company-option {
+            padding: 0.75rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .company-option:hover {
+            background: var(--bg-secondary);
+        }
+
+        .date-mode-toggle {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .date-mode-btn {
+            flex: 1;
+            padding: 0.5rem 1rem;
+            border: 2px solid var(--border);
+            background: var(--bg);
+            color: var(--text);
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+        }
+
+        .date-mode-btn.active {
+            border-color: var(--accent);
+            background: var(--accent);
+            color: white;
+        }
+
+        .date-input-wrapper {
+            display: none;
+        }
+
+        .date-input-wrapper.active {
+            display: block;
+        }
+
+        input[type="date"] {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid var(--border);
+            border-radius: 0.5rem;
+            background: var(--bg);
+            color: var(--text);
+            font-size: 1rem;
+            transition: border-color 0.2s;
+        }
+
+        input[type="date"]:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .modal-footer {
+            padding: 1.5rem 2rem;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.75rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 500;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-light);
+        }
+
+        .btn-secondary {
+            background: var(--bg-secondary);
+            color: var(--text);
+        }
+
+        .btn-secondary:hover {
+            background: var(--border);
         }
 
         /* Main */
@@ -82,6 +422,102 @@
             color: var(--text-light);
             text-align: center;
             margin-bottom: 3rem;
+        }
+
+        /* Profile Summary */
+        .profile-summary {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .profile-info {
+            flex: 1;
+        }
+
+        .profile-row {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .profile-item {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+            font-size: 0.9rem;
+        }
+
+        .profile-label {
+            color: var(--text-light);
+            font-weight: 500;
+        }
+
+        .profile-value {
+            color: var(--text);
+        }
+
+        .profile-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .profile-tag {
+            padding: 0.25rem 0.75rem;
+            background: var(--accent);
+            color: white;
+            border-radius: 1rem;
+            font-size: 0.8rem;
+        }
+
+        .countdown-box {
+            text-align: center;
+            padding: 1rem 1.5rem;
+            background: var(--bg);
+            border: 2px solid var(--accent);
+            border-radius: 0.75rem;
+            min-width: 150px;
+        }
+
+        .countdown-label {
+            font-size: 0.75rem;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.25rem;
+        }
+
+        .countdown-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--accent);
+            line-height: 1;
+        }
+
+        .countdown-unit {
+            font-size: 0.875rem;
+            color: var(--text-light);
+            margin-top: 0.25rem;
+        }
+
+        @media (max-width: 768px) {
+            .profile-summary {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .countdown-box {
+                width: 100%;
+            }
         }
 
         /* Tabs */
@@ -487,14 +923,145 @@
 <body data-theme="light">
     <!-- Navbar -->
     <nav class="navbar">
-        <div class="logo">Data Science Search</div>
-        <button class="theme-toggle" onclick="toggleTheme()" id="theme-btn">🌙</button>
+        <div class="logo">Data Science Interview Coach</div>
+        <div class="nav-actions">
+            <button class="profile-btn" onclick="openProfileModal()" title="Setup Profile">👤</button>
+            <button class="theme-toggle" onclick="toggleTheme()" id="theme-btn">🌙</button>
+        </div>
     </nav>
+
+    <!-- Profile Modal -->
+    <div class="modal-overlay" id="profile-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="modal-title">Setup Your Profile</h2>
+                <button class="modal-close" onclick="closeProfileModal()">✕</button>
+            </div>
+            <div class="modal-body">
+                <form id="profile-form">
+                    <!-- Experience Level -->
+                    <div class="form-group">
+                        <label class="form-label">Experience Level</label>
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                <input type="radio" id="exp-junior" name="experience" value="junior" checked>
+                                <label for="exp-junior">Junior<br><small>(0-2 years)</small></label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" id="exp-mid" name="experience" value="mid">
+                                <label for="exp-mid">Mid-level<br><small>(3-5 years)</small></label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" id="exp-senior" name="experience" value="senior">
+                                <label for="exp-senior">Senior<br><small>(6+ years)</small></label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Target Companies -->
+                    <div class="form-group">
+                        <label class="form-label">Target Companies</label>
+                        <span class="form-hint">Select companies you're interviewing with</span>
+                        <div class="company-select">
+                            <div class="company-tags" id="company-tags">
+                                <!-- Selected companies will appear here -->
+                            </div>
+                            <div class="company-dropdown">
+                                <input
+                                    type="text"
+                                    class="company-input"
+                                    id="company-input"
+                                    placeholder="Search or add company..."
+                                    autocomplete="off"
+                                >
+                                <div class="company-options" id="company-options">
+                                    <!-- Options will be populated here -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Weak Areas -->
+                    <div class="form-group">
+                        <label class="form-label">Areas to Focus On</label>
+                        <span class="form-hint">Select areas where you need more practice</span>
+                        <div class="checkbox-group">
+                            <div class="checkbox-option">
+                                <input type="checkbox" id="area-coding" value="coding">
+                                <label for="area-coding">Coding</label>
+                            </div>
+                            <div class="checkbox-option">
+                                <input type="checkbox" id="area-stats" value="stats">
+                                <label for="area-stats">Stats Theory</label>
+                            </div>
+                            <div class="checkbox-option">
+                                <input type="checkbox" id="area-ml" value="ml">
+                                <label for="area-ml">ML Algorithms</label>
+                            </div>
+                            <div class="checkbox-option">
+                                <input type="checkbox" id="area-case" value="case">
+                                <label for="area-case">Case Studies</label>
+                            </div>
+                            <div class="checkbox-option">
+                                <input type="checkbox" id="area-comm" value="communication">
+                                <label for="area-comm">Communication</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Interview Date -->
+                    <div class="form-group">
+                        <label class="form-label">Interview Timeline</label>
+                        <div class="date-mode-toggle">
+                            <button type="button" class="date-mode-btn active" onclick="setDateMode('practice')">Practice Only</button>
+                            <button type="button" class="date-mode-btn" onclick="setDateMode('scheduled')">Have Interview Date</button>
+                        </div>
+                        <div class="date-input-wrapper" id="date-input-wrapper">
+                            <input type="date" id="interview-date" name="interview-date">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeProfileModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="saveProfile()">Save Profile</button>
+            </div>
+        </div>
+    </div>
 
     <!-- Main -->
     <div class="container">
-        <h1 class="title">Master Data Science with AI</h1>
-        <p class="subtitle">Search through data science books and generate study questions</p>
+        <h1 class="title">Master Data Science Interviews</h1>
+        <p class="subtitle">AI-powered practice tailored to your experience and target companies</p>
+
+        <!-- Profile Summary -->
+        <div class="profile-summary" id="profile-summary">
+            <div class="profile-info">
+                <div class="profile-row">
+                    <div class="profile-item">
+                        <span class="profile-label">Level:</span>
+                        <span class="profile-value" id="profile-exp">Junior</span>
+                    </div>
+                    <div class="profile-item">
+                        <span class="profile-label">Target:</span>
+                        <span class="profile-value" id="profile-companies">Not set</span>
+                    </div>
+                </div>
+                <div class="profile-row">
+                    <div class="profile-item">
+                        <span class="profile-label">Focus Areas:</span>
+                    </div>
+                </div>
+                <div class="profile-tags" id="profile-focus">
+                    <span class="profile-tag">All Topics</span>
+                </div>
+            </div>
+            <div class="countdown-box" id="countdown-box">
+                <div class="countdown-label">Interview In</div>
+                <div class="countdown-value" id="countdown-days">--</div>
+                <div class="countdown-unit">days</div>
+            </div>
+        </div>
 
         <!-- Book Carousel -->
         <div class="book-carousel" id="book-carousel">
@@ -1204,6 +1771,309 @@ Answer:`;
 
         // Load carousel on page load
         loadBookCarousel();
+
+        // ========================================
+        // PROFILE MANAGEMENT
+        // ========================================
+
+        // Company list
+        const COMPANIES = [
+            'Meta', 'Google', 'Amazon', 'Apple', 'Netflix', 'Microsoft',
+            'Tesla', 'NVIDIA', 'Uber', 'Airbnb', 'Spotify', 'LinkedIn',
+            'Salesforce', 'Adobe', 'Oracle', 'IBM', 'Intel', 'Cisco',
+            'Twitter/X', 'Snap', 'Pinterest', 'Dropbox', 'Stripe', 'Square',
+            'Goldman Sachs', 'JP Morgan', 'Morgan Stanley', 'McKinsey', 'BCG', 'Bain'
+        ];
+
+        let selectedCompanies = [];
+        let userProfile = {
+            experience: 'junior',
+            companies: [],
+            weakAreas: [],
+            interviewMode: 'practice',
+            interviewDate: null
+        };
+
+        // Load profile from localStorage
+        function loadProfile() {
+            const saved = localStorage.getItem('userProfile');
+            if (saved) {
+                userProfile = JSON.parse(saved);
+                updateProfileDisplay();
+            }
+        }
+
+        // Update profile summary display
+        function updateProfileDisplay() {
+            // Update experience level
+            const expMap = {
+                'junior': 'Junior (0-2 years)',
+                'mid': 'Mid-level (3-5 years)',
+                'senior': 'Senior (6+ years)'
+            };
+            document.getElementById('profile-exp').textContent = expMap[userProfile.experience] || 'Junior';
+
+            // Update companies
+            const companiesEl = document.getElementById('profile-companies');
+            if (userProfile.companies.length === 0) {
+                companiesEl.textContent = 'Not set';
+            } else if (userProfile.companies.length <= 2) {
+                companiesEl.textContent = userProfile.companies.join(', ');
+            } else {
+                companiesEl.textContent = `${userProfile.companies.slice(0, 2).join(', ')} +${userProfile.companies.length - 2} more`;
+            }
+
+            // Update focus areas
+            const focusEl = document.getElementById('profile-focus');
+            const areaMap = {
+                'coding': 'Coding',
+                'stats': 'Stats Theory',
+                'ml': 'ML Algorithms',
+                'case': 'Case Studies',
+                'communication': 'Communication'
+            };
+
+            if (userProfile.weakAreas.length === 0) {
+                focusEl.innerHTML = '<span class="profile-tag">All Topics</span>';
+            } else {
+                focusEl.innerHTML = userProfile.weakAreas.map(area =>
+                    `<span class="profile-tag">${areaMap[area] || area}</span>`
+                ).join('');
+            }
+
+            // Update countdown
+            updateCountdown();
+        }
+
+        // Calculate and display countdown
+        function updateCountdown() {
+            const countdownBox = document.getElementById('countdown-box');
+            const countdownLabel = countdownBox.querySelector('.countdown-label');
+            const countdownValue = document.getElementById('countdown-days');
+            const countdownUnit = countdownBox.querySelector('.countdown-unit');
+
+            if (userProfile.interviewMode === 'practice' || !userProfile.interviewDate) {
+                countdownLabel.textContent = 'Mode';
+                countdownValue.textContent = '∞';
+                countdownUnit.textContent = 'practice';
+                countdownBox.style.borderColor = 'var(--text-light)';
+                countdownValue.style.color = 'var(--text-light)';
+            } else {
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                const interviewDate = new Date(userProfile.interviewDate);
+                interviewDate.setHours(0, 0, 0, 0);
+                const diffTime = interviewDate - today;
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+                countdownLabel.textContent = 'Interview In';
+                countdownValue.textContent = diffDays;
+                countdownUnit.textContent = diffDays === 1 ? 'day' : 'days';
+
+                // Color coding based on urgency
+                if (diffDays <= 7) {
+                    countdownBox.style.borderColor = '#ef4444'; // red
+                    countdownValue.style.color = '#ef4444';
+                } else if (diffDays <= 30) {
+                    countdownBox.style.borderColor = '#f59e0b'; // orange
+                    countdownValue.style.color = '#f59e0b';
+                } else {
+                    countdownBox.style.borderColor = 'var(--accent)';
+                    countdownValue.style.color = 'var(--accent)';
+                }
+            }
+        }
+
+        // Save profile to localStorage
+        function saveProfileToStorage() {
+            localStorage.setItem('userProfile', JSON.stringify(userProfile));
+        }
+
+        // Modal functions
+        function openProfileModal() {
+            document.getElementById('profile-modal').classList.add('active');
+            loadProfileToForm();
+            initCompanyInput();
+        }
+
+        function closeProfileModal() {
+            document.getElementById('profile-modal').classList.remove('active');
+        }
+
+        window.openProfileModal = openProfileModal;
+        window.closeProfileModal = closeProfileModal;
+
+        // Load current profile into form
+        function loadProfileToForm() {
+            // Set experience level
+            const expRadio = document.querySelector(`input[name="experience"][value="${userProfile.experience}"]`);
+            if (expRadio) expRadio.checked = true;
+
+            // Set companies
+            selectedCompanies = [...userProfile.companies];
+            renderCompanyTags();
+
+            // Set weak areas
+            userProfile.weakAreas.forEach(area => {
+                const checkbox = document.getElementById(`area-${area}`);
+                if (checkbox) checkbox.checked = true;
+            });
+
+            // Set interview mode
+            if (userProfile.interviewMode === 'scheduled') {
+                setDateMode('scheduled');
+                if (userProfile.interviewDate) {
+                    document.getElementById('interview-date').value = userProfile.interviewDate;
+                }
+            } else {
+                setDateMode('practice');
+            }
+        }
+
+        // Company selection
+        function initCompanyInput() {
+            const input = document.getElementById('company-input');
+            const options = document.getElementById('company-options');
+
+            input.addEventListener('focus', () => {
+                showCompanyOptions('');
+            });
+
+            input.addEventListener('input', (e) => {
+                showCompanyOptions(e.target.value);
+            });
+
+            // Click outside to close
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('.company-dropdown')) {
+                    options.classList.remove('active');
+                }
+            });
+
+            // Enter to add custom company
+            input.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    const value = input.value.trim();
+                    if (value && !selectedCompanies.includes(value)) {
+                        selectedCompanies.push(value);
+                        renderCompanyTags();
+                        input.value = '';
+                        options.classList.remove('active');
+                    }
+                }
+            });
+        }
+
+        function showCompanyOptions(filter) {
+            const options = document.getElementById('company-options');
+            const filtered = COMPANIES.filter(c =>
+                c.toLowerCase().includes(filter.toLowerCase()) &&
+                !selectedCompanies.includes(c)
+            );
+
+            if (filtered.length === 0) {
+                options.innerHTML = '<div class="company-option" style="color: var(--text-light);">Press Enter to add custom company</div>';
+            } else {
+                options.innerHTML = filtered.map(company =>
+                    `<div class="company-option" onclick="addCompany('${company}')">${company}</div>`
+                ).join('');
+            }
+
+            options.classList.add('active');
+        }
+
+        function addCompany(company) {
+            if (!selectedCompanies.includes(company)) {
+                selectedCompanies.push(company);
+                renderCompanyTags();
+                document.getElementById('company-input').value = '';
+                document.getElementById('company-options').classList.remove('active');
+            }
+        }
+
+        window.addCompany = addCompany;
+
+        function removeCompany(company) {
+            selectedCompanies = selectedCompanies.filter(c => c !== company);
+            renderCompanyTags();
+        }
+
+        window.removeCompany = removeCompany;
+
+        function renderCompanyTags() {
+            const container = document.getElementById('company-tags');
+            if (selectedCompanies.length === 0) {
+                container.innerHTML = '<span style="color: var(--text-light); padding: 0.5rem;">No companies selected</span>';
+            } else {
+                container.innerHTML = selectedCompanies.map(company =>
+                    `<span class="company-tag">${company}<button onclick="removeCompany('${company}')">×</button></span>`
+                ).join('');
+            }
+        }
+
+        // Date mode toggle
+        function setDateMode(mode) {
+            const buttons = document.querySelectorAll('.date-mode-btn');
+            const wrapper = document.getElementById('date-input-wrapper');
+
+            buttons.forEach(btn => btn.classList.remove('active'));
+
+            if (mode === 'practice') {
+                buttons[0].classList.add('active');
+                wrapper.classList.remove('active');
+            } else {
+                buttons[1].classList.add('active');
+                wrapper.classList.add('active');
+            }
+        }
+
+        window.setDateMode = setDateMode;
+
+        // Save profile
+        function saveProfile() {
+            // Get experience
+            const experienceRadio = document.querySelector('input[name="experience"]:checked');
+            userProfile.experience = experienceRadio ? experienceRadio.value : 'junior';
+
+            // Get companies
+            userProfile.companies = [...selectedCompanies];
+
+            // Get weak areas
+            const weakAreas = [];
+            document.querySelectorAll('.checkbox-option input[type="checkbox"]:checked').forEach(cb => {
+                weakAreas.push(cb.value);
+            });
+            userProfile.weakAreas = weakAreas;
+
+            // Get interview mode
+            const isPracticeMode = document.querySelectorAll('.date-mode-btn')[0].classList.contains('active');
+            userProfile.interviewMode = isPracticeMode ? 'practice' : 'scheduled';
+
+            // Get interview date
+            if (userProfile.interviewMode === 'scheduled') {
+                userProfile.interviewDate = document.getElementById('interview-date').value;
+            } else {
+                userProfile.interviewDate = null;
+            }
+
+            // Save to localStorage
+            saveProfileToStorage();
+
+            // Update display
+            updateProfileDisplay();
+
+            // Close modal
+            closeProfileModal();
+
+            // Show success feedback (optional)
+            console.log('Profile saved:', userProfile);
+        }
+
+        window.saveProfile = saveProfile;
+
+        // Load profile on page load
+        loadProfile();
     </script>
 </body>
 </html>
