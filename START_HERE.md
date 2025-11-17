@@ -246,22 +246,24 @@ Find the overall friend request acceptance rate rounded to 2 decimals.
 ### What You Have:
 | Source | Questions | Status |
 |--------|-----------|--------|
-| GitHub | 54 | ✅ Collected |
+| GitHub (Devinterview-io) | 34 | ✅ Collected |
+| jayinai Repository | 33 | ✅ Collected |
 | Scenario Questions | 30 | ✅ Collected |
-| Template Examples | 2 | ✅ Included |
-| **Current Total** | **86** | ✅ **Ready to upload!** |
+| GitHub (iamtodor) | 19 | ✅ Collected |
+| Template Examples | 3 | ✅ Included |
+| **Current Total** | **119** | ✅ **Ready to upload!** |
 | LeetCode | 0 → 20-50 | ⏳ Template ready |
 | StrataScratch | 0 → 20-50 | ⏳ Template ready |
-| **Potential Total** | **106-186** | **Ready to grow!** |
+| **Potential Total** | **139-219** | **Ready to grow!** |
 
-### Coverage (Current 86 Questions):
-- **Coding:** ✅ Excellent (13 questions)
+### Coverage (Current 119 Questions):
+- **Mixed (General):** ✅ Excellent (58 questions)
 - **ML:** ✅ Excellent (18 questions)
 - **Stats:** ✅ Good (16 questions)
+- **Coding:** ✅ Good (13 questions)
 - **Case Studies:** ✅ Good (11 questions)
-- **Mixed:** ✅ Good (25 questions)
 - **SQL:** ⚠️ Low (2 questions - add StrataScratch!)
-- **Difficulty Balance:** ✅ Great (68 medium, 13 hard, 3 easy)
+- **Difficulty Balance:** ✅ Great (77 medium, 37 hard, 3 easy)
 
 ---
 

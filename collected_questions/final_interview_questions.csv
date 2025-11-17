@@ -52,6 +52,217 @@ Strong pair correlation of predictors.,,medium,mixed,,iamtodor/data-science-inte
 A loss function to be optimized.,,medium,mixed,,iamtodor/data-science-interview-questions-and-answers,,2025-11-17T10:49:36.287593
 A weak learner to make predictions.,,medium,mixed,,iamtodor/data-science-interview-questions-and-answers,,2025-11-17T10:49:36.287616
 "An additive model to add weak learners to minimize the loss function. #### Loss Function The loss function used depends on the type of problem being solved. It must be differentiable, but many standard loss functions are supported and you can define your own. For example, regression may use a squared error and classification may use logarithmic loss. A benefit of the gradient boosting framework is that a new boosting algorithm does not have to be derived for each loss function that may want to be used, instead, it is a generic enough framework that any differentiable loss function can be used. #### Weak Learner Decision trees are used as the weak learner in gradient boosting. Specifically regression trees are used that output real values for splits and whose output can be added together, allowing subsequent models outputs to be added and “correct” the residuals in the predictions. Trees are constructed in a greedy manner, choosing the best split points based on purity scores like Gini or to minimize the loss. Initially, such as in the case of AdaBoost, very short decision trees were used that only had a single split, called a decision stump. Larger trees can be used generally with 4-to-8 levels. It is common to constrain the weak learners in specific ways, such as a maximum number of layers, nodes, splits or leaf nodes. This is to ensure that the learners remain weak, but can still be constructed in a greedy manner. #### Additive Model Trees are added one at a time, and existing trees in the model are not changed. A gradient descent procedure is used to minimize the loss when adding trees. Traditionally, gradient descent is used to minimize a set of parameters, such as the coefficients in a regression equation or weights in a neural network. After calculating error or loss, the weights are updated to minimize that error. Instead of parameters, we have weak learner sub-models or more specifically decision trees. After calculating the loss, to perform the gradient descent procedure, we must add a tree to the model that reduces the loss (i.e. follow the gradient). We do this by parameterizing the tree, then modify the parameters of the tree and move in the right direction by reducing the residual loss. Generally this approach is called functional gradient descent or gradient descent with functions. The output for the new tree is then added to the output of the existing sequence of trees in an effort to correct or improve the final output of the model. A fixed number of trees are added or training stops once loss reaches an acceptable level or no longer improves on an external validation dataset. ### Improvements to Basic Gradient Boosting Gradient boosting is a greedy algorithm and can overfit a training dataset quickly. It can benefit from regularization methods that penalize various parts of the algorithm and generally improve the performance of the algorithm by reducing overfitting. In this section we will look at 4 enhancements to basic gradient boosting: * Tree Constraints * Shrinkage * Random sampling * Penalized Learning #### Tree Constraints It is important that the weak learners have skill but remain weak. There are a number of ways that the trees can be constrained. A good general heuristic is that the more constrained tree creation is, the more trees you will need in the model, and the reverse, where less constrained individual trees, the fewer trees that will be required. Below are some constraints that can be imposed on the construction of decision trees: * Number of trees, generally adding more trees to the model can be very slow to overfit. The advice is to keep adding trees until no further improvement is observed. * Tree depth, deeper trees are more complex trees and shorter trees are preferred. Generally, better results are seen with 4-8 levels. * Number of nodes or number of leaves, like depth, this can constrain the size of the tree, but is not constrained to a symmetrical structure if other constraints are used. * Number of observations per split imposes a minimum constraint on the amount of training data at a training node before a split can be considered * Minimum improvement to loss is a constraint on the improvement of any split added to a tree. #### Weighted Updates The predictions of each tree are added together sequentially. The contribution of each tree to this sum can be weighted to slow down the learning by the algorithm. This weighting is called a shrinkage or a learning rate. Each update is simply scaled by the value of the “learning rate parameter” v The effect is that learning is slowed down, in turn require more trees to be added to the model, in turn taking longer to train, providing a configuration trade-off between the number of trees and learning rate. Decreasing the value of v [the learning rate] increases the best value for M [the number of trees]. It is common to have small values in the range of 0.1 to 0.3, as well as values less than 0.1. Similar to a learning rate in stochastic optimization, shrinkage reduces the influence of each individual tree and leaves space for future trees to improve the model. #### Stochastic Gradient Boosting A big insight into bagging ensembles and random forest was allowing trees to be greedily created from subsamples of the training dataset. This same benefit can be used to reduce the correlation between the trees in the sequence in gradient boosting models. This variation of boosting is called stochastic gradient boosting. At each iteration a subsample of the training data is drawn at random (without replacement) from the full training dataset. The randomly selected subsample is then used, instead of the full sample, to fit the base learner. A few variants of stochastic boosting that can be used: * Subsample rows before creating each tree. * Subsample columns before creating each tree * Subsample columns before considering each split. Generally, aggressive sub-sampling such as selecting only 50% of the data has shown to be beneficial. According to user feedback, using column sub-sampling prevents over-fitting even more so than the traditional row sub-sampling. #### Penalized Gradient Boosting Additional constraints can be imposed on the parameterized trees in addition to their structure. Classical decision trees like CART are not used as weak learners, instead a modified form called a regression tree is used that has numeric values in the leaf nodes (also called terminal nodes). The values in the leaves of the trees can be called weights in some literature. As such, the leaf weight values of the trees can be regularized using popular regularization functions, such as: * L1 regularization of weights. * L2 regularization of weights. The additional regularization term helps to smooth the final learnt weights to avoid over-fitting. Intuitively, the regularized objective will tend to select a model employing simple and predictive functions. More details in 2 posts (russian): * https://habr.com/company/ods/blog/327250/ * https://alexanderdyakonov.files.wordpress.com/2017/06/book_boosting_pdf.pdf ## 24. Difference between AdaBoost and XGBoost. Both methods combine weak learners into one strong learner. For example, one decision tree is a weak learner, and an emsemble of them would be a random forest model, which is a strong learner. Both methods in the learning process will increase the ensemble of weak-trainers, adding new weak learners to the ensemble at each training iteration, i.e. in the case of the forest, the forest will grow with new trees. The only difference between AdaBoost and XGBoost is how the ensemble is replenished. AdaBoost works by weighting the observations, putting more weight on difficult to classify instances and less on those already handled well. New weak learners are added sequentially that focus their training on the more difficult patterns. AdaBoost at each iteration changes the sample weights in the sample. It raises the weight of the samples in which more mistakes were made. The sample weights vary in proportion to the ensemble error. We thereby change the probabilistic distribution of samples - those that have more weight will be selected more often in the future. It is as if we had accumulated samples on which more mistakes were made and would use them instead of the original sample. In addition, in AdaBoost, each weak learner has its own weight in the ensemble (alpha weight) - this weight is higher, the “smarter” this weak learner is, i.e. than the learner least likely to make mistakes. XGBoost does not change the selection or the distribution of observations at all. XGBoost builds the first tree (weak learner), which will fit the observations with some prediction error. A second tree (weak learner) is then added to correct the errors made by the existing model. Errors are minimized using a gradient descent algorithm. Regularization can also be used to penalize more complex models through both Lasso and Ridge regularization. In short, AdaBoost- reweighting examples. Gradient boosting - predicting the loss function of trees. Xgboost - the regularization term was added to the loss function (depth + values ​​in leaves). ## 25. Data Mining Describe the decision tree model A decision tree is a structure that includes a root node, branches, and leaf nodes. Each internal node denotes a test on an attribute, each branch denotes the outcome of a test, and each leaf node holds a class label. The topmost node in the tree is the root node. Each internal node represents a test on an attribute. Each leaf node represents a class. The benefits of having a decision tree are as follows: * It does not require any domain knowledge. * It is easy to comprehend. * The learning and classification steps of a decision tree are simple and fast. Tree Pruning Tree pruning is performed in order to remove anomalies in the training data due to noise or outliers. The pruned trees are smaller and less complex. Tree Pruning Approaches Here is the Tree Pruning Approaches listed below: * Pre-pruning − The tree is pruned by halting its construction early. * Post-pruning - This approach removes a sub-tree from a fully grown tree. Cost Complexity The cost complexity is measured by the following two parameters − Number of leaves in the tree, and Error rate of the tree. ## 26. Notes from Coursera Deep Learning courses by Andrew Ng Notes from Coursera Deep Learning courses by Andrew Ng ## 27. What is a neural network? Neural networks are typically organized in layers. Layers are made up of a number of interconnected 'nodes' which contain an 'activation function'. Patterns are presented to the network via the 'input layer', which communicates to one or more 'hidden layers' where the actual processing is done via a system of weighted 'connections'. The hidden layers then link to an 'output layer' where the answer is output as shown in the graphic below. Although there are many different kinds of learning rules used by neural networks, this demonstration is concerned only with one: the delta rule. The delta rule is often utilized by the most common class of ANNs called 'backpropagation neural networks' (BPNNs). Backpropagation is an abbreviation for the backwards propagation of error. With the delta rule, as with other types of back propagation, 'learning' is a supervised process that occurs with each cycle or 'epoch' (i.e. each time the network is presented with a new input pattern) through a forward activation flow of outputs, and the backwards error propagation of weight adjustments. More simply, when a neural network is initially presented with a pattern it makes a random 'guess' as to what it might be. It then sees how far its answer was from the actual one and makes an appropriate adjustment to its connection weights. More graphically, the process looks something like this: !alt text Backpropagation performs a gradient descent within the solution's vector space towards a 'global minimum' along the steepest vector of the error surface. The global minimum is that theoretical solution with the lowest possible error. The error surface itself is a hyperparaboloid but is seldom 'smooth'. Indeed, in most problems, the solution space is quite irregular with numerous 'pits' and 'hills' which may cause the network to settle down in a 'local minimum' which is not the best overall solution. Since the nature of the error space can not be known a priori, neural network analysis often requires a large number of individual runs to determine the best solution. Most learning rules have built-in mathematical terms to assist in this process which control the 'speed' (Beta-coefficient) and the 'momentum' of the learning. The speed of learning is actually the rate of convergence between the current solution and the global minimum. Momentum helps the network to overcome obstacles (local minima) in the error surface and settle down at or near the global minimum. Once a neural network is 'trained' to a satisfactory level it may be used as an analytical tool on other data. To do this, the user no longer specifies any training runs and instead allows the network to work in forward propagation mode only. New inputs are presented to the input pattern where they filter into and are processed by the middle layers as though training were taking place, however, at this point the output is retained and no backpropagation occurs. The output of a forward propagation run is the predicted model for the data which can then be used for further analysis and interpretation. ## 28. How do you deal with sparse data? We could take a look at L1 regularization since it best fits the sparse data and does feature selection. If linear relationship - linear regression either - svm. Also it would be nice to use one-hot-encoding or bag-of-words. A one hot encoding is a representation of categorical variables as binary vectors. This first requires that the categorical values be mapped to integer values. Then, each integer value is represented as a binary vector that is all zero values except the index of the integer, which is marked with a 1. ## 29. RNN and LSTM Here are a few of my favorites: * Understanding LSTM Networks, Chris Olah's LSTM post * Exploring LSTMs, Edwin Chen's LSTM post * The Unreasonable Effectiveness of Recurrent Neural Networks, Andrej Karpathy's blog post * CS231n Lecture 10 - Recurrent Neural Networks, Image Captioning, LSTM, Andrej Karpathy's lecture * Jay Alammar's The Illustrated Transformer the guy generally focuses on visualizing different ML concepts ## 30. Pseudo Labeling Pseudo-labeling is a technique that allows you to use predicted with confidence test data in your training process. This effectivey works by allowing your model to look at more samples, possibly varying in distributions. I have found this Kaggle kernel to be useful in understanding how one can use pseudo-labeling in light of having too few train data points. ## 31. Knowledge Distillation It is the process by which a considerably larger model is able to transfer its knowledge to a smaller one. Applications include NLP and object detection allowing for less powerful hardware to make good inferences without significant loss of accuracy. Example: model compression which is used to compress the knowledge of multiple models into a single neural network. Explanation ## 32. What is an inductive bias? A model's inductive bias is referred to as assumptions made within that model to learn your target function from independent variables, your features. Without these assumptions, there is a whole space of solutions to our problem and finding the one that works best becomes a problem. Found this StackOverflow question useful to look at and explore. Consider an example of an inducion bias when choosing a learning algorithm with the minimum cross-validation (CV) error. Here, we rely on the hypothesis of the minimum CV error and hope it is able to generalize well on the data yet to be seen. Effectively, this choice is what helps us (in this case) make a choice in favor of the learning algorithm (or model) being tried. ## 33. What is a confidence interval in layman's terms? Confidence interval as the name suggests is the amount of confidence associated with an interval of values to get the desired outcome. For example : if 100 - 200 range is a 95% confidence interval , it implies that someone can have 95% assurance that the data point or any desired value is present in that range.",,easy,coding,regression|classification|probability|deep_learning|ensemble|metrics|feature_engineering,iamtodor/data-science-interview-questions-and-answers,,2025-11-17T10:49:36.290245
+Explain Difference between joins,,hard,mixed,,jayinai/data-science-question-answer,"* **(INNER) JOIN**: Returns records that have matching values in both tables
+* **LEFT (OUTER) JOIN**: Return all records from the left table, and the matched records from the right table
+* **RIGHT (OUTER) JOIN**: Return all records from the right table, and the matched records from the left table
+* **FULL (OUTER) JOIN**: Return all records when there is a match in either left or right table
+
+
+
+(#data-science-question-answer)
+
+
+## Tools and Framework
+
+The resources here are only meant to help you",2025-11-17T11:42:20.246097
+Explain Spark,,hard,mixed,,jayinai/data-science-question-answer,"Using PySpark API.
+
+* The best resource is of course [Spark's documentation](https://spark.apache.org/docs/latest/). Take a thorough review of the topics
+* If you are really time constrained, scan the Spark's documentation and check [PySpark cheat sheet](https://s3.amazonaws.com/assets.datacamp.com/blog_assets/PySpark_Cheat_Sheet_Python.pdf) for the basics
+
+
+(#data-science-question-answer)
+
+
+## Statistics and ML In General
+
+* [Project Workflow](#project-workflow)
+* [Cross Validation](#cross-vali",2025-11-17T11:42:20.246124
+Explain Project Workflow,,hard,mixed,,jayinai/data-science-question-answer,"Given a data science / machine learning project, what steps should we follow? Here's
+how I would tackle it:
+
+* **Specify business objective.** Are we trying to win more customers, achieve higher satisfaction, or gain more revenues?
+* **Define problem.** What is the specific gap in your ideal world and the real one that requires machine learning to fill? Ask questions that can be addressed using your data and predictive modeling (ML algorithms).
+* **Create a common sense baseline.** But before yo",2025-11-17T11:42:20.246149
+Explain Cross Validation,,medium,mixed,,jayinai/data-science-question-answer,"Cross-validation is a technique to evaluate predictive models by partitioning the original sample into a training set to train the model, and a validation set to evaluate it. For example, a k-fold cross validation divides the data into k folds (or partitions), trains on each k-1 fold, and evaluate on the remaining 1 fold. This results to k models/evaluations, which can be averaged to get a overall model performance.
+
+
+
+(#data-science-question-answer)",2025-11-17T11:42:20.246161
+Explain Feature Importance,,medium,mixed,,jayinai/data-science-question-answer,"* In linear models, feature importance can be calculated by the scale of the coefficients
+* In tree-based methods (such as random forest), important features are likely to appear closer to the root of the tree.  We can get a feature's importance for random forest by computing the averaging depth at which it appears across all trees in the forest.
+
+(#data-science-question-answer)",2025-11-17T11:42:20.246169
+Explain Mean Squared Error vs. Mean Absolute Error,,medium,mixed,,jayinai/data-science-question-answer,"* **Similarity**: both measure the average model prediction error; range from 0 to infinity; the lower the better
+* Mean Squared Error (MSE) gives higher weights to large error (e.g., being off by 10 just MORE THAN TWICE as bad as being off by 5), whereas Mean Absolute Error (MAE) assign equal weights (being off by 10 is just twice as bad as being off by 5)
+* MSE is continuously differentiable, MAE is not (where y_pred == y_true)
+
+(#data-science-question-answer)",2025-11-17T11:42:20.246178
+Explain L1 vs L2 regularization,,hard,mixed,,jayinai/data-science-question-answer,"* **Similarity**: both L1 and L2 regularization **prevent overfitting** by shrinking (imposing a penalty) on the coefficients
+* **Difference**: L2 (Ridge) shrinks all the coefficient by the same proportions but eliminates none, while L1 (Lasso) can shrink some coefficients to zero, performing variable selection.
+* **Which to choose**: If all the features are correlated with the label, ridge outperforms lasso, as the coefficients are never zero in ridge. If only a subset of features are correlate",2025-11-17T11:42:20.246187
+Explain Correlation vs Covariance,,hard,mixed,,jayinai/data-science-question-answer,"* Both determine the relationship and measure the dependency between two random variables
+* Correlation is when the change in one item may result in the change in the another item, while covariance is when two items vary together (joint variability)
+* Covariance is nothing but a measure of correlation. On the contrary, correlation refers to the scaled form of covariance
+* Range: correlation is between -1 and +1, while covariance lies between negative infinity and infinity.
+
+
+(#data-science-quest",2025-11-17T11:42:20.246195
+Explain Would adding more data address underfitting,,medium,mixed,,jayinai/data-science-question-answer,"Underfitting happens when a model is not complex enough to learn well from the data. It is the problem of model rather than data size. So a potential way to address underfitting is to increase the model complexity (e.g., to add higher order coefficients for linear model, increase depth for tree-based methods, add more layers / number of neurons for neural networks etc.)
+
+(#data-science-question-answer)",2025-11-17T11:42:20.246203
+Explain Activation Function,,medium,mixed,,jayinai/data-science-question-answer,"For neural networks
+
+* Non-linearity: ReLU is often used. Use Leaky ReLU (a small positive gradient for negative input, say, `y = 0.01x` when x < 0) to address dead ReLU issue
+* Multi-class: softmax
+* Binary: sigmoid
+* Regression: linear
+
+(#data-science-question-answer)",2025-11-17T11:42:20.246210
+Explain Bagging,,hard,mixed,,jayinai/data-science-question-answer,"To address overfitting, we can use an ensemble method called bagging (bootstrap aggregating),
+which reduces the variance of the meta learning algorithm. Bagging can be applied
+to decision tree or other algorithms.
+
+Here is a [great illustration](http://scikit-learn.org/stable/auto_examples/ensemble/plot_bias_variance.html#sphx-glr-auto-examples-ensemble-plot-bias-variance-py) of a single estimator vs. bagging.
+
+
+
+* Bagging is when samlping is performed *with* replacement. When sampling is perfor",2025-11-17T11:42:20.246219
+Explain Stacking,,hard,mixed,,jayinai/data-science-question-answer,"* Instead of using trivial functions (such as hard voting) to aggregate the predictions from individual learners, train a model to perform this aggregation
+* First split the training set into two subsets: the first subset is used to train the learners in the first layer
+* Next the first layer learners are used to make predictions (meta features) on the second subset, and those predictions are used to train another models (to obtain the weigts of different learners) in the second layer
+* We can t",2025-11-17T11:42:20.246227
+Explain Generative vs discriminative,,hard,mixed,,jayinai/data-science-question-answer,"* Discriminative algorithms model *p(y|x; w)*, that is, given the dataset and learned
+parameter, what is the probability of y belonging to a specific class. A discriminative algorithm
+doesn't care about how the data was generated, it simply categorizes a given example
+* Generative algorithms try to model *p(x|y)*, that is, the distribution of features given
+that it belongs to a certain class. A generative algorithm models how the data was
+generated.
+
+> Given a training set, an algorithm like log",2025-11-17T11:42:20.246240
+Explain Parametric vs Nonparametric,,medium,mixed,,jayinai/data-science-question-answer,"* A learning model that summarizes data with a set of parameters of fixed size (independent of the number of training examples) is called a parametric model.
+* A model where the number of parameters is not determined prior to training. Nonparametric does not mean that they have no parameters. On the contrary, nonparametric models (can) become more and more complex with an increasing amount of data.
+
+(#data-science-question-answer)",2025-11-17T11:42:20.246247
+Explain Recommender System,,hard,mixed,,jayinai/data-science-question-answer,"* I put recommend system here since technically it falls neither under supervised nor unsupervised learning
+* A recommender system seeks to predict the 'rating' or 'preference' a user would give to items and then recommend items accordingly
+* Content based recommender systems recommends items similar to those a given user has liked in the past, based on either explicit (ratings, like/dislike button) or implicit (viewed/finished an article) feedbacks. Content based recommenders work solely with t",2025-11-17T11:42:20.246259
+Explain Linear regression,,hard,mixed,,jayinai/data-science-question-answer,"* How to learn the parameter: minimize the cost function
+* How to minimize cost function: gradient descent
+* Regularization:
+    - L1 (Lasso): can shrink certain coef to zero, thus performing feature selection
+    - L2 (Ridge): shrink all coef with the same proportion; almost always outperforms L1
+    - Elastic Net: combined L1 and L2 priors as regularizer
+* Assumes linear relationship between features and the label
+* Can add polynomial and interaction features to add non-linearity
+
+
+
+(#data-sci",2025-11-17T11:42:20.246268
+Explain Logistic regression,,medium,mixed,,jayinai/data-science-question-answer,"* Generalized linear model (GLM) for binary classification problems
+* Apply the sigmoid function to the output of linear models, squeezing the target
+to range [0, 1]
+* Threshold to make prediction: usually if the output > .5, prediction 1; otherwise prediction 0
+* A special case of softmax function, which deals with multi-class problems
+
+(#data-science-question-answer)",2025-11-17T11:42:20.246275
+Explain Naive Bayes,,hard,mixed,,jayinai/data-science-question-answer,"* Naive Bayes (NB) is a supervised learning algorithm based on applying [Bayes' theorem](https://en.wikipedia.org/wiki/Bayes%27_theorem)
+* It is called naive because it builds the naive assumption that each feature
+are independent of each other
+* NB can make different assumptions (i.e., data distributions, such as Gaussian,
+Multinomial, Bernoulli)
+* Despite the over-simplified assumptions, NB classifier works quite well in real-world
+applications, especially for text classification (e.g., spam f",2025-11-17T11:42:20.246284
+Explain Decision tree,,hard,mixed,,jayinai/data-science-question-answer,"* Non-parametric, supervised learning algorithms
+* Given the training data, a decision tree algorithm divides the feature space into
+regions. For inference, we first see which
+region does the test data point fall in, and take the mean label values (regression)
+or the majority label value (classification).
+* **Construction**: top-down, chooses a variable to split the data such that the
+target variables within each region are as homogeneous as possible. Two common
+metrics: gini impurity or informa",2025-11-17T11:42:20.246301
+Explain Random forest,,hard,mixed,,jayinai/data-science-question-answer,"Random forest improves bagging further by adding some randomness. In random forest,
+only a subset of features are selected at random to construct a tree (while often not subsample instances).
+The benefit is that random forest **decorrelates** the trees.
+
+For example, suppose we have a dataset. There is one very predicative feature, and a couple
+of moderately predicative features. In bagging trees, most of the trees
+will use this very predicative feature in the top split, and therefore making mos",2025-11-17T11:42:20.246309
+Explain Boosting Tree,,hard,mixed,,jayinai/data-science-question-answer,"**How it works**
+
+Boosting builds on weak learners, and in an iterative fashion. In each iteration,
+a new learner is added, while all existing learners are kept unchanged. All learners
+are weighted based on their performance (e.g., accuracy), and after a weak learner
+is added, the data are re-weighted: examples that are misclassified gain more weights,
+while examples that are correctly classified lose weights. Thus, future weak learners
+focus more on examples that previous weak learners misclass",2025-11-17T11:42:20.246318
+Explain RNN and LSTM,,hard,mixed,,jayinai/data-science-question-answer,"RNN is another paradigm of neural network where we have difference layers of cells,
+and each cell not only takes as input the cell from the previous layer, but also the previous
+cell within the same layer. This gives RNN the power to model sequence.
+
+
+
+This seems great, but in practice RNN barely works due to exploding/vanishing gradient, which
+is cause by a series of multiplication of the same matrix. To solve this, we can use
+a variation of RNN, called long short-term memory (LSTM), which is c",2025-11-17T11:42:20.246333
+Explain Clustering,,hard,mixed,,jayinai/data-science-question-answer,"* Clustering is a unsupervised learning algorithm that groups data in such
+a way that data points in the same group are more similar to each other than to
+those from other groups
+* Similarity is usually defined using a distance measure (e.g, Euclidean, Cosine, Jaccard, etc.)
+* The goal is usually to discover the underlying structure within the data (usually high dimensional)
+* The most common clustering algorithm is K-means, where we define K (the number of clusters)
+and the algorithm iterativel",2025-11-17T11:42:20.246342
+Explain Principal Component Analysis,,hard,mixed,,jayinai/data-science-question-answer,"* Principal Component Analysis (PCA) is a dimension reduction technique that projects
+the data into a lower dimensional space
+* PCA uses Singular Value Decomposition (SVD), which is a matrix factorization method
+that decomposes a matrix into three smaller matrices (more details of SVD [here](https://en.wikipedia.org/wiki/Singular-value_decomposition))
+* PCA finds top N principal components, which are dimensions along which the data vary
+(spread out) the most. Intuitively, the more spread out the",2025-11-17T11:42:20.246351
+Explain Autoencoder,,medium,mixed,,jayinai/data-science-question-answer,"* The aim of an autoencoder is to learn a representation (encoding) for a set of data
+* An autoencoder always consists of two parts, the encoder and the decoder. The encoder would find a lower dimension representation (latent variable) of the original input, while the decoder is used to reconstruct from the lower-dimension vector such that the distance between the original and reconstruction is minimized
+* Can be used for data denoising and dimensionality reduction",2025-11-17T11:42:20.246359
+Explain Generative Adversarial Network,,hard,mixed,,jayinai/data-science-question-answer,"* Generative Adversarial Network (GAN) is an unsupervised learning algorithm that also has supervised flavor: using supervised loss as part of training
+* GAN typically has two major components: the **generator** and the **discriminator**. The generator tries to generate ""fake"" data (e.g, images or sentences) that fool the discriminator into thinking that they're real, while the discriminator tries to distinguish between real and generated data. It's a fight between the two players thus the name ",2025-11-17T11:42:20.246371
+Explain Tokenization,,hard,mixed,,jayinai/data-science-question-answer,"* Tokenization is the process of converting a sequence of characters into a sequence of tokens
+* Consider this example: `The quick brown fox jumped over the lazy dog`. In this case each word (separated by space) would be a token
+* Sometimes tokenization doesn't have a definitive answer. For instance, `O'Neill` can be tokenized to `o` and `neill`, `oneill`, or `o'neill`.
+* In some cases tokenization requires language-specific knowledge. For example, it doesn't make sense to tokenize `aren't` into",2025-11-17T11:42:20.246379
+Explain Stemming and lemmatization,,hard,mixed,,jayinai/data-science-question-answer,"* The goal of both stemming and lemmatization is to reduce inflectional forms and sometimes derivationally related forms of a word to a common base form
+* Stemming usually refers to a crude heuristic process that chops off the ends of words
+* Lemmatization usually refers to doing things properly with the use of a vocabulary and morphological analysis of words
+* If confronted with the token `saw`, stemming might return just `s`, whereas lemmatization would attempt to return either `see` or `saw` ",2025-11-17T11:42:20.246387
+Explain N gram,,hard,mixed,,jayinai/data-science-question-answer,"* n-gram is a contiguous sequence of n items from a given sample of text or speech
+* An n-gram of size 1 is referred to as a ""unigram""; size 2 is a ""bigram"" size 3 is a ""trigram"". Larger sizes are sometimes referred to by the value of n in modern language, e.g., ""four-gram"", ""five-gram"", and so on.
+* Consider this example: `The quick brown fox jumped over the lazy dog.`
+  - bigram would be `the quick`, `quick brown`, `brown fox`, ..., i.e, every two consecutive words (or tokens)
+  - trigram woul",2025-11-17T11:42:20.246394
+Explain Bag of Words,,hard,mixed,,jayinai/data-science-question-answer,"* Why? Machine learning models cannot work with raw text directly; rather, they take numerical values as input.
+* Bag of words (BoW) builds a **vocabulary** of all the unique words in our dataset, and associate a unique index to each word in the vocabulary
+* It is called a ""bag"" of words, because it is a representation that completely ignores the order of words
+* Consider this example of two sentences: (1) `John likes to watch movies, especially horor movies.`, (2) `Mary likes movies too.` We wo",2025-11-17T11:42:20.246402
+Explain word2vec,,hard,mixed,,jayinai/data-science-question-answer,"* Shallow, two-layer neural networks that are trained to construct linguistic context of words
+* Takes as input a large corpus, and produce a vector space, typically of several hundred
+dimension, and each word in the corpus is assigned a vector in the space
+* The key idea is **context**: words that occur often in the same context should have same/opposite
+meanings.
+* Two flavors
+    - continuous bag of words (CBOW): the model predicts the current word given a window of surrounding context words
+",2025-11-17T11:42:20.246413
+Explain Cron job,,hard,mixed,,jayinai/data-science-question-answer,"The software utility **cron** is a **time-based job scheduler** in Unix-like computer operating systems. People who set up and maintain software environments use cron to schedule jobs (commands or shell scripts) to run periodically at fixed times, dates, or intervals. It typically automates system maintenance or administration -- though its general-purpose nature makes it useful for things like downloading files from the Internet and downloading email at regular intervals.
+
+
+
+Tools:
+* [Apache Ai",2025-11-17T11:42:20.246423
+Explain Linux,,medium,mixed,,jayinai/data-science-question-answer,"Using **Ubuntu** as an example.
+
+* Become root: `sudo su`
+* Install package: `sudo apt-get install <package>`
+
+(#data-science-question-answer)
+
+
+Confession: some images are adopted from the internet without proper credit. If you are the author and this would be an issue for you, please let me know.",2025-11-17T11:42:20.246431
 [Paste question here],,easy/medium/hard,coding/stats/ml/case/behavioral,,manual_templates/leetcode_manual_template.txt,,2025-11-17T11:27:21.133135
 [Question title/description] [Full question text if available],"[Company Name or ""General""]",easy/medium/hard,sql/python,,manual_templates/stratascratch_manual_template.txt,,2025-11-17T11:27:21.133212
 "Count the number of movies per genre Write a query to find the number of movies in each genre. Return the genre name and count, ordered by count descending.",Netflix,medium,sql,,manual_templates/stratascratch_manual_template.txt,,2025-11-17T11:27:21.133229
