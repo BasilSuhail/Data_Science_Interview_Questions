@@ -247,16 +247,21 @@ Find the overall friend request acceptance rate rounded to 2 decimals.
 | Source | Questions | Status |
 |--------|-----------|--------|
 | GitHub | 54 | ✅ Collected |
+| Scenario Questions | 30 | ✅ Collected |
+| Template Examples | 2 | ✅ Included |
+| **Current Total** | **86** | ✅ **Ready to upload!** |
 | LeetCode | 0 → 20-50 | ⏳ Template ready |
 | StrataScratch | 0 → 20-50 | ⏳ Template ready |
-| **TOTAL** | **54 → 94-154** | **Ready to grow!** |
+| **Potential Total** | **106-186** | **Ready to grow!** |
 
-### Coverage:
-- **Coding:** Good (13 questions + will improve with SQL)
-- **ML:** Good (8 questions)
-- **Stats:** Good (7 questions + will improve with LeetCode)
-- **SQL:** ❌ CRITICAL GAP (0% → fix with StrataScratch!)
-- **Case Studies:** Low (add with LeetCode)
+### Coverage (Current 86 Questions):
+- **Coding:** ✅ Excellent (13 questions)
+- **ML:** ✅ Excellent (18 questions)
+- **Stats:** ✅ Good (16 questions)
+- **Case Studies:** ✅ Good (11 questions)
+- **Mixed:** ✅ Good (25 questions)
+- **SQL:** ⚠️ Low (2 questions - add StrataScratch!)
+- **Difficulty Balance:** ✅ Great (68 medium, 13 hard, 3 easy)
 
 ---
 

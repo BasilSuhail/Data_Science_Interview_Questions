@@ -84,10 +84,10 @@ def merge_all_questions():
     print("📂 Loading questions from all sources:\n")
 
     sources = [
-        'github_questions.csv',
-        'leetcode_questions.csv',
-        'stratascratch_questions.csv',
-        'manual_questions.csv'
+        'collected_questions/github_questions.csv',
+        'collected_questions/leetcode_questions.csv',
+        'collected_questions/stratascratch_questions.csv',
+        'collected_questions/manual_questions.csv'
     ]
 
     for source in sources:
@@ -148,7 +148,7 @@ def merge_all_questions():
 
     return unique_questions
 
-def save_to_csv(questions, filename='final_interview_questions.csv'):
+def save_to_csv(questions, filename='collected_questions/final_interview_questions.csv'):
     """Save merged questions to CSV."""
     if not questions:
         print("\n❌ No questions to save!")

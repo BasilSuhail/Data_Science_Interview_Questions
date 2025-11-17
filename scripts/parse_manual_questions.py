@@ -27,23 +27,24 @@ def parse_template_file(filename):
             if len(section.strip()) < 50:
                 continue
 
-            # Extract fields using regex
+            # Extract metadata fields (company, difficulty, type) - these apply to ALL questions in the section
             company_match = re.search(r'\*\*Company\*\*:\s*(.+)', section)
             difficulty_match = re.search(r'\*\*Difficulty\*\*:\s*(.+)', section)
             type_match = re.search(r'\*\*Type\*\*:\s*(.+)', section)
+
+            # Extract company from header if not in field format (e.g., "## Amazon - Data Scientist")
+            if not company_match:
+                header_match = re.search(r'^##\s*([^-\n]+)', section)
+                if header_match:
+                    company_match = header_match
+
+            # Method 1: Check for **Question Title:** format (StrataScratch style)
             title_match = re.search(r'\*\*Question Title:\*\*\s*(.+?)(?=\*\*|$)', section, re.DOTALL)
             details_match = re.search(r'\*\*Question Details:\*\*\s*(.+)', section, re.DOTALL)
 
-            # For LeetCode template (slightly different format)
-            if not title_match:
-                question_match = re.search(r'\*\*Question \d+:\*\*\s*(.+?)(?=\*\*Question \d+:|$)', section, re.DOTALL)
-                if question_match:
-                    title_match = question_match
-
             if title_match:
+                # StrataScratch format - one question per section
                 question_text = title_match.group(1).strip()
-
-                # Add details if available
                 if details_match:
                     details = details_match.group(1).strip()
                     if details and details not in question_text:
@@ -53,19 +54,39 @@ def parse_template_file(filename):
                 question_text = re.sub(r'\n+', ' ', question_text)
                 question_text = re.sub(r'\s+', ' ', question_text).strip()
 
-                if len(question_text) < 20:
-                    continue
+                if len(question_text) >= 20:
+                    questions.append({
+                        'question_text': question_text,
+                        'company': company_match.group(1).strip() if company_match else '',
+                        'difficulty': difficulty_match.group(1).strip().lower() if difficulty_match else 'medium',
+                        'question_type': type_match.group(1).strip().lower() if type_match else 'mixed',
+                        'topics': '',
+                        'source': f'manual_{filename}',
+                        'answer_text': '',
+                        'created_at': datetime.now().isoformat()
+                    })
+            else:
+                # Method 2: Find ALL **Question N:** in this section (LeetCode/Scenario style)
+                question_matches = re.finditer(r'\*\*Question \d+:\*\*\s*(.+?)(?=\n\*\*Question \d+:|\n---|\Z)', section, re.DOTALL)
 
-                questions.append({
-                    'question_text': question_text,
-                    'company': company_match.group(1).strip() if company_match else '',
-                    'difficulty': difficulty_match.group(1).strip().lower() if difficulty_match else 'medium',
-                    'question_type': type_match.group(1).strip().lower() if type_match else 'mixed',
-                    'topics': '',
-                    'source': f'manual_{filename}',
-                    'answer_text': '',
-                    'created_at': datetime.now().isoformat()
-                })
+                for match in question_matches:
+                    question_text = match.group(1).strip()
+
+                    # Clean up question text
+                    question_text = re.sub(r'\n+', ' ', question_text)
+                    question_text = re.sub(r'\s+', ' ', question_text).strip()
+
+                    if len(question_text) >= 20:
+                        questions.append({
+                            'question_text': question_text,
+                            'company': company_match.group(1).strip() if company_match else '',
+                            'difficulty': difficulty_match.group(1).strip().lower() if difficulty_match else 'medium',
+                            'question_type': type_match.group(1).strip().lower() if type_match else 'mixed',
+                            'topics': '',
+                            'source': f'manual_{filename}',
+                            'answer_text': '',
+                            'created_at': datetime.now().isoformat()
+                        })
 
     except FileNotFoundError:
         print(f"⚠️  File not found: {filename}")
@@ -85,8 +106,9 @@ def parse_all_templates():
     print("="*80 + "\n")
 
     template_files = [
-        'leetcode_manual_template.txt',
-        'stratascratch_manual_template.txt'
+        'templates/leetcode_manual_template.txt',
+        'templates/stratascratch_manual_template.txt',
+        'templates/manual_scenario_questions.txt'
     ]
 
     for filename in template_files:
@@ -101,7 +123,7 @@ def parse_all_templates():
 
     return all_questions
 
-def save_to_csv(questions, filename='manual_questions.csv'):
+def save_to_csv(questions, filename='collected_questions/manual_questions.csv'):
     """Save parsed questions to CSV."""
     if not questions:
         print("\n❌ No questions to save!")
