@@ -1,0 +1,38 @@
+# StrataScratch - Manual Collection Template
+
+## How to Use:
+
+1. Go to: https://www.stratascratch.com
+2. Sign up for free account
+3. Browse coding questions
+4. Copy questions and paste below in this format:
+
+---
+
+**Company**: [Company Name or "General"]
+**Difficulty**: easy/medium/hard
+**Type**: sql/python
+
+**Question Title:**
+[Question title/description]
+
+**Question Details:**
+[Full question text if available]
+
+---
+
+Example:
+
+**Company**: Netflix
+**Difficulty**: medium
+**Type**: sql
+
+**Question Title:**
+Count the number of movies per genre
+
+**Question Details:**
+Write a query to find the number of movies in each genre. Return the genre name and count, ordered by count descending.
+
+---
+
+After filling this template, save and run: python parse_manual_questions.py

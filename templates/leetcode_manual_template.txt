@@ -1,0 +1,30 @@
+# LeetCode Discuss - Manual Collection Template
+
+Since LeetCode uses JavaScript-rendered content, automated scraping is difficult.
+Instead, manually copy questions from LeetCode Discuss and paste them here.
+
+## How to Use:
+
+1. Go to: https://leetcode.com/discuss/interview-experience
+2. Search for "data science" or "machine learning"
+3. Open interesting interview experience posts
+4. Copy questions and paste below in this format:
+
+---
+
+## [Company Name] - [Role]
+
+**Difficulty**: easy/medium/hard
+**Type**: coding/stats/ml/case/behavioral
+
+**Question 1:**
+[Paste question here]
+
+**Question 2:**
+[Paste question here]
+
+---
+
+Repeat for each company/post you find!
+
+After filling this template, run: python parse_manual_questions.py
