@@ -1,53 +1,71 @@
 # 🚀 Ready to Upload to Supabase!
 
-## ✅ Quick Answer to Your Questions
+## ✅ ALL FILES ORGANIZED IN `supabase/` FOLDER!
 
-### **Q1: Can we make a singular questions dataset?**
-**A: YES! You already have it!** ✅
+Everything you need is now in one place: **`supabase/`** folder
 
-**File:** `collected_questions/final_interview_questions.csv`
+### What's in the folder:
+
+| File | Purpose |
+|------|---------|
+| `01_create_documents_table.sql` | Create table for textbooks |
+| `02_create_questions_table.sql` | Create table for questions |
+| `03_verify_upload.sql` | Verify everything uploaded correctly |
+| `documents_data.csv` | 10 textbooks (7.6 MB, 3,983 pages) |
+| `interview_questions_data.csv` | 234 questions (161 KB) |
+| `README.md` | Complete step-by-step setup guide |
+
+---
+
+## 🎯 Quick Answer to Your Questions
+
+### **Q1: Singular questions dataset?**
+**A: YES!** ✅
+
+**File:** `supabase/interview_questions_data.csv`
 - Contains ALL 234 unique questions
 - Already merged and deduplicated
 - Ready to upload
 
-**The other CSV files** (`120questions.csv`, `github_questions.csv`, etc.) are just source files - you can keep them for reference or delete them.
+---
+
+### **Q2: Separate SQL files?**
+**A: YES! Done!** ✅
+
+**SQL Files created:**
+1. `supabase/01_create_documents_table.sql` - No markdown, clean SQL
+2. `supabase/02_create_questions_table.sql` - No markdown, clean SQL
+3. `supabase/03_verify_upload.sql` - Test queries
+
+**No more syntax errors!** Just copy-paste and run.
 
 ---
 
-### **Q2: Do we need to update the SQL file for Supabase to read 2 databases?**
-**A: You need to create 2 TABLES in Supabase** ✅
+## 🚀 3-Step Setup
 
-Your app will use:
-1. **`documents` table** - For textbook content (RAG answers)
-2. **`interview_questions` table** - For interview questions (NEW!)
+### STEP 1: Run SQL Files (in order)
+
+1. Go to Supabase → SQL Editor
+2. Copy contents of `01_create_documents_table.sql` → Run
+3. Copy contents of `02_create_questions_table.sql` → Run
+
+### STEP 2: Upload CSV Files
+
+1. Table Editor → `documents` table → Import CSV
+   - Upload: `supabase/documents_data.csv`
+2. Table Editor → `interview_questions` table → Import CSV
+   - Upload: `supabase/interview_questions_data.csv`
+
+### STEP 3: Verify
+
+1. SQL Editor → Copy contents of `03_verify_upload.sql` → Run
+2. Check counts: 3,983 pages + 234 questions
 
 ---
 
-## 📁 Files Ready to Upload
+## 📚 Full Instructions
 
-| What | File | Size | Rows |
-|------|------|------|------|
-| **Textbooks** | `supabase_dataset.csv` | 7.6 MB | 3,983 |
-| **Questions** | `collected_questions/final_interview_questions.csv` | 161 KB | 234 |
-
----
-
-## 📚 Setup Instructions
-
-**COMPLETE GUIDE:** See [docs/SUPABASE_COMPLETE_SETUP.md](docs/SUPABASE_COMPLETE_SETUP.md)
-
-### Quick Steps:
-
-**STEP 1: Create `documents` table**
-```sql
-CREATE TABLE documents (
-    id BIGSERIAL PRIMARY KEY,
-    book_name TEXT NOT NULL,
-    page_number INTEGER,
-    content TEXT NOT NULL,
-    created_at TIMESTAMPTZ DEFAULT NOW()
-);
-```
+**See:** `supabase/README.md` for complete step-by-step guide
 
 **STEP 2: Upload `supabase_dataset.csv` to `documents` table**
 - Table Editor → documents → Insert → Import CSV
