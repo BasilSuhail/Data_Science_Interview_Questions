@@ -246,24 +246,26 @@ Find the overall friend request acceptance rate rounded to 2 decimals.
 ### What You Have:
 | Source | Questions | Status |
 |--------|-----------|--------|
+| **kojino/120-DS-Questions** | **115** | ✅ **Collected** |
 | GitHub (Devinterview-io) | 34 | ✅ Collected |
 | jayinai Repository | 33 | ✅ Collected |
 | Scenario Questions | 30 | ✅ Collected |
 | GitHub (iamtodor) | 19 | ✅ Collected |
 | Template Examples | 3 | ✅ Included |
-| **Current Total** | **119** | ✅ **Ready to upload!** |
+| **Current Total** | **234** | ✅ **Ready to upload!** |
 | LeetCode | 0 → 20-50 | ⏳ Template ready |
 | StrataScratch | 0 → 20-50 | ⏳ Template ready |
-| **Potential Total** | **139-219** | **Ready to grow!** |
+| **Potential Total** | **254-334** | **Ready to grow!** |
 
-### Coverage (Current 119 Questions):
-- **Mixed (General):** ✅ Excellent (58 questions)
-- **ML:** ✅ Excellent (18 questions)
-- **Stats:** ✅ Good (16 questions)
-- **Coding:** ✅ Good (13 questions)
-- **Case Studies:** ✅ Good (11 questions)
-- **SQL:** ⚠️ Low (2 questions - add StrataScratch!)
-- **Difficulty Balance:** ✅ Great (77 medium, 37 hard, 3 easy)
+### Coverage (Current 234 Questions):
+- **Mixed (General):** ✅ Excellent (58 questions, 25%)
+- **Case Studies:** ✅ Excellent (53 questions, 23%)
+- **Stats:** ✅ Excellent (52 questions, 22%)
+- **ML:** ✅ Excellent (37 questions, 16%)
+- **Coding:** ✅ Good (26 questions, 11%)
+- **Behavioral:** ✅ NEW! (5 questions, 2%)
+- **SQL:** ⚠️ Low (2 questions, <1% - add StrataScratch!)
+- **Difficulty Balance:** ✅ Great (127 medium, 102 hard, 3 easy)
 
 ---
 
