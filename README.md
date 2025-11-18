@@ -1,206 +1,106 @@
 # AI Interview Coach for Data Science Jobs
 
-Personalized interview practice tailored to your experience level, target companies, and weak areas.
+Personalized interview practice with **396 real interview questions** and AI-powered answers from 10 textbooks.
 
 ---
 
 ## 🚀 Quick Start
 
-### Step 1: Set Up Configuration
+1. **Upload Database to Supabase:**
+   - See **[UPLOAD_READY.md](UPLOAD_READY.md)** for 3-step guide
+   - Takes ~10 minutes
 
-1. Copy `config.example.js` to `config.js`:
-   ```bash
-   cp config.example.js config.js
-   ```
+2. **Open the App:**
+   - Open `index.html` in your browser
+   - No server needed!
 
-2. Get a free Groq API key from https://console.groq.com/keys
+---
 
-3. Add your API key to `config.js`:
-   ```javascript
-   const CONFIG = {
-       GROQ_API_KEY: 'your_actual_key_here'
-   };
-   ```
+## 📊 What You Get
 
-**⚠️ IMPORTANT:** Never commit `config.js` to Git! It's already in `.gitignore`.
+### 396 Interview Questions
+- **ML:** 108 questions (27%)
+- **Mixed/General:** 109 questions (28%)
+- **Stats:** 61 questions (15%)
+- **Case Studies:** 61 questions (15%)
+- **Coding:** 28 questions (7%)
+- **SQL:** 22 questions (6%)
+- **Behavioral:** 5 questions (1%)
 
-### Step 2: Open the App
-
-Simply open `index.html` in any web browser. No server needed!
+### 10 Data Science Textbooks
+- 3,983 pages with tables extracted
+- Statistics, ML, Probability coverage
+- 7.6 MB database
 
 ---
 
 ## 🎯 Features
 
-### ✅ Personalized Question Generation
-- **Experience-Level Targeting**: Junior, Mid-Level, or Senior questions
-- **Company-Specific Practice**: Questions tailored to Meta, Google, Amazon, etc.
-- **Focus Area Weighting**: More questions from your weak areas
-- **Interview Urgency**: Different prep based on days until interview
-
-### ✅ Interview Type Selector
-- Mixed Practice (all types)
-- Coding Interviews (Python, SQL, algorithms)
-- Statistics & Probability
-- Machine Learning Algorithms
-- Case Studies
-- Behavioral Questions
-
-### ✅ Smart Answer System
-- Click any question to see detailed explanations
-- Answers pulled from 10 data science textbooks using RAG
-- Includes tables, formulas, and examples
+- ✅ **Personalized Questions** - Based on experience level & target company
+- ✅ **Interview Types** - Coding, ML, Stats, Case Studies, Behavioral
+- ✅ **AI Answers** - From textbooks using RAG
+- ✅ **Dark/Light Mode** - Clean, modern UI
+- ✅ **Profile System** - Track weak areas & interview countdown
 
 ---
 
-## 📚 Database Content
+## 📁 Project Structure
 
-**Current Books (10 total, 3,983 pages):**
-
-**Core Interview Prep:**
-- ✅ Introduction to Statistical Learning (ISLR) - 617 pages
-- ✅ OpenIntro Statistics - 465 pages
-- ✅ Think Stats - 141 pages
-
-**Foundational Content:**
-- A Mathematical Introduction to Data Science - 486 pages
-- An Introduction to Statistics and Machine Learning - 371 pages
-- Data Science in Practice - 199 pages
-- Data Science: Foundations with R - 422 pages
-- Introduction to Data Science - 255 pages
-- Materials Data Science - 629 pages
-- Python for Data Science - 398 pages
-
-**Coverage:**
-- ✅ Statistics & Hypothesis Testing: 80%
-- ✅ Machine Learning Algorithms: 75%
-- ✅ Probability Distributions: 85%
-- ✅ Linear/Logistic Regression: 90%
-- ⚠️ SQL: 0% (needs addition)
-- ⚠️ Business Metrics: 20%
-
----
-
-## 📤 Uploading Database to Supabase
-
-### Option A: Supabase Dashboard (Easiest)
-
-1. Go to https://supabase.com and open your project
-2. Navigate to **Table Editor** → **documents** table
-3. Click **Insert** → **Import data from CSV**
-4. Select `supabase_dataset.csv`
-5. Map columns: `book_name`, `page_number`, `content`
-6. Click **Import**
-7. Done! (May take 2-3 minutes for 3,983 rows)
-
-### Option B: Supabase CLI (Advanced)
-
-```bash
-supabase db reset
-supabase db push
-# Then import CSV via dashboard
 ```
-
----
-
-## 🔧 Adding More Books
-
-### Step 1: Add PDF Books
-
-Put new PDF files in the `Books used/` folder
-
-### Step 2: Extract Content
-
-```bash
-cd "Data Science Interview Questions"
-source venv/bin/activate
-pip install pdfplumber pillow  # First time only
-python add_books_enhanced.py
+├── supabase/                      ← Everything to upload
+│   ├── 01_create_documents_table.sql
+│   ├── 02_create_questions_table.sql
+│   ├── 03_verify_upload.sql
+│   ├── documents_data.csv         (7.6 MB - textbooks)
+│   ├── interview_questions_data.csv (238 KB - questions)
+│   └── README.md                  (Upload guide)
+│
+├── index.html                     ← Open this in browser
+├── config.js                      ← Add your Groq API key
+│
+├── UPLOAD_READY.md               ← Start here!
+├── START_HERE.md                 ← Full project guide
+└── THE ROADMAP.md                ← Development plan
 ```
-
-This creates `supabase_dataset.csv` with enhanced table extraction.
-
-### Step 3: Upload to Supabase
-
-Follow the upload instructions above.
-
-**Recommended Books to Add:**
-- SQL for Data Scientists (critical - 85% of interviews)
-- Hands-On Machine Learning (Aurélien Géron)
-- Trustworthy Online Controlled Experiments (A/B testing)
-- Cracking the Coding Interview (data structures chapter)
 
 ---
 
 ## 🎨 UI Features
 
-### Clean, Modern Design
-- Dark/Light mode toggle
-- Responsive layout (works on mobile)
-- Smooth animations
-- Accordion-style answers (expand/collapse inline)
-
-### User Profile System
-- Save experience level
-- Track target companies (30+ pre-defined)
-- Mark weak areas for focused practice
-- Interview countdown with urgency indicators
-
-### Onboarding Flow
-- First-time visitor modal
-- Setup profile wizard
-- Profile summary always visible
+- Clean, modern design
+- Responsive (works on mobile)
+- Question accordion (expand/collapse)
+- Profile setup wizard
+- Interview countdown timer
 
 ---
 
-## 🛠️ Technical Stack
+## 🛠️ Tech Stack
 
-- **Frontend**: Pure HTML/CSS/JavaScript (no frameworks)
-- **AI**: Groq API (llama-3.3-70b-versatile)
-- **Database**: Supabase (PostgreSQL)
-- **RAG Architecture**: Keyword extraction + relevance scoring
-- **PDF Extraction**: pdfplumber (with table support)
-
----
-
-## 📊 Project Status
-
-**Phase 1: Foundation** ✅ 90% Complete
-- [x] User Profile System
-- [x] Personalized Question Generation
-- [x] Interview Type Selector
-- [x] Onboarding Modal
-- [x] Database Upgrade (3 critical books added)
-- [x] Enhanced table extraction
-
-**Phase 2: Personalized Practice** ⏳ 40% Complete
-- [x] Experience-level targeting
-- [x] Company-specific patterns
-- [x] Focus area weighting
-- [ ] Performance history tracking
-- [ ] Real interview questions database
-
-**Phase 3: Mock Interview Simulator** ❌ Not Started
-- [ ] Timed practice sessions
-- [ ] Mixed question types
-- [ ] Performance analytics
-
-See `THE ROADMAP.md` for full project plan.
+- **Frontend:** Vanilla HTML/CSS/JavaScript
+- **AI:** Groq API (llama-3.3-70b)
+- **Database:** Supabase (PostgreSQL)
+- **RAG:** Keyword extraction + relevance scoring
 
 ---
 
-## 🐛 Known Issues
+## 📚 Documentation
 
-- ❌ No SQL coverage in database (need to add SQL textbook)
-- ⚠️ Images/charts not extracted from PDFs (only text + tables)
-- ⚠️ Mathematical formulas may be partially garbled
-
----
-
-## 📝 License
-
-Personal project - not for commercial distribution.
+- **[UPLOAD_READY.md](UPLOAD_READY.md)** - How to upload database
+- **[START_HERE.md](START_HERE.md)** - Complete project guide
+- **[THE ROADMAP.md](THE ROADMAP.md)** - Development roadmap
+- **[supabase/README.md](supabase/README.md)** - Detailed upload steps
 
 ---
 
-Built with ❤️ to help people ace data science interviews
+## ✨ Quick Stats
+
+- **Questions:** 396 (9 sources, deduplicated)
+- **Textbooks:** 10 books, 3,983 pages
+- **Coverage:** All major DS interview areas
+- **Setup Time:** ~10 minutes
+- **Storage:** ~7.8 MB
+
+---
+
+Built to help you ace data science interviews! 🚀
