@@ -1,0 +1,240 @@
+💥SQL INTERVIEW QUESTIONS & ANSWERS (Part I) 👩‍💻
+.
+
+Hello Kaggle Peers 🤗
+.
+======================
+
+In this topic and the next one i will share with you some common SQL interview questions. Some of them will seem easy and others will tackle some advanced concepts that will require delving deeper into new concepts. Each topic will include around 10 questions. Here you go…..
+
+1. What is SQL?
+SQL is Structured Query Language designed specifically for communicating with databases (for inserting and modifying in a relational database management system). SQL is an ANSI (American National Standards Institute) standard.
+
+2. What are the Advantages of SQL?
+SQL is not a proprietary language used by specific database vendors. Almost every major DBMS supports SQL, so learning this one language will enable programmers to interact with any database like ORACLE, SQL, MYSQL etc.
+
+SQL is easy to learn. The statements are all made up of descriptive English words, and there aren't that many of them.
+
+SQL is actually an immensely powerful language and by using its language elements you can perform very complex and sophisticated database operations
+
+3. What is a field in a database?
+A field is an area within a record reserved for a specific piece of data.
+Examples: Employee Name, Employee ID etc.
+
+4. What is a Record in a database?
+A record is the collection of values / fields of a specific entity: i.e. Employee, Salary etc.
+
+5. What is a Table in a database?
+A table is a collection of records of a specific type. For example, employee table, salary
+table etc.
+
+6. What is a database transaction?
+A database transaction takes the database from one consistent state to another. At the end of the
+transaction the system must be in the prior state if transaction fails or the status of the
+system should reflect the successful completion if the transaction goes through.
+
+A Database Transaction is a set of database operations that must be treated as whole, meaning either all operations are executed or none of them.
+
+An example can be a bank transaction from one account to another account. Either both debit
+and credit operations must be executed or none of them.
+
+ACID (Atomicity, Consistency, Isolation, Durability) is a set of properties that guarantee
+that database transactions are processed reliably.
+
+7. What are the properties of a transaction?
+Properties of the transaction can be summarized as ACID Properties.
+
+Atomicity
+A transaction consists of many steps. When all the steps in a transaction are completed, it will get reflected in DB or if any step fails, all the transactions are rolled back.
+
+Consistency
+The database will move from one consistent state to another, if the transaction succeeds
+and remain in the original state if the transaction fails.
+
+Isolation
+
+Every transaction should operate as if it is the only transaction in the system.
+
+Durability
+> Once a transaction has completed successfully, the updated rows/records must be available for all other transactions on a permanent basis.
+
+8. What is SQL Order of Execution?
+About 90% of data analysts will get the SQL order of execution WRONG
+
+The correct order is:
+
+FROM – Define which tables you’ll source data from
+WHERE – Apply filters to your base data
+GROUP BY – Aggregate your data
+HAVING – Filter the aggregated data
+SELECT – Display the final data
+ORDER BY – Sort data for easy viewing
+LIMIT – Restrict the number of results
+Why is SELECT not first in the order of execution you ask?
+
+Because it is different from the order of writing!
+
+Our machines FIRST look for the required tables and only THEN display the results.
+
+Deep understanding of how queries are processed will help you optimize them greatly! 😊
+
+9. What is the difference between having and where clause?
+Ans: HAVING is used to specify a condition for a group or an aggregate function used in
+select statement. The WHEREclause selects before grouping. The HAVINGclause selects
+rows after grouping. Unlike HAVINGclause, the WHEREclause cannot contain aggregate
+functions.
+
+10. What is Join?
+Ans: An SQL Join is used to combine data from two or more tables, based on a common
+field between them. For example, consider the following two tables.
+
+Student Table
+
+EnrollNo	StudentName	Address
+1000	geek1	geeksquiz1
+1001	geek2	geeksquiz2
+1002	geek3	geeksquiz3
+StudentCourse Table
+
+CourseID	EnrollNo
+1	1000
+2	1000
+3	1000
+1	1002
+2	1003
+The following is a join query that shows names of students enrolled in different courseIDs.
+
+SELECT StudentCourse.CourseID, Student.StudentName
+ FROM StudentCourse
+ INNER JOIN Student 
+ ON StudentCourse.EnrollNo = Student.EnrollNo
+ ORDER BY StudentCourse.CourseID;
+The above query would produce the following result.
+
+CourseID	StudentName
+1	geek1
+1	geek2
+2	geek1
+2	geek3
+3	geek1
+.
+
+
+Studying SQL INTERVIEW QUESTIONS & ANSWERS (Part II)
+.
+
+Hello Kaggle Peers 🤗
+.
+======================
+
+.
+
+Today's topic will be continuing from the last topic around SQL interview questions, in this topic, some advanced questions will be listed and as I alluded to in my previous topic, those advanced topics may require delving deeper into learning advanced SQL concepts.
+
+.
+
+11. What is a view in SQL? How to create one
+Ans: A view is a virtual table based on the result-set of an SQL statement. We can create
+using create view syntax.
+
+CREATE VIEW view_name AS
+SELECT column_name(s)
+FROM table_name
+WHERE condition
+12. What are the uses of a view? (Level: Intermediate)
+Views can represent a subset of the data contained in a table; consequently, a view can
+limit the degree of exposure of the underlying tables to the outer world: a given user may
+have permission to query the view, while denied access to the rest of the base table.
+
+Views can join and simplify multiple tables into a single virtual table.
+
+Views can act as aggregated tables, where the database engine aggregates data (sum,
+average etc.) and presents the calculated results as part of the data
+
+Views can hide the complexity of data; for example a view could appear as Sales2000 or
+Sales2001, transparently partitioning the actual underlying table.
+
+Depending on the SQL engine used, views can provide extra security.
+
+13. What are Primary Keys and Foreign Keys? (Level: Beginner)
+Ans:
+
+Primary keys are the unique identifiers for each row. They must contain unique values
+and cannot be null. Due to their importance in relational databases, Primary keys are the
+most fundamental aspect of all keys and constraints. A table can have only one primary key.
+
+Foreign keys are a method of ensuring data integrity and manifestation of the relationship
+between tables.
+
+14. What are the different types of SQL or different commands in SQL?
+DDL– Data Definition Language. DDL is used to define the structure that holds the data.
+
+DML– Data Manipulation Language. DML is used for manipulation of the data itself. Typical operations are Insert, Delete, Update and retrieving the data from the table.
+
+DCL–Data Control Language. DCL is used to control the visibility of data like granting database access and set privileges to create tables etc.
+
+TCL -Transaction Control Language. TCL commands are basically used for managing and controlling the transactions in a database to maintain consistency. And it also helps a user manage all the changes made by the DML commands for maintaining its transactions.
+
+15. In SQL interviews you will often be asked what constraint commands are
+Here's the short answer for you:
+
+Constraints are rules that limit the types of data that can go into a table.
+
+The most important commands are:
+
+NOT NULL - Ensures that a column cannot have a NULL value
+UNIQUE - Ensures that all values in a column are different
+PRIMARY KEY - A combination of a NOT NULL and UNIQUE.
+FOREIGN KEY - Prevents actions that would destroy links between tables
+CHECK - Ensures that the values in a column satisfies a specific condition
+DEFAULT - Sets a default value for a column if no value is specified
+Knowing these will help you nail the SQL interview BIG TIME 😉
+
+16. What is a foreign key, and what is it used for?
+A foreign key is used to establish relationships among relations (tables) in the relational model.
+
+Technically, a foreign key is a column (or columns) appearing in one relation that is (are) the primary key of another table.
+
+Although there may be exceptions, the values in the foreign key columns usually must correspond to values existing in the set of primary key values. This correspondence requirement is created in a database using a referential integrity constraint on the foreign key.
+
+17. What is Aggregate Functions?
+Aggregate functions perform a calculation on a set of values and return a single value.
+Aggregate functions ignore NULL values except COUNT function. HAVING clause is used,
+along with GROUP BY, for filtering query using aggregate values.
+Following functions are aggregate functions.
+AVG, MIN, CHECKSUM_AGG, SUM, COUNT, STDEV, COUNT_BIG, STDEVP, GROUPING, VAR, MAX. VARP
+18. What is CTE?
+CTE is an abbreviation Common Table Expression. A Common Table Expression (CTE) is an
+expression that can be thought of as a temporary result set which is defined within the execution of a single SQL statement. A CTE is similar to a derived table in that it is not
+stored as an object and lasts only for the duration of the query.
+
+19. What are the Advantages of using CTE?
+Using CTE improves readability and makes maintenance of complex queries easy.
+
+The query can be divided into separate, simple, logical building blocks which can be then used to build more complex CTEs until final result set is generated.
+
+CTE can be defined in functions, stored procedures, triggers or even views.
+
+After a CTE is defined, it can be used as a Table or a View and can SELECT, INSERT,
+UPDATE or DELETE Data.
+
+20. What is PRIMARY KEY?
+A PRIMARY KEY constraint is a unique identifier for a row within a database table. Every table should have a primary key constraint to uniquely identify each row and only one primary key constraint can be created for each table. The primary key constraints are used to enforce entity integrity.
+
+21. What is UNIQUE KEY constraint?
+A UNIQUE constraint enforces the uniqueness of the values in a set of columns, so no duplicate values are entered. The unique key constraints are used to enforce entity integrity as the primary key constraints.
+
+22. What is FOREIGN KEY?
+A FOREIGN KEY constraint prevents any actions that would destroy links between tables
+with the corresponding data values. A foreign key in one table points to a primary key in
+another table. Foreign keys prevent actions that would leave rows with foreign key values
+when there are no primary keys with that value. The foreign key constraints are used to
+enforce referential integrity.
+
+23. What is CHECK Constraint?
+A CHECK constraint is used to limit the values that can be placed in a column. The check constraints are used to enforce domain integrity.
+
+24. What is NOT NULL Constraint?
+A NOT NULL constraint enforces that the column will not accept null values. The not null constraints are used to enforce domain integrity, as the check constraints.
+
+
