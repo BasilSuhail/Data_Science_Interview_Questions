@@ -87,6 +87,7 @@ def merge_all_questions():
         'collected_questions/github_questions.csv',
         'collected_questions/jayinai_questions.csv',
         'collected_questions/120questions.csv',
+        'collected_questions/new_collections_questions.csv',
         'collected_questions/leetcode_questions.csv',
         'collected_questions/stratascratch_questions.csv',
         'collected_questions/manual_questions.csv'
