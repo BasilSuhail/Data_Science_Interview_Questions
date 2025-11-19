@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Data Science Search</title>
+    <title>AI Interview Coach - Practice & Get Instant Feedback</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -1176,6 +1176,7 @@
     </div>
 
     <script src="config.js"></script>
+    <script src="gemini-evaluator.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script type="module">
         import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
@@ -1910,8 +1911,30 @@ Double-check that all ${questionCount} questions are complete before finishing y
                 // Generate answer
                 const { answer } = await composeAnswer(scored, keywords, questionText);
 
-                // Display answer
-                answerDiv.innerHTML = `<div class="answer-content">${answer.html}</div>`;
+                // Display answer with AI practice section
+                answerDiv.innerHTML = `
+                    <div class="answer-content">${answer.html}</div>
+
+                    <div style="margin-top: 1.5rem; border-top: 2px solid var(--border); padding-top: 1.5rem;">
+                        <h4 style="color: var(--accent); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                            🤖 Practice Your Answer with AI Feedback
+                        </h4>
+                        <textarea
+                            id="practice-answer-${index}"
+                            style="width: 100%; min-height: 120px; padding: 1rem; border: 2px solid var(--border); border-radius: 0.5rem; background: var(--bg); color: var(--text); font-size: 0.9375rem; resize: vertical; font-family: inherit;"
+                            placeholder="Type your answer here to get instant AI evaluation..."
+                        ></textarea>
+                        <button
+                            onclick="evaluateMyAnswer(${index})"
+                            style="margin-top: 0.75rem; padding: 0.75rem 1.5rem; background: var(--accent); color: white; border: none; border-radius: 0.5rem; font-weight: 500; cursor: pointer; transition: background 0.2s;"
+                            onmouseover="this.style.background='var(--accent-light)'"
+                            onmouseout="this.style.background='var(--accent)'"
+                        >
+                            Get AI Feedback
+                        </button>
+                        <div id="eval-result-${index}"></div>
+                    </div>
+                `;
                 answerDiv.dataset.loaded = 'true';
 
             } catch (error) {
@@ -1925,6 +1948,53 @@ Double-check that all ${questionCount} questions are complete before finishing y
         }
 
         window.toggleQuestionAnswer = toggleQuestionAnswer;
+
+        // Evaluate user's answer with AI
+        async function evaluateMyAnswer(index) {
+            const textarea = document.getElementById(`practice-answer-${index}`);
+            const resultDiv = document.getElementById(`eval-result-${index}`);
+            const questionText = currentQuestions[index];
+
+            const userAnswer = textarea.value.trim();
+
+            if (!userAnswer) {
+                resultDiv.innerHTML = '<p style="color: #f59e0b; margin-top: 1rem; padding: 0.75rem; background: #fef3c7; border-radius: 0.5rem;">Please type an answer first to get AI feedback.</p>';
+                return;
+            }
+
+            // Show loading
+            resultDiv.innerHTML = `
+                <div style="text-align: center; padding: 1.5rem; color: var(--text-light); margin-top: 1rem;">
+                    <div style="font-size: 2rem; margin-bottom: 0.5rem;">⏳</div>
+                    <div>Evaluating with Gemini AI...</div>
+                </div>
+            `;
+
+            try {
+                // Evaluate with Gemini
+                const evaluation = await evaluateAnswer(
+                    questionText,
+                    userAnswer,
+                    "Data Scientist",
+                    "ml"
+                );
+
+                // Display results using the gemini-evaluator.js function
+                displayEvaluation(evaluation, `eval-result-${index}`);
+
+                // Scroll to results
+                resultDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div style="background: #fee2e2; border: 2px solid #ef4444; border-radius: 0.75rem; padding: 1.5rem; margin-top: 1rem;">
+                        <h4 style="color: #ef4444; margin-bottom: 0.5rem;">⚠️ Evaluation Error</h4>
+                        <p style="margin: 0; color: #7f1d1d;">${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+
+        window.evaluateMyAnswer = evaluateMyAnswer;
 
         // Search Question (kept for backwards compatibility, but not used in new accordion UI)
         function searchQuestion(question) {
