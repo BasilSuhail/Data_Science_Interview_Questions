@@ -61,52 +61,109 @@ Answer: ${userAnswer}
 Role: ${role}
 Question Type: ${questionType}`;
 
-    try {
-        // Use gemini-2.5-flash (stable version with generous free tier)
-        const response = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=' + CONFIG.GEMINI_API_KEY, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                contents: [{
-                    parts: [{
-                        text: prompt
-                    }]
-                }],
-                generationConfig: {
-                    temperature: 0.7,
-                    maxOutputTokens: 1024
+    // Retry logic with exponential backoff
+    const maxRetries = 3;
+    let lastError = null;
+
+    for (let attempt = 0; attempt < maxRetries; attempt++) {
+        try {
+            // Add delay for retries (exponential backoff: 1s, 2s, 4s)
+            if (attempt > 0) {
+                const delay = Math.pow(2, attempt - 1) * 1000;
+                console.log(`Retry attempt ${attempt + 1}/${maxRetries} after ${delay}ms...`);
+                await new Promise(resolve => setTimeout(resolve, delay));
+            }
+
+            // Use gemini-2.5-flash (stable version with generous free tier)
+            const response = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=' + CONFIG.GEMINI_API_KEY, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    contents: [{
+                        parts: [{
+                            text: prompt
+                        }]
+                    }],
+                    generationConfig: {
+                        temperature: 0.7,
+                        maxOutputTokens: 1024
+                    }
+                })
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                const errorMsg = errorData.error?.message || response.statusText;
+
+                // Check if it's a retryable error (overloaded, rate limit, etc.)
+                const isRetryable = errorMsg.includes('overloaded') ||
+                                   errorMsg.includes('rate limit') ||
+                                   response.status === 429 ||
+                                   response.status === 503;
+
+                if (isRetryable && attempt < maxRetries - 1) {
+                    lastError = new Error(errorMsg);
+                    continue; // Retry
                 }
-            })
-        });
 
-        if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(`Gemini API error: ${errorData.error?.message || response.statusText}`);
+                throw new Error(`Gemini API error: ${errorMsg}`);
+            }
+
+            const result = await response.json();
+
+            // Extract text from Gemini response
+            const text = result.candidates?.[0]?.content?.parts?.[0]?.text;
+
+            if (!text) {
+                throw new Error('No response from Gemini API');
+            }
+
+            // Parse JSON from response
+            const evaluation = parseEvaluationResponse(text);
+
+            return evaluation;
+
+        } catch (error) {
+            lastError = error;
+
+            // If it's the last attempt or non-retryable error, give up
+            if (attempt === maxRetries - 1 || !error.message.includes('overloaded')) {
+                break;
+            }
         }
+    }
 
-        const result = await response.json();
+    // All retries failed
+    console.error('Gemini evaluation error after retries:', lastError);
+    const errorMsg = lastError.message;
 
-        // Extract text from Gemini response
-        const text = result.candidates?.[0]?.content?.parts?.[0]?.text;
-
-        if (!text) {
-            throw new Error('No response from Gemini API');
-        }
-
-        // Parse JSON from response
-        const evaluation = parseEvaluationResponse(text);
-
-        return evaluation;
-
-    } catch (error) {
-        console.error('Gemini evaluation error:', error);
+    // Provide helpful error messages
+    if (errorMsg.includes('overloaded')) {
         return {
-            error: error.message,
+            error: 'Service Temporarily Busy',
+            message: 'Gemini AI is experiencing high traffic. Please wait 30 seconds and try again.',
+            score: 0,
+            strengths: ['Your answer was submitted'],
+            improvements: ['Try again in 30 seconds - the service is temporarily overloaded'],
+            final_comment: '⏳ The AI service is busy right now. Please wait a moment and click "Get AI Feedback" again.'
+        };
+    } else if (errorMsg.includes('rate limit')) {
+        return {
+            error: 'Rate Limit Reached',
+            message: 'You\'ve made too many requests. Free tier: 15 requests/minute.',
             score: 0,
             strengths: [],
-            improvements: [`Error: ${error.message}`],
+            improvements: ['Wait 60 seconds before trying again'],
+            final_comment: 'Rate limit exceeded. Please wait a minute before requesting more evaluations.'
+        };
+    } else {
+        return {
+            error: errorMsg,
+            score: 0,
+            strengths: [],
+            improvements: [`Error: ${errorMsg}`],
             final_comment: 'Unable to evaluate answer due to technical error. Please try again.'
         };
     }
