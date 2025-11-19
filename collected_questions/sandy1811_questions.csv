@@ -1,0 +1,273 @@
+question_text,company,difficulty,question_type,topics,source,answer_text,created_at
+What is padding,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061234
+Sigmoid Vs Softmax,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061244
+What is PoS Tagging,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061248
+What is tokenization,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061251
+What is topic modeling,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061253
+What is back propagation,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061256
+What is the idea behind GANs,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061258
+What is the Computational Graph,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061260
+What is sigmoid What does it do,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061263
+What is Named-Entity Recognition,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061265
+Explain the masked language model,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061267
+How do you preprocess text in NLP,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061270
+How do you extract features in NLP,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061272
+How is wordvec different from Glove,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061274
+What Are the Different Layers on CNN,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061277
+What makes CNNs translation invariant,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061279
+How is fastText different from wordvec,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061281
+Explain Generative Adversarial Network,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061284
+What is backward and forward propagation,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061286
+What are Syntactic and Semantic Analysis,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061288
+What is a local optimumWhat is a local optimum,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061291
+Explain gates used in LSTM with their functions,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061294
+What is ReLU How is it better than sigmoid or tanh,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061297
+What is transfer learning have you used it before,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061299
+What is multi-task learning When should it be used,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061302
+Difference between convex and non-convex cost function,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061305
+Why do we remove stop words When do we not remove them,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061308
+Explain the difference between an epoch a batch and an iteration,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061311
+What is the difference between NLP and NLU,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061313
+For online learning which one would you prefer SGD or Adagrad and why,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061321
+What Is a Multi-layer Perceptron MLPWhat Is a Multi-layer Perceptron MLP,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061325
+Is it always bad to have local optimaIs it always bad to have local optima,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061328
+"In node2vec, what does embedding represent topological similarity or nearness",,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061331
+What do you understand by Boltzmann Machine and Restricted Boltzmann Machines,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061334
+How to compute an inverse matrix faster by playing around with some computational tricks,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061337
+For infrequent/rare words which among CBOW and SkipGram should be used for wordvec training,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061341
+What is pooling in CNN Why do we need it,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061343
+Describe the structure of Artificial Neural Networks & RNN(recurrent neural network),,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061346
+How to Select a Batch Size Will selecting a batch size produce better or worse results?,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061350
+What are N-grams How can we use them,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061352
+How large should be N for our bag of words when using N-grams,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061355
+How can you use neural nets for text classification and computer vision,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061358
+Do gradient descent methods always converge at the same point,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061361
+What is gradient descent How does it work,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061364
+What are autoencoders Explain the different layers of autoencoders and mention three practical usages of them,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061367
+What is vanishing gradient descent,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061370
+difference between Vanishing gradient Vs Exploding gradient,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061372
+How to handle dying node problems in case of ReLU activation function,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061375
+What is the use of the leaky ReLU function,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061378
+What are the different Deep Learning Frameworks,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061380
+What is the difference between machine learning and deep learning,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061383
+What is a dropout layer and how does it help a neural network,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061386
+Explain why dropout in a neural network acts as a regularizer,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061389
+How to know whether your model is suffering from the problem of Exploding Gradients,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061393
+How to handle exploding gradient problem,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061395
+How Does an LSTM Network Work,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061397
+What problem does Bi-LSTM solve instead of only LSTM,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061400
+What is the difference between LSTM and GRU,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061402
+What happens to the predictions of a CNN if an image is rotated,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061405
+How does CNN help in translation and rotation invariance of images,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061408
+Define Term Freuency & Inverse Document Freuency Tf-idf and how to use it for converting text to vector,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061412
+What are three primary convolutional neural network layers How are they commonly put together,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061415
+Describe the architecture of a typical Convolutional Neural Network,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061418
+"What do you mean by Dropout and Batch Normalization, When and why use",,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061421
+What is the difference between online and batch learning,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061424
+Is dropout used on the test set,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061427
+What is an activation function and discuss the use of an activation function,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061430
+Explain three different types of activation functions,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061432
+What is the range of activation functions,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061435
+Why is Rectified Linear Unit a good activation function,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061437
+Why don't we use the Relu activation function in the output layer,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061440
+What can go wrong if we use a linear activation instead of ReLU,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061445
+"Give examples in which a many-to-one RNN architecture is appropriate, Give examples in which a many-to-one RNN architecture is appropriate",,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061449
+What is RNN and How does an RNN work,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061452
+Why Sigmoid or Tanh is not preferred to be used as the activation function in the hidden layer of the neural network,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061456
+"difference between various Activation functions such as Sigmoid , tanh, Softmax, ReLU, Leaky ReLU",,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061460
+Why Tanh activation function preferred over sigmoid,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061463
+What are word embeddings Why are they useful,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061465
+what is WordVec,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061467
+What are some advantages of using character embeddings instead of word embeddings,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061470
+"How do you get sentence meanings from word embeddings, considering the position of words in the sentence",,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061474
+Would you prefer gradient boosting trees model or logistic regression when doing text classification with bag of words,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061478
+What is bag of words How we can use it for text vectorization,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061481
+What are the advantages and disadvantages of bag of words,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061484
+What is the main difference between Adam and SGD,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061487
+What are the advantages and disadvantages of SGD over gradient descent,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061490
+"What is the difference between stochastic gradient descent SGD and gradient descent GD, Batch gradient descent, Stochastic gradient descent, Mini-batch gradient descent , what are the pros and cons for each of them",,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061496
+When would you use GD over SDG and vice-versa,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061499
+How would you choose the number of filters and the filter size at each CNN layer,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061502
+How can we use CNN for text classification,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061505
+What are some advantages in using a CNN (convolutional neural network rather than a DNN (dense neural network in an image classification task,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061509
+Describe two ways to visualize features of a CNN in an image classification task,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061512
+Why do segmentation CNNs typically have an encoder-decoder style / structure,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061515
+What is a convolutional layer & Why do we actually need convolutions Can we use fully-connected layers for that,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061519
+What are the advantages of parameter sharing in case of convolution,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061522
+Why do we use convolutions for images rather than just Fully Connected layers,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061525
+Why would you use many small convolutional kernels such as x rather than a few large onesWhy would you use many small convolutional kernels such as x rather than a few large ones,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061531
+Why we generally use Softmax non-linearity function as the last operation in-network,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061534
+How does BatchNormalization differ in training and inferencing,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061537
+How does batch size affect training of neural networks,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061539
+"When using mini batch gradient descent, why is it important to shuffle the data",,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061543
+Give a simple mathematical argument why a mini-batch version of such ML algorithm might be computationally more efficient than a training with full data set,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061547
+On a simplified and fundamental scale what makes the newly developed BERT model better than traditional NLP models,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061551
+How would you initialize weights in a neural network,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061554
+Why weights are initialized with small random numbers in a neural network What happens when weights are all or constant values,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061558
+Suppose you have a NN with layers and ReLU activations What will happen if we initialize all the weights with the same value,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061562
+What is backpropagation How does it work Why do we need it,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061567
+Why large filter sizes in early layers can be a bad choice How to choose filter size,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061571
+which one is more powerful a layer decision tree or a -layer neural network without any activation function --> Hint non-linearity,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061575
+Both decision trees and deep neural networks are non-linear classifier ie they separates the space by complicated decision boundary Why then it is so much easier for us to intuitively follow a decision tree model vs a deep neural network,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061582
+If you could take advantage of multiple CPU cores would you prefer a boosted-tree algorithm over a random forest,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061585
+What are MSE and RMSE,,medium,ml,machine_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061748
+Explain DBSCAN algorithm,,medium,ml,machine_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061753
+What are dummy variables,,medium,ml,machine_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061756
+What is anomaly detection,,easy,ml,machine_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061758
+What is Bayesian inference,,easy,ml,machine_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061760
+What is the R-Suared value,,easy,ml,machine_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061764
+What about ordinal features,,medium,ml,machine_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061766
+Loss functions in regression,,medium,ml,machine_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061769
+What are Recommender Systems,,medium,ml,machine_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061771
+Undersampling vs Oversampling,,medium,ml,machine_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061774
+What is reinforcement learning,,easy,ml,machine_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061776
+Do we call Knn a lazy algorithm,,medium,ml,machine_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061778
+Define a Monte Carlo simulation,,easy,ml,machine_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061780
+Does Kmeans and Kmeans++ is same,,medium,ml,machine_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061783
+What is pruning in Decision Tree,,easy,ml,machine_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061785
+How does an XGB control overfitting,,medium,ml,machine_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061787
+What is the class imbalance problem,,easy,ml,machine_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061789
+Why is lightGBM prone to overfitting,,medium,ml,machine_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061792
+Name any one distance based algorithm,,easy,ml,machine_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061794
+What is the objective function for Knn,,easy,ml,machine_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061796
+What is the standard error of the mean,,easy,ml,machine_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061798
+What are some disadvantages of K-means,,medium,ml,machine_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061800
+What is data augmentation Give examples,,easy,ml,machine_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061803
+What is Euclidean and Manhatten distance,,easy,ml,machine_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061806
+What is the role of gamma in RBF kernels,,easy,ml,machine_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061808
+How would you handle an imbalanced dataset,,medium,ml,machine_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061811
+Is it a good idea to combine multiple trees,,medium,ml,machine_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061814
+How do support vector machine algorithms work,,medium,ml,machine_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061816
+What is the significance of Residual Networks,,easy,ml,machine_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061818
+What does it mean to have low MAE and high MSE,,medium,ml,machine_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061821
+What are the disadvantages of linear regression,,medium,ml,machine_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061824
+What is a recommendation engine How does it work,,easy,ml,machine_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061826
+What is K-means How can you select K for K-means,,easy,ml,machine_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061829
+Does Radial basis kernel function is there in SVM,,medium,ml,machine_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061831
+What is linear regression Why is it called linear,,easy,ml,machine_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061834
+Is pruning always a good method to construct a tree,,medium,ml,machine_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061837
+What is the difference between bagging and boosting,,easy,ml,machine_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061839
+Which algorithm uses margin to classify the classes,,medium,ml,machine_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061842
+What algorithm can be used to summarize twitter feed,,medium,ml,machine_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061845
+How do you generate arbitrary or random shape clusters,,medium,ml,machine_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061847
+How to compute standard error of median in a simple way,,medium,ml,machine_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061850
+How does GBDTs decide to split a node What does it minimize,,medium,ml,machine_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061855
+What is the difference between R-suare and Adjusted R-suare,,easy,ml,machine_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061857
+How is matrix factorization useful in recommendation systems,,medium,ml,machine_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061860
+What are the approximation methods in Reinforcement Learning,,medium,ml,machine_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061863
+What is the difference between an error and a residual error,,easy,ml,machine_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061865
+Why does training an SVM takes a long time How can I speed up,,medium,ml,machine_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061868
+Difference between bagging boosting and the relation to bayes theorem,,medium,ml,machine_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061872
+Which algorithm takes the data to the next dimension and then classify,,medium,ml,machine_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061875
+What are categorical variables and what do we do with categorical variables,,medium,ml,machine_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.061878
+What is padding,,easy,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.062067
+Sigmoid Vs Softmax,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.062074
+What is PoS Tagging,,easy,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.062078
+What is tokenization,,easy,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.062082
+What is topic modeling,,easy,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.062086
+What is back propagation,,easy,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.062089
+What is the idea behind GANs,,easy,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.062093
+What is the Computational Graph,,easy,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.062097
+What is sigmoid What does it do,,easy,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.062100
+What is Named-Entity Recognition,,easy,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.062104
+Explain the masked language model,,medium,ml,nlp,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.062108
+How do you preprocess text in NLP,,medium,ml,nlp,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.062111
+How do you extract features in NLP,,medium,ml,nlp,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.062115
+How is wordvec different from Glove,,medium,ml,nlp,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.062118
+What Are the Different Layers on CNN,,medium,ml,computer_vision,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.062122
+What makes CNNs translation invariant,,medium,ml,computer_vision,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.062126
+How is fastText different from wordvec,,medium,ml,nlp,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.062129
+Explain Generative Adversarial Network,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.062134
+What is backward and forward propagation,,easy,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.062138
+What are Syntactic and Semantic Analysis,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.062142
+What is a local optimumWhat is a local optimum,,easy,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.062147
+Explain gates used in LSTM with their functions,,medium,ml,sequence_models,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.062151
+What is ReLU How is it better than sigmoid or tanh,,easy,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.062156
+What is transfer learning have you used it before,,easy,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.062165
+What is multi-task learning When should it be used,,easy,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.062170
+Difference between convex and non-convex cost function,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.062175
+Why do we remove stop words When do we not remove them,,medium,ml,nlp,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.062179
+Explain the difference between an epoch a batch and an iteration,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.062185
+What is the difference between NLP and NLU,,easy,ml,nlp,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.062188
+For online learning which one would you prefer SGD or Adagrad and why,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.062194
+What Is a Multi-layer Perceptron MLPWhat Is a Multi-layer Perceptron MLP,,easy,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.062199
+Is it always bad to have local optimaIs it always bad to have local optima,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.062205
+"In node2vec, what does embedding represent topological similarity or nearness",,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.062211
+What do you understand by Boltzmann Machine and Restricted Boltzmann Machines,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.062217
+How to compute an inverse matrix faster by playing around with some computational tricks,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.062223
+For infrequent/rare words which among CBOW and SkipGram should be used for wordvec training,,medium,ml,nlp,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.062229
+What is pooling in CNN Why do we need it,,easy,ml,computer_vision,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.062233
+Describe the structure of Artificial Neural Networks & RNN(recurrent neural network),,medium,ml,sequence_models,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.062239
+How to Select a Batch Size Will selecting a batch size produce better or worse results?,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.062245
+What are N-grams How can we use them,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.062249
+How large should be N for our bag of words when using N-grams,,medium,ml,nlp,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.062254
+How can you use neural nets for text classification and computer vision,,medium,ml,nlp,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.062259
+Do gradient descent methods always converge at the same point,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.062264
+What is gradient descent How does it work,,easy,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.062268
+What are autoencoders Explain the different layers of autoencoders and mention three practical usages of them,,hard,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.062276
+What is vanishing gradient descent,,easy,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.062279
+difference between Vanishing gradient Vs Exploding gradient,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.062285
+How to handle dying node problems in case of ReLU activation function,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.062290
+What is the use of the leaky ReLU function,,easy,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.062294
+What are the different Deep Learning Frameworks,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.062299
+What is the difference between machine learning and deep learning,,easy,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.062303
+What is a dropout layer and how does it help a neural network,,easy,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.062308
+Explain why dropout in a neural network acts as a regularizer,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.062313
+How to know whether your model is suffering from the problem of Exploding Gradients,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.062319
+How to handle exploding gradient problem,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.062323
+How Does an LSTM Network Work,,medium,ml,sequence_models,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.062327
+What problem does Bi-LSTM solve instead of only LSTM,,medium,ml,sequence_models,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.062332
+What is the difference between LSTM and GRU,,easy,ml,sequence_models,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.062336
+What happens to the predictions of a CNN if an image is rotated,,medium,ml,computer_vision,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.062340
+How does CNN help in translation and rotation invariance of images,,medium,ml,computer_vision,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.062345
+Define Term Freuency & Inverse Document Freuency Tf-idf and how to use it for converting text to vector,,easy,ml,nlp,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.062350
+What are three primary convolutional neural network layers How are they commonly put together,,medium,ml,computer_vision,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.062356
+Describe the architecture of a typical Convolutional Neural Network,,medium,ml,computer_vision,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.062361
+"What do you mean by Dropout and Batch Normalization, When and why use",,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.062367
+What is the difference between online and batch learning,,easy,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.062371
+Is dropout used on the test set,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.062375
+What is an activation function and discuss the use of an activation function,,easy,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.062380
+Explain three different types of activation functions,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.062385
+What is the range of activation functions,,easy,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.062389
+Why is Rectified Linear Unit a good activation function,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.062394
+Why don't we use the Relu activation function in the output layer,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.062399
+What can go wrong if we use a linear activation instead of ReLU,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.062405
+"Give examples in which a many-to-one RNN architecture is appropriate, Give examples in which a many-to-one RNN architecture is appropriate",,hard,ml,sequence_models,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.062413
+What is RNN and How does an RNN work,,easy,ml,sequence_models,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.062416
+Why Sigmoid or Tanh is not preferred to be used as the activation function in the hidden layer of the neural network,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.062424
+"difference between various Activation functions such as Sigmoid , tanh, Softmax, ReLU, Leaky ReLU",,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.062431
+Why Tanh activation function preferred over sigmoid,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.062435
+What are word embeddings Why are they useful,,medium,ml,nlp,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.062439
+what is WordVec,,easy,ml,nlp,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.062441
+What are some advantages of using character embeddings instead of word embeddings,,medium,ml,nlp,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.062446
+"How do you get sentence meanings from word embeddings, considering the position of words in the sentence",,medium,ml,nlp,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.062452
+Would you prefer gradient boosting trees model or logistic regression when doing text classification with bag of words,,hard,ml,nlp,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.062458
+What is bag of words How we can use it for text vectorization,,easy,ml,nlp,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.062462
+What are the advantages and disadvantages of bag of words,,medium,ml,nlp,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.062466
+What is the main difference between Adam and SGD,,easy,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.062471
+What are the advantages and disadvantages of SGD over gradient descent,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.062476
+"What is the difference between stochastic gradient descent SGD and gradient descent GD, Batch gradient descent, Stochastic gradient descent, Mini-batch gradient descent , what are the pros and cons for each of them",,easy,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.062487
+When would you use GD over SDG and vice-versa,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.062491
+How would you choose the number of filters and the filter size at each CNN layer,,medium,ml,computer_vision,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.062497
+How can we use CNN for text classification,,medium,ml,nlp,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.062500
+What are some advantages in using a CNN (convolutional neural network rather than a DNN (dense neural network in an image classification task,,hard,ml,computer_vision,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.062508
+Describe two ways to visualize features of a CNN in an image classification task,,medium,ml,computer_vision,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.062513
+Why do segmentation CNNs typically have an encoder-decoder style / structure,,medium,ml,computer_vision,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.062518
+What is a convolutional layer & Why do we actually need convolutions Can we use fully-connected layers for that,,easy,ml,computer_vision,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.062524
+What are the advantages of parameter sharing in case of convolution,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.062529
+Why do we use convolutions for images rather than just Fully Connected layers,,medium,ml,computer_vision,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.062535
+Why would you use many small convolutional kernels such as x rather than a few large onesWhy would you use many small convolutional kernels such as x rather than a few large ones,,medium,ml,computer_vision,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.062544
+Why we generally use Softmax non-linearity function as the last operation in-network,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.062549
+How does BatchNormalization differ in training and inferencing,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.062554
+How does batch size affect training of neural networks,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.062559
+"When using mini batch gradient descent, why is it important to shuffle the data",,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.062565
+Give a simple mathematical argument why a mini-batch version of such ML algorithm might be computationally more efficient than a training with full data set,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.062576
+On a simplified and fundamental scale what makes the newly developed BERT model better than traditional NLP models,,hard,ml,nlp,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.062582
+How would you initialize weights in a neural network,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.062587
+Why weights are initialized with small random numbers in a neural network What happens when weights are all or constant values,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.062595
+Suppose you have a NN with layers and ReLU activations What will happen if we initialize all the weights with the same value,,hard,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.062603
+What is backpropagation How does it work Why do we need it,,easy,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.062607
+Why large filter sizes in early layers can be a bad choice How to choose filter size,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.062614
+which one is more powerful a layer decision tree or a -layer neural network without any activation function --> Hint non-linearity,,hard,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.062622
+Both decision trees and deep neural networks are non-linear classifier ie they separates the space by complicated decision boundary Why then it is so much easier for us to intuitively follow a decision tree model vs a deep neural network,,medium,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.062635
+If you could take advantage of multiple CPU cores would you prefer a boosted-tree algorithm over a random forest,,hard,ml,deep_learning,Sandy1811/DS-Interview-FAANG,,2025-11-19T09:28:09.062642
