@@ -9,6 +9,10 @@ const CONFIG = {
     GROQ_API_KEY: 'YOUR_GROQ_API_KEY_HERE',
 
     // Supabase credentials (these are public and safe to commit)
-    SUPABASE_URL: 'https://iteavenjozhzxupbxosu.supabase.co',
-    SUPABASE_ANON_KEY: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml0ZWF2ZW5qb3poenh1cGJ4b3N1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjMwMjk4NTgsImV4cCI6MjA3ODYwNTg1OH0.AfBGdanvvHUoFOWYF94PN0ccLlWPVJFHN1At-kjzpkE'
+    SUPABASE_URL: 'YOUR_SUPABASE_URL_HERE',
+    SUPABASE_ANON_KEY: 'YOUR_SUPABASE_ANON_KEY_HERE',
+
+    // Get your free Gemini API key from: https://aistudio.google.com/app/apikey
+    // This enables AI-powered answer evaluation (NEW!)
+    GEMINI_API_KEY: 'YOUR_GEMINI_API_KEY_HERE'  // <-- ADD YOUR KEY HERE
 };
