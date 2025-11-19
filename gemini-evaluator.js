@@ -38,38 +38,40 @@ async function evaluateAnswer(question, userAnswer, role = "Data Scientist", que
         };
     }
 
-    const prompt = `You are an expert interview evaluator for data science and software engineering roles.
+    const prompt = `You are an expert interview evaluator for ${role} roles.
 
-Evaluate the candidate's answer in these categories:
-- Clarity: Is the answer clear and well-structured?
-- Relevance: Does it directly answer the question?
-- Technical Depth: Shows understanding of concepts?
-- Communication: Professional and articulate?
-- Completeness: Covers key points?
+Evaluate this candidate's answer and provide constructive feedback.
 
-Return ONLY valid JSON (no markdown, no code blocks):
+Consider:
+- Clarity and communication
+- Technical accuracy
+- Relevance to the question
+- Completeness
+
+Return ONLY this exact JSON format (no markdown, no code blocks):
 
 {
-  "score": <0-10>,
+  "score": 7,
   "strengths": ["point 1", "point 2", "point 3"],
-  "improvements": ["point 1", "point 2"],
-  "final_comment": "2-3 sentence summary with actionable advice"
+  "improvements": ["suggestion 1", "suggestion 2"],
+  "final_comment": "Brief 2-3 sentence summary with actionable advice"
 }
 
 Question: ${question}
-Answer: ${userAnswer}
-Role: ${role}
-Question Type: ${questionType}`;
+
+Candidate's Answer: ${userAnswer}
+
+Evaluation (JSON only):`;
 
     // Retry logic with exponential backoff
-    const maxRetries = 3;
+    const maxRetries = 5; // Increased from 3 to 5
     let lastError = null;
 
     for (let attempt = 0; attempt < maxRetries; attempt++) {
         try {
-            // Add delay for retries (exponential backoff: 1s, 2s, 4s)
+            // Add delay for retries (exponential backoff: 2s, 4s, 8s, 16s, 32s)
             if (attempt > 0) {
-                const delay = Math.pow(2, attempt - 1) * 1000;
+                const delay = Math.pow(2, attempt) * 1000; // 2^1=2s, 2^2=4s, 2^3=8s, etc.
                 console.log(`Retry attempt ${attempt + 1}/${maxRetries} after ${delay}ms...`);
                 await new Promise(resolve => setTimeout(resolve, delay));
             }
@@ -178,33 +180,45 @@ function parseEvaluationResponse(text) {
     // Remove markdown code blocks if present
     let cleaned = text.replace(/```json/g, '').replace(/```/g, '').trim();
 
-    // Try to extract JSON object
+    // Try to extract JSON object (improved regex to handle nested objects)
     const jsonMatch = cleaned.match(/\{[\s\S]*\}/);
 
     if (jsonMatch) {
         try {
             const parsed = JSON.parse(jsonMatch[0]);
 
-            // Validate required fields
-            if (parsed.score !== undefined &&
+            // Validate required fields (support both old and new format)
+            const hasOldFormat = parsed.score !== undefined;
+            const hasNewFormat = parsed.overall_score !== undefined && parsed.dimension_scores !== undefined;
+
+            if ((hasOldFormat || hasNewFormat) &&
                 Array.isArray(parsed.strengths) &&
                 Array.isArray(parsed.improvements) &&
                 parsed.final_comment) {
                 return parsed;
             }
+
+            // If we got valid JSON but missing some fields, log for debugging
+            console.warn('Parsed JSON but missing required fields:', parsed);
+
         } catch (e) {
             console.error('JSON parse error:', e);
+            console.log('Raw text that failed to parse:', text);
         }
     }
 
-    // Fallback: return error
+    // Log the raw response for debugging
+    console.error('Failed to extract JSON from response:', text);
+
+    // Fallback: return error with raw response for debugging
     return {
         error: 'Failed to parse evaluation',
-        raw_response: text,
+        raw_response: text.substring(0, 500), // First 500 chars for debugging
+        overall_score: 0,
         score: 0,
-        strengths: [],
-        improvements: ['Could not parse AI evaluation response'],
-        final_comment: 'Evaluation format error. Please try again.'
+        strengths: ['Response received but format was invalid'],
+        improvements: ['The AI returned a response in an unexpected format. Check console for details.'],
+        final_comment: 'Unable to parse the evaluation. The AI may be experiencing issues. Please try again.'
     };
 }
 
@@ -231,6 +245,19 @@ function displayEvaluation(evaluation, containerId) {
 
     if (!container) {
         console.error(`Container #${containerId} not found`);
+        return;
+    }
+
+    // Show error if present
+    if (evaluation.error) {
+        container.innerHTML = `
+            <div style="background: #fee2e2; border: 2px solid #ef4444; border-radius: 0.75rem; padding: 1.5rem; margin: 1.5rem 0;">
+                <h3 style="margin-bottom: 1rem; color: #ef4444;">⚠️ Evaluation Error</h3>
+                <p style="margin-bottom: 0.5rem;"><strong>Error:</strong> ${evaluation.error}</p>
+                ${evaluation.message ? `<p style="margin-bottom: 0.5rem;">${evaluation.message}</p>` : ''}
+                ${evaluation.instructions ? `<p style="margin: 0;"><small>${evaluation.instructions}</small></p>` : ''}
+            </div>
+        `;
         return;
     }
 
@@ -271,18 +298,6 @@ function displayEvaluation(evaluation, containerId) {
             </div>
         </div>
     `;
-
-    // Show error if present
-    if (evaluation.error) {
-        html = `
-            <div style="background: #fee2e2; border: 2px solid #ef4444; border-radius: 0.75rem; padding: 1.5rem; margin: 1.5rem 0;">
-                <h3 style="margin-bottom: 1rem; color: #ef4444;">⚠️ Evaluation Error</h3>
-                <p style="margin-bottom: 0.5rem;"><strong>Error:</strong> ${evaluation.error}</p>
-                ${evaluation.message ? `<p style="margin-bottom: 0.5rem;">${evaluation.message}</p>` : ''}
-                ${evaluation.instructions ? `<p style="margin: 0;"><small>${evaluation.instructions}</small></p>` : ''}
-            </div>
-        `;
-    }
 
     container.innerHTML = html;
 }

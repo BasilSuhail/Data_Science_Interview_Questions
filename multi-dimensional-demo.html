@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi-Dimensional AI Evaluation Demo</title>
+    <style>
+        :root {
+            --bg: #0a0e27;
+            --bg-secondary: #0f1535;
+            --text: #e2e8f0;
+            --text-light: #94a3b8;
+            --accent: #6366f1;
+            --accent-light: #818cf8;
+            --border: #1e293b;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            padding: 2rem;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: var(--accent);
+            margin-bottom: 1rem;
+            font-size: 2rem;
+        }
+
+        .intro {
+            background: var(--bg-secondary);
+            border-left: 4px solid var(--accent);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border-radius: 0.5rem;
+        }
+
+        .question-box {
+            background: var(--bg-secondary);
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            margin-bottom: 1.5rem;
+            border: 2px solid var(--border);
+        }
+
+        .question-box h3 {
+            color: var(--accent);
+            margin-bottom: 1rem;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 120px;
+            padding: 1rem;
+            background: var(--bg);
+            color: var(--text);
+            border: 2px solid var(--border);
+            border-radius: 0.5rem;
+            font-family: inherit;
+            font-size: 0.9375rem;
+            resize: vertical;
+        }
+
+        button {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            cursor: pointer;
+            margin-top: 1rem;
+            transition: background 0.2s;
+        }
+
+        button:hover {
+            background: var(--accent-light);
+        }
+
+        .demo-section {
+            margin-bottom: 3rem;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-left: 0.5rem;
+        }
+
+        .badge-new {
+            background: #10b981;
+            color: white;
+        }
+
+        code {
+            background: var(--bg);
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.875rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎯 Multi-Dimensional AI Evaluation Demo</h1>
+
+        <div class="intro">
+            <h3>New Enhanced Features <span class="badge badge-new">UPGRADED</span></h3>
+            <p style="margin-bottom: 1rem;">Your AI evaluation has been upgraded with:</p>
+            <ul style="padding-left: 1.5rem;">
+                <li><strong>Multi-Dimensional Scoring:</strong> Relevance, Technical Depth, Communication, Tone & Professionalism, Completeness</li>
+                <li><strong>Sentiment Analysis:</strong> Detects positive/neutral/negative tone in your answer</li>
+                <li><strong>Confidence Detection:</strong> Evaluates how confident you sound (high/medium/low)</li>
+                <li><strong>Visual Progress Bars:</strong> See exactly where you excel and need improvement</li>
+                <li><strong>Auto-Retry Logic:</strong> Handles "service busy" errors automatically</li>
+            </ul>
+        </div>
+
+        <!-- Demo 1: Strong Answer -->
+        <div class="demo-section">
+            <div class="question-box">
+                <h3>Demo 1: Strong Technical Answer</h3>
+                <p style="color: var(--text-light); margin-bottom: 1rem;">
+                    <strong>Question:</strong> What is bias-variance tradeoff in machine learning?
+                </p>
+                <textarea id="answer1">The bias-variance tradeoff is a fundamental concept in machine learning. Bias refers to errors from oversimplified assumptions, leading to underfitting. Variance refers to errors from excessive sensitivity to training data fluctuations, causing overfitting.
+
+The goal is to find the sweet spot: a model complex enough to capture patterns (low bias) but not so complex it memorizes noise (low variance). We achieve this through regularization, cross-validation, and ensemble methods like random forests.
+
+For example, a linear regression on non-linear data has high bias, while a deep neural network without regularization has high variance.</textarea>
+                <button onclick="testEvaluation(1)">Get AI Feedback</button>
+                <div id="result1"></div>
+            </div>
+        </div>
+
+        <!-- Demo 2: Weak Answer -->
+        <div class="demo-section">
+            <div class="question-box">
+                <h3>Demo 2: Weak Answer (For Comparison)</h3>
+                <p style="color: var(--text-light); margin-bottom: 1rem;">
+                    <strong>Question:</strong> What is bias-variance tradeoff?
+                </p>
+                <textarea id="answer2">Bias and variance are things in ML. Bias is when the model is wrong and variance is when it changes. You need balance.</textarea>
+                <button onclick="testEvaluation(2)">Get AI Feedback</button>
+                <div id="result2"></div>
+            </div>
+        </div>
+
+        <!-- Demo 3: Your Custom Answer -->
+        <div class="demo-section">
+            <div class="question-box">
+                <h3>Demo 3: Try Your Own Answer</h3>
+                <p style="color: var(--text-light); margin-bottom: 1rem;">
+                    <strong>Question:</strong> Explain the difference between bagging and boosting.
+                </p>
+                <textarea id="answer3" placeholder="Type your answer here..."></textarea>
+                <button onclick="testEvaluation(3)">Get AI Feedback</button>
+                <div id="result3"></div>
+            </div>
+        </div>
+
+        <div class="intro">
+            <h3>🚀 Ready to Use in Main App</h3>
+            <p>These enhancements are now live in <code>interview-coach-app.html</code>. Just refresh the page and try the AI evaluation on any question!</p>
+        </div>
+    </div>
+
+    <script src="config.js"></script>
+    <script src="gemini-evaluator.js"></script>
+    <script>
+        const questions = {
+            1: "What is bias-variance tradeoff in machine learning?",
+            2: "What is bias-variance tradeoff?",
+            3: "Explain the difference between bagging and boosting."
+        };
+
+        async function testEvaluation(demoNum) {
+            const answerTextarea = document.getElementById(`answer${demoNum}`);
+            const resultDiv = document.getElementById(`result${demoNum}`);
+            const question = questions[demoNum];
+            const answer = answerTextarea.value.trim();
+
+            if (!answer) {
+                resultDiv.innerHTML = '<p style="color: #f59e0b; margin-top: 1rem;">Please type an answer first.</p>';
+                return;
+            }
+
+            // Show loading
+            resultDiv.innerHTML = `
+                <div style="text-align: center; padding: 2rem; color: var(--text-light);">
+                    <div style="font-size: 2rem; margin-bottom: 0.5rem;">⏳</div>
+                    <div>Evaluating with Gemini AI...</div>
+                    <div style="font-size: 0.85rem; margin-top: 0.5rem;">Auto-retry if busy</div>
+                </div>
+            `;
+
+            try {
+                const evaluation = await evaluateAnswer(question, answer, "Data Scientist", "ml");
+                displayEvaluation(evaluation, `result${demoNum}`);
+                resultDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div style="background: #fee2e2; border: 2px solid #ef4444; border-radius: 0.75rem; padding: 1.5rem; margin-top: 1rem;">
+                        <h4 style="color: #ef4444;">⚠️ Error</h4>
+                        <p style="color: #7f1d1d;">${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+    </script>
+</body>
+</html>
