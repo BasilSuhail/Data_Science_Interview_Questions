@@ -12,7 +12,7 @@
 | `02_create_questions_table.sql` | Creates table for interview questions |
 | `03_verify_upload.sql` | Verification queries after upload |
 | `documents_data.csv` | Textbook content (7.6 MB, 3,983 pages) |
-| `interview_questions_data.csv` | Interview questions (161 KB, 234 questions) |
+| `interview_questions_data.csv` | Interview questions (266 KB, 552 questions) |
 
 ---
 
@@ -78,7 +78,7 @@
 2. Open `03_verify_upload.sql`
 3. Run the queries to verify:
    - Documents: ~3,983 rows
-   - Questions: 234 rows
+   - Questions: 552 rows
    - Indexes are working
    - Text search works
 
@@ -100,32 +100,34 @@
 ---
 
 ### Interview Questions Table:
-- **Total Questions:** 234
-- **Sources:** 6 different repositories
-- **Size:** 161 KB
+- **Total Questions:** 552
+- **Sources:** 11 different repositories
+- **Size:** 266 KB
+- **Duplicates Removed:** 130 (from 682 total)
 
 **Breakdown:**
 - **By Type:**
-  - Mixed: 58 (25%)
-  - Case Studies: 53 (23%)
-  - Stats: 52 (22%)
-  - ML: 37 (16%)
-  - Coding: 26 (11%)
-  - Behavioral: 5 (2%)
-  - SQL: 2 (<1%)
+  - ML: 264 (48%)
+  - Mixed: 109 (20%)
+  - Stats: 61 (11%)
+  - Case Studies: 61 (11%)
+  - Coding: 28 (5%)
+  - SQL: 22 (4%)
+  - Behavioral: 5 (1%)
+  - Other: 2 (<1%)
 
 - **By Difficulty:**
-  - Medium: 127 (54%)
-  - Hard: 102 (44%)
-  - Easy: 3 (1%)
+  - Medium: 309 (56%)
+  - Hard: 189 (34%)
+  - Easy: 52 (9%)
+  - Multi-level: 2 (<1%)
 
 - **By Source:**
-  - kojino/120-DS-Questions: 115 (49%)
-  - GitHub Devinterview-io: 34 (15%)
-  - jayinai Repository: 33 (14%)
-  - Your Scenario Questions: 30 (13%)
-  - GitHub iamtodor: 19 (8%)
-  - Template Examples: 3 (1%)
+  - Sandy1811/DS-Interview-FAANG: 156 (28%)
+  - kojino/120-DS-Questions: 115 (21%)
+  - DS_Interview_Notebook: 96 (17%)
+  - 165_ML_Interview_QA: 46 (8%)
+  - And 7 more sources
 
 ---
 
@@ -150,7 +152,7 @@ After uploading, test in SQL Editor:
 ### Test 1: Count Rows
 ```sql
 SELECT COUNT(*) FROM documents;        -- Should be ~3,983
-SELECT COUNT(*) FROM interview_questions;  -- Should be 234
+SELECT COUNT(*) FROM interview_questions;  -- Should be 552
 ```
 
 ### Test 2: Search Textbooks
@@ -284,7 +286,7 @@ Once both tables are uploaded, your app can:
 
 **You'll have:**
 - ✅ 3,983 textbook pages for AI answers
-- ✅ 234 interview questions
+- ✅ 552 interview questions (130 duplicates removed!)
 - ✅ Fast indexed searches
 - ✅ Public read access for your app
 

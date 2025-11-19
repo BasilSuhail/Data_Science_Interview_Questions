@@ -88,7 +88,8 @@ def merge_all_questions():
         'collected_questions/source_files/jayinai_questions.csv',
         'collected_questions/source_files/120questions.csv',
         'collected_questions/source_files/new_collections_questions.csv',
-        'collected_questions/zhiqiang_questions.csv',
+        'collected_questions/source_files/zhiqiang_questions.csv',
+        'collected_questions/source_files/sandy1811_questions.csv',
         'collected_questions/source_files/manual_questions.csv'
     ]
 
