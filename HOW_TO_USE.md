@@ -210,7 +210,7 @@ This shows your improvement over time!
 
 ## 📊 Database Stats
 
-**Questions:** 552 unique from 11 sources
+**Theory Questions:** 552 unique from 11 sources
 - ML: 264 (48%)
 - Mixed: 109 (20%)
 - Stats: 61 (11%)
@@ -218,6 +218,12 @@ This shows your improvement over time!
 - Coding: 28 (5%)
 - SQL: 22 (4%)
 - Behavioral: 5 (1%)
+
+**Coding Problems:** 30 curated challenges (NEW!)
+- Easy: 7 problems (arrays, strings, search, greedy)
+- Medium: 13 problems (concurrency, APIs, design patterns, databases)
+- Advanced: 10 problems (system design, algorithms, OAuth, caching)
+- Source: Go Interview Practice + Classic DSA
 
 **Textbooks:** 3,983 pages from 10 books
 - Introduction to Statistical Learning
@@ -228,7 +234,8 @@ This shows your improvement over time!
 **AI Models:**
 - Question Generation: Groq (Llama 3.3 70B)
 - Answer Generation: Groq (Llama 3.3 70B)
-- Answer Evaluation: Gemini 2.5 Flash (NEW!)
+- Answer Evaluation: Gemini 2.5 Flash
+- Code Review: Gemini 2.5 Flash (NEW!)
 
 ---
 
