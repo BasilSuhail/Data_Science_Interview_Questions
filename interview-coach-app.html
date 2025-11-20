@@ -1885,7 +1885,7 @@ Double-check that all ${questionCount} questions are complete before finishing y
             const questionsDiv = document.getElementById('questions');
 
             // Store coding question data globally
-            currentQuestions = codingData.map(q => q.question);
+            currentQuestions = codingData.map(q => q.question_text);
             window.codingQuestionsData = codingData; // Store full data for later use
 
             questionsDiv.innerHTML = codingData.map((q, i) => {
@@ -1901,7 +1901,7 @@ Double-check that all ${questionCount} questions are complete before finishing y
                                 <span class="badge badge-${q.difficulty.toLowerCase()}">${q.difficulty}</span>
                                 ${tags}
                             </div>
-                            <div>${q.question}</div>
+                            <div><strong>${i + 1}. ${q.question_text}</strong></div>
                         </div>
                         <div class="question-actions">
                             <span class="expand-icon">▼</span>
