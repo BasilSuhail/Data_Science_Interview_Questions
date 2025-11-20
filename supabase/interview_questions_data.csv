@@ -899,3 +899,33 @@ What is convex hull? (Hint: Think SVM),,medium,stats,,manual_templates/manual_sc
 Rise in global average temperature led to decrease in number of pirates around the world. Does that mean that decrease in number of pirates caused the climate change?,,easy,stats,,manual_templates/manual_scenario_questions.txt,,2025-11-17T11:27:21.133619
 "While working on a data set, how do you select important variables? Explain your methods.",,medium,ml,,manual_templates/manual_scenario_questions.txt,,2025-11-17T11:27:21.133631
 What cross validation technique would you use on a time series data set? Is it k-fold or LOOCV? Explain the forward chaining strategy.,,medium,ml,,manual_templates/manual_scenario_questions.txt,,2025-11-17T11:27:21.133641
+"Write a function to find two numbers in an array that sum to a target value",,,,"Easy",Coding,"arrays,,,hash-table,two-pointers","Array length: 2 <= n <= 10^4; Values: -10^9 <= nums[i] <= 10^9; Exactly one solution exists"
+"Reverse a string in-place without using built-in reverse functions",,,,"Easy",Coding,"strings,,,two-pointers","1 <= string length <= 10^5; String contains ASCII printable characters","Input: 'hello'; Output: 'olleh'"
+"Implement a function to count word frequency in a text file",,,,"Easy",Coding,"hash-table,,,strings,file-processing","File size: up to 10MB; Words separated by spaces/punctuation"
+"Convert temperature between Fahrenheit and Celsius",,,,"Easy",Coding,"math,,,conversion","Temperature range: -273.15°C to 10^6°C","Input: 32°F; Output: 0°C; Formula: C = (F - 32) * 5/9"
+"Implement binary search on a sorted array",,,,"Easy",Coding,"arrays,,,binary-search,divide-and-conquer","Array is sorted; 1 <= array length <= 10^6; -10^9 <= nums[i] <= 10^9"
+"Solve the coin change problem using greedy algorithm",,,,"Easy",Coding,"greedy,,,dynamic-programming,arrays","Coins: [1
+"Implement concurrent graph BFS with goroutines",,,,"Medium",Coding,"graphs,,,bfs,concurrency,channels"
+"Create HTTP authentication middleware",,,,"Medium",Coding,"web,,,middleware,authentication,http"
+"Implement a bank account system with error handling",,,,"Medium",Coding,"oop,,,error-handling,concurrency","Support deposits
+"Create a polymorphic shape calculator",,,,"Medium",Coding,"oop,,,interfaces,polymorphism","Support Circle
+"Implement SQL database CRUD operations",,,,"Medium",Coding,"database,,,sql,crud","Support SELECT
+"Build a simple microservice with gRPC",,,,"Medium",Coding,"grpc,,,microservices,protobuf","Define service in .proto; Implement server and client; Handle errors"
+"Optimize code for better performance",,,,"Medium",Coding,"optimization,,,profiling,algorithms","Reduce time complexity; Memory optimization; Use appropriate data structures"
+"Implement circuit breaker pattern",,,,"Medium",Coding,"design-patterns,,,resilience,fault-tolerance","States: Closed
+"Implement string pattern matching (KMP algorithm)",,,,"Medium",Coding,"strings,,,pattern-matching,algorithms","Text length: 1 <= n <= 10^6; Pattern: 1 <= m <= n"
+"Implement generic data structures in Go",,,,"Medium",Coding,"generics,,,data-structures,type-parameters","Support any comparable type; Implement Stack
+"Implement context management for cancellation",,,,"Medium",Coding,"context,,,concurrency,cancellation","Handle timeouts
+"Build a chat server using channels",,,,"Advanced",Coding,"concurrency,,,channels,networking","Handle multiple clients; Broadcast messages; Client disconnect"
+"Create RESTful API for book management",,,,"Advanced",Coding,"rest-api,,,http,crud,json"
+"Build concurrent web content aggregator",,,,"Advanced",Coding,"concurrency,,,http,goroutines,sync"
+"Create file processing pipeline",,,,"Advanced",Coding,"concurrency,,,pipelines,channels","Read → Transform → Write; Handle large files; Memory efficient"
+"Implement OAuth2 authentication flow",,,,"Advanced",Coding,"oauth,,,authentication,security,jwt"
+"Solve longest increasing subsequence (DP)",,,,"Advanced",Coding,"dynamic-programming,,,arrays,algorithms","Array length: 1 <= n <= 2500; Values: -10^4 <= nums[i] <= 10^4"
+"Implement shortest path algorithm (Dijkstra)",,,,"Advanced",Coding,"graphs,,,shortest-path,algorithms,priority-queue"
+"Build regex text processor",,,,"Advanced",Coding,"regex,,,strings,parsing","Support pattern matching
+"Implement cache with eviction policies",,,,"Advanced",Coding,"cache,,,lru,lfu,data-structures"
+"Implement rate limiter",,,,"Advanced",Coding,"rate-limiting,,,concurrency,algorithms","Support token bucket
+"Implement merge sort algorithm",,,,"Easy",Coding,"sorting,,,divide-and-conquer,recursion","Array length: 0 <= n <= 10^5; Values: -10^9 <= nums[i] <= 10^9"
+"Find all pairs with given sum in array",,,,"Medium",Coding,"arrays,,,hash-table,two-pointers","Array length: 1 <= n <= 10^4; May have duplicates"
+"Detect cycle in linked list",,,,"Medium",Coding,"linked-list,,,two-pointers,cycle-detection","List length: 0 <= n <= 10^4; May contain cycle"
