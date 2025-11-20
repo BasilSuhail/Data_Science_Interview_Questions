@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Coding Questions to Supabase</title>
+    <style>
+        body {
+            font-family: monospace;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #0a0e27;
+            color: #e2e8f0;
+        }
+        button {
+            background: #6366f1;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 10px 0;
+        }
+        button:hover {
+            background: #818cf8;
+        }
+        #status {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            background: #0f1535;
+        }
+        .success { color: #10b981; }
+        .error { color: #ef4444; }
+        .warning { color: #f59e0b; }
+    </style>
+</head>
+<body>
+    <h1>Upload Coding Questions to Supabase</h1>
+    <p>This will upload 30 coding questions from coding_questions.csv to your Supabase database.</p>
+
+    <button onclick="uploadQuestions()">Upload Coding Questions</button>
+
+    <div id="status"></div>
+
+    <script src="config.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const { createClient } = supabase;
+        const supabaseClient = createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_ANON_KEY);
+
+        const codingQuestions = [
+            {question:"Write a function to find two numbers in an array that sum to a target value",difficulty:"Easy",category:"Coding",tags:"arrays,hash-table,two-pointers",constraints:"Array length: 2 <= n <= 10^4; Values: -10^9 <= nums[i] <= 10^9; Exactly one solution exists",examples:"Input: nums = [2,7,11,15], target = 9; Output: [0,1]; Explanation: nums[0] + nums[1] = 2 + 7 = 9",hints:"Use a hash map to store numbers you've seen. For each number, check if target - number exists in the map.",source:"Go Interview Practice - Challenge 1"},
+            {question:"Reverse a string in-place without using built-in reverse functions",difficulty:"Easy",category:"Coding",tags:"strings,two-pointers",constraints:"1 <= string length <= 10^5; String contains ASCII printable characters",examples:"Input: 'hello'; Output: 'olleh'",hints:"Use two pointers - one at start, one at end. Swap and move inward.",source:"Go Interview Practice - Challenge 2"},
+            {question:"Implement a function to count word frequency in a text file",difficulty:"Easy",category:"Coding",tags:"hash-table,strings,file-processing",constraints:"File size: up to 10MB; Words separated by spaces/punctuation",examples:"Input: 'hello world hello'; Output: {'hello': 2, 'world': 1}",hints:"Use a hash map. Normalize words (lowercase, remove punctuation).",source:"Go Interview Practice - Challenge 6"},
+            {question:"Convert temperature between Fahrenheit and Celsius",difficulty:"Easy",category:"Coding",tags:"math,conversion",constraints:"Temperature range: -273.15°C to 10^6°C",examples:"Input: 32°F; Output: 0°C; Formula: C = (F - 32) * 5/9",hints:"Remember the conversion formulas. Handle edge cases like absolute zero.",source:"Go Interview Practice - Challenge 18"},
+            {question:"Implement binary search on a sorted array",difficulty:"Easy",category:"Coding",tags:"arrays,binary-search,divide-and-conquer",constraints:"Array is sorted; 1 <= array length <= 10^6; -10^9 <= nums[i] <= 10^9",examples:"Input: nums = [1,3,5,7,9], target = 5; Output: 2",hints:"Divide array in half. Compare middle with target. Recurse on appropriate half.",source:"Go Interview Practice - Challenge 21"},
+            {question:"Solve the coin change problem using greedy algorithm",difficulty:"Easy",category:"Coding",tags:"greedy,dynamic-programming,arrays",constraints:"Coins: [1,5,10,25]; Amount: 0 <= n <= 10^4",examples:"Input: amount = 41; Output: [25,10,5,1] (4 coins)",hints:"Sort coins descending. Use largest coin possible repeatedly.",source:"Go Interview Practice - Challenge 22"},
+            {question:"Implement concurrent graph BFS with goroutines",difficulty:"Medium",category:"Coding",tags:"graphs,bfs,concurrency,channels",constraints:"Graph nodes: 1 <= n <= 10^4; Edges: 0 <= edges <= n^2",examples:"Input: graph with 5 nodes; Output: BFS traversal order",hints:"Use channels for communication between goroutines. Synchronize access to visited set.",source:"Go Interview Practice - Challenge 4"},
+            {question:"Create HTTP authentication middleware",difficulty:"Medium",category:"Coding",tags:"web,middleware,authentication,http",constraints:"Handle JWT/Basic auth; Support custom auth logic",examples:"Request with token → validate → next() or 401",hints:"Check Authorization header. Validate token/credentials. Call next handler or return error.",source:"Go Interview Practice - Challenge 5"},
+            {question:"Implement a bank account system with error handling",difficulty:"Medium",category:"Coding",tags:"oop,error-handling,concurrency",constraints:"Support deposits, withdrawals, balance checks; Thread-safe operations",examples:"Account balance: $100; Withdraw $150 → Error: insufficient funds",hints:"Use mutex for thread safety. Validate operations before executing.",source:"Go Interview Practice - Challenge 7"},
+            {question:"Create a polymorphic shape calculator",difficulty:"Medium",category:"Coding",tags:"oop,interfaces,polymorphism",constraints:"Support Circle, Rectangle, Triangle; Calculate area and perimeter",examples:"Circle(r=5) → Area: 78.54, Perimeter: 31.42",hints:"Define interface with area() and perimeter() methods. Implement for each shape.",source:"Go Interview Practice - Challenge 10"},
+            {question:"Implement SQL database CRUD operations",difficulty:"Medium",category:"Coding",tags:"database,sql,crud",constraints:"Support SELECT, INSERT, UPDATE, DELETE; Handle SQL injection",examples:"Insert user → Read user → Update email → Delete user",hints:"Use prepared statements. Handle connection pooling. Validate inputs.",source:"Go Interview Practice - Challenge 13"},
+            {question:"Build a simple microservice with gRPC",difficulty:"Medium",category:"Coding",tags:"grpc,microservices,protobuf",constraints:"Define service in .proto; Implement server and client; Handle errors",examples:"Define Calculator service → Add(a, b) → Returns sum",hints:"Define protobuf schema. Generate code. Implement server logic. Create client.",source:"Go Interview Practice - Challenge 14"},
+            {question:"Optimize code for better performance",difficulty:"Medium",category:"Coding",tags:"optimization,profiling,algorithms",constraints:"Reduce time complexity; Memory optimization; Use appropriate data structures",examples:"O(n^2) → O(n log n) using better algorithm",hints:"Profile first. Identify bottlenecks. Use efficient data structures. Cache results.",source:"Go Interview Practice - Challenge 16"},
+            {question:"Implement circuit breaker pattern",difficulty:"Medium",category:"Coding",tags:"design-patterns,resilience,fault-tolerance",constraints:"States: Closed, Open, Half-Open; Failure threshold; Timeout",examples:"3 failures → Open circuit → Wait 30s → Try again",hints:"Track failures. After threshold, open circuit. After timeout, allow one test request.",source:"Go Interview Practice - Challenge 20"},
+            {question:"Implement string pattern matching (KMP algorithm)",difficulty:"Medium",category:"Coding",tags:"strings,pattern-matching,algorithms",constraints:"Text length: 1 <= n <= 10^6; Pattern: 1 <= m <= n",examples:"Text: 'ababcababc', Pattern: 'ababc' → Found at index 0, 5",hints:"Build failure function. Use it to skip unnecessary comparisons.",source:"Go Interview Practice - Challenge 23"},
+            {question:"Implement generic data structures in Go",difficulty:"Medium",category:"Coding",tags:"generics,data-structures,type-parameters",constraints:"Support any comparable type; Implement Stack, Queue, BST",examples:"Stack[int] → Push(5) → Pop() → 5",hints:"Use type parameters. Define constraints. Implement common operations.",source:"Go Interview Practice - Challenge 27"},
+            {question:"Implement context management for cancellation",difficulty:"Medium",category:"Coding",tags:"context,concurrency,cancellation",constraints:"Handle timeouts, deadlines, cancellation; Propagate context",examples:"Context with 5s timeout → Long operation → Cancel after 5s",hints:"Use context.WithTimeout. Check ctx.Done() in loops. Return on cancellation.",source:"Go Interview Practice - Challenge 30"},
+            {question:"Build a chat server using channels",difficulty:"Advanced",category:"Coding",tags:"concurrency,channels,networking",constraints:"Handle multiple clients; Broadcast messages; Client disconnect",examples:"Client A sends 'hello' → All clients receive 'hello'",hints:"Central goroutine manages broadcast channel. Each client has send/receive channels.",source:"Go Interview Practice - Challenge 8"},
+            {question:"Create RESTful API for book management",difficulty:"Advanced",category:"Coding",tags:"rest-api,http,crud,json",constraints:"GET /books, POST /book, PUT /book/:id, DELETE /book/:id",examples:"POST /book {title: 'Go Programming'} → 201 Created",hints:"Define routes. Parse JSON. Validate input. Store in database. Return JSON responses.",source:"Go Interview Practice - Challenge 9"},
+            {question:"Build concurrent web content aggregator",difficulty:"Advanced",category:"Coding",tags:"concurrency,http,goroutines,sync",constraints:"Fetch multiple URLs concurrently; Aggregate results; Handle errors",examples:"Fetch 10 URLs → Aggregate content → Return combined result",hints:"Use sync.WaitGroup. Launch goroutines for each URL. Collect results with mutex.",source:"Go Interview Practice - Challenge 11"},
+            {question:"Create file processing pipeline",difficulty:"Advanced",category:"Coding",tags:"concurrency,pipelines,channels",constraints:"Read → Transform → Write; Handle large files; Memory efficient",examples:"Read CSV → Filter rows → Transform data → Write JSON",hints:"Use pipeline pattern. Channel for each stage. Process chunks, not entire file.",source:"Go Interview Practice - Challenge 12"},
+            {question:"Implement OAuth2 authentication flow",difficulty:"Advanced",category:"Coding",tags:"oauth,authentication,security,jwt",constraints:"Support authorization code flow; Token refresh; Secure storage",examples:"User login → Redirect to OAuth → Exchange code for token",hints:"Implement authorization endpoint, token endpoint, refresh logic. Validate tokens.",source:"Go Interview Practice - Challenge 15"},
+            {question:"Solve longest increasing subsequence (DP)",difficulty:"Advanced",category:"Coding",tags:"dynamic-programming,arrays,algorithms",constraints:"Array length: 1 <= n <= 2500; Values: -10^4 <= nums[i] <= 10^4",examples:"Input: [10,9,2,5,3,7,101,18]; Output: 4 (LIS: [2,3,7,101])",hints:"Use DP array where dp[i] = length of LIS ending at i. For each i, check all j < i.",source:"Go Interview Practice - Challenge 24"},
+            {question:"Implement shortest path algorithm (Dijkstra)",difficulty:"Advanced",category:"Coding",tags:"graphs,shortest-path,algorithms,priority-queue",constraints:"Graph nodes: 1 <= n <= 1000; Non-negative weights",examples:"Graph: A-B(1), A-C(4), B-C(2); Shortest path A→C: 3 (A→B→C)",hints:"Use priority queue. Track distances. Update distances when shorter path found.",source:"Go Interview Practice - Challenge 25"},
+            {question:"Build regex text processor",difficulty:"Advanced",category:"Coding",tags:"regex,strings,parsing",constraints:"Support pattern matching, replacement, extraction; Handle edge cases",examples:"Text: 'Email: user@example.com'; Extract: 'user@example.com'",hints:"Compile regex patterns. Use capture groups. Handle multiple matches.",source:"Go Interview Practice - Challenge 26"},
+            {question:"Implement cache with eviction policies",difficulty:"Advanced",category:"Coding",tags:"cache,lru,lfu,data-structures",constraints:"Support LRU, LFU, FIFO; Fixed capacity; O(1) operations",examples:"LRU cache size 3: Put(1,1), Put(2,2), Put(3,3), Put(4,4) → Evicts 1",hints:"LRU: HashMap + Doubly Linked List. LFU: HashMap + Min Heap + Frequency map.",source:"Go Interview Practice - Challenge 28"},
+            {question:"Implement rate limiter",difficulty:"Advanced",category:"Coding",tags:"rate-limiting,concurrency,algorithms",constraints:"Support token bucket, sliding window; Thread-safe; Configurable limits",examples:"10 requests/sec limit: 11th request in same second → Reject",hints:"Token bucket: Refill tokens at rate. Sliding window: Track timestamps in queue.",source:"Go Interview Practice - Challenge 29"},
+            {question:"Implement merge sort algorithm",difficulty:"Easy",category:"Coding",tags:"sorting,divide-and-conquer,recursion",constraints:"Array length: 0 <= n <= 10^5; Values: -10^9 <= nums[i] <= 10^9",examples:"Input: [38,27,43,3,9,82,10]; Output: [3,9,10,27,38,43,82]",hints:"Divide array in half recursively until size 1. Merge sorted halves.",source:"Classic DSA"},
+            {question:"Find all pairs with given sum in array",difficulty:"Medium",category:"Coding",tags:"arrays,hash-table,two-pointers",constraints:"Array length: 1 <= n <= 10^4; May have duplicates",examples:"Input: [1,5,7,-1,5], sum = 6; Output: [(1,5), (7,-1), (1,5)]",hints:"Use hash set. For each num, check if (sum - num) exists.",source:"Classic DSA"},
+            {question:"Detect cycle in linked list",difficulty:"Medium",category:"Coding",tags:"linked-list,two-pointers,cycle-detection",constraints:"List length: 0 <= n <= 10^4; May contain cycle",examples:"Input: 1→2→3→4→2 (cycle); Output: true",hints:"Floyd's algorithm: Use slow and fast pointers. If they meet, cycle exists.",source:"Classic DSA"}
+        ];
+
+        async function uploadQuestions() {
+            const statusDiv = document.getElementById('status');
+            statusDiv.innerHTML = '<p class="warning">⏳ Uploading ' + codingQuestions.length + ' coding questions...</p>';
+
+            try {
+                const { data, error } = await supabaseClient
+                    .from('interview_questions')
+                    .insert(codingQuestions);
+
+                if (error) {
+                    throw error;
+                }
+
+                statusDiv.innerHTML = `
+                    <p class="success">✅ Successfully uploaded ${codingQuestions.length} coding questions!</p>
+                    <ul>
+                        <li>Easy: ${codingQuestions.filter(q => q.difficulty === 'Easy').length}</li>
+                        <li>Medium: ${codingQuestions.filter(q => q.difficulty === 'Medium').length}</li>
+                        <li>Advanced: ${codingQuestions.filter(q => q.difficulty === 'Advanced').length}</li>
+                    </ul>
+                    <p>You can now close this page and refresh your main app to see the coding questions!</p>
+                `;
+
+            } catch (error) {
+                statusDiv.innerHTML = `
+                    <p class="error">❌ Error: ${error.message}</p>
+                    <p class="warning">This might be because:</p>
+                    <ul>
+                        <li>Questions already exist in database</li>
+                        <li>Table schema missing columns: constraints, examples, hints</li>
+                        <li>Network issue with Supabase</li>
+                    </ul>
+                    <p>Check browser console for more details</p>
+                `;
+                console.error('Upload error:', error);
+            }
+        }
+    </script>
+</body>
+</html>

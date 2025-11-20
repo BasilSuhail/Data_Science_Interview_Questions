@@ -10,11 +10,13 @@
 
 **Features:**
 1. ✅ **552 curated interview questions** from 11 sources
-2. ✅ **3,983 textbook pages** for AI-generated answers
-3. ✅ **AI answer evaluation** with Gemini (NEW!)
-4. ✅ **Personalized question generation** based on your profile
-5. ✅ **Company-specific prep** (FAANG, consulting, finance)
-6. ✅ **Interview countdown** timer
+2. ✅ **30 coding practice problems** with constraints, examples, and hints (NEW!)
+3. ✅ **3,983 textbook pages** for AI-generated answers
+4. ✅ **AI answer evaluation** with Gemini
+5. ✅ **AI code review** for coding solutions (NEW!)
+6. ✅ **Personalized question generation** based on your profile
+7. ✅ **Company-specific prep** (FAANG, consulting, finance)
+8. ✅ **Interview countdown** timer
 
 ---
 
@@ -51,18 +53,28 @@ Or simply **double-click** the file!
 
 ### Step 3: Generate Questions
 
-1. Select **question type** (ML, Stats, SQL, Coding, Case, Mixed)
+1. Select **question type** (ML, Stats, SQL, **Coding Interview**, Case, Mixed)
 2. Select **difficulty** (Easy, Medium, Hard)
 3. Select **number of questions** (5, 10, 15, 20)
 4. Click **"Generate"**
 
 Questions are **personalized** based on your profile!
 
+**NEW: Coding Interview Mode**
+- Select "Coding Interview" to get actual coding problems from our database
+- Each problem includes:
+  - Problem statement
+  - Constraints
+  - Example inputs/outputs
+  - Hints
+  - Code editor for your solution
+  - AI code review with complexity analysis!
+
 ---
 
-### Step 4: Practice with AI Feedback (NEW! 🤖)
+### Step 4: Practice with AI Feedback 🤖
 
-For each question:
+**For Theory Questions:**
 
 1. **Click the question** to expand it
 2. **See the textbook-based answer** (from your 3,983 pages!)
@@ -74,6 +86,20 @@ For each question:
 - ✅ Strengths identified
 - ✅ Areas for improvement
 - ✅ Actionable feedback
+
+**For Coding Questions:** (NEW!)
+
+1. **Click the coding problem** to expand it
+2. **Read constraints, examples, and hints**
+3. **Write your code solution** in any language (Python, JavaScript, Java, Go, etc.)
+4. **Click "Get AI Code Review"**
+
+**You'll get:**
+- ✅ Code quality score (0-10)
+- ✅ Correctness evaluation
+- ✅ Time & space complexity analysis
+- ✅ Good practices identified
+- ✅ Specific improvements suggested
 
 **This is powered by Gemini AI** - completely free!
 

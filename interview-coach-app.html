@@ -1667,6 +1667,12 @@ Answer:`;
                 const difficulty = document.getElementById('difficulty').value;
                 const questionCount = parseInt(document.getElementById('question-count').value);
 
+                // For coding questions, fetch from Supabase instead of generating
+                if (interviewType === 'coding') {
+                    await fetchCodingQuestions(difficulty, questionCount);
+                    return;
+                }
+
                 // Build personalized instruction based on profile
                 let instruction = buildPersonalizedInstruction(difficulty, questionCount, interviewType);
 
@@ -1699,6 +1705,41 @@ Answer:`;
                 displayQuestions(questions, difficulty);
             } catch (error) {
                 questionsDiv.innerHTML = `<div class="empty">Error: ${error.message}</div>`;
+            }
+        }
+
+        // Fetch Coding Questions from Supabase
+        async function fetchCodingQuestions(difficulty, count) {
+            const questionsDiv = document.getElementById('questions');
+
+            try {
+                let query = supabase
+                    .from('interview_questions')
+                    .select('*')
+                    .eq('category', 'Coding');
+
+                // Filter by difficulty if not random
+                if (difficulty !== 'random') {
+                    const difficultyMap = { 'easy': 'Easy', 'medium': 'Medium', 'hard': 'Advanced' };
+                    query = query.eq('difficulty', difficultyMap[difficulty]);
+                }
+
+                query = query.limit(count);
+
+                const { data, error } = await query;
+
+                if (error) throw error;
+
+                if (!data || data.length === 0) {
+                    questionsDiv.innerHTML = '<div class="empty">No coding questions found. Please upload coding questions first using upload-coding-questions.html</div>';
+                    return;
+                }
+
+                // Display coding questions with special formatting
+                displayCodingQuestions(data);
+
+            } catch (error) {
+                questionsDiv.innerHTML = `<div class="empty">Error fetching coding questions: ${error.message}</div>`;
             }
         }
 
@@ -1838,6 +1879,130 @@ Double-check that all ${questionCount} questions are complete before finishing y
                 </div>`;
             }).join('');
         }
+
+        // Display Coding Questions with Special Formatting
+        function displayCodingQuestions(codingData) {
+            const questionsDiv = document.getElementById('questions');
+
+            // Store coding question data globally
+            currentQuestions = codingData.map(q => q.question);
+            window.codingQuestionsData = codingData; // Store full data for later use
+
+            questionsDiv.innerHTML = codingData.map((q, i) => {
+                // Parse tags for display
+                const tags = q.tags ? q.tags.split(',').map(t =>
+                    `<span class="tag" style="background: var(--border); padding: 0.25rem 0.5rem; border-radius: 0.25rem; font-size: 0.75rem; margin-right: 0.25rem;">${t.trim()}</span>`
+                ).join('') : '';
+
+                return `<div class="question-card coding-question" id="question-${i}">
+                    <div class="question-header" onclick="toggleCodingQuestion(${i})">
+                        <div class="question-text">
+                            <div style="margin-bottom: 0.5rem;">
+                                <span class="badge badge-${q.difficulty.toLowerCase()}">${q.difficulty}</span>
+                                ${tags}
+                            </div>
+                            <div>${q.question}</div>
+                        </div>
+                        <div class="question-actions">
+                            <span class="expand-icon">▼</span>
+                        </div>
+                    </div>
+                    <div class="question-answer" id="coding-answer-${i}">
+                        <!-- Coding problem details will be loaded here -->
+                    </div>
+                </div>`;
+            }).join('');
+        }
+
+        // Toggle Coding Question Details
+        async function toggleCodingQuestion(index) {
+            const card = document.getElementById(`question-${index}`);
+            const answerDiv = document.getElementById(`coding-answer-${index}`);
+
+            // If already expanded, collapse it
+            if (card.classList.contains('expanded')) {
+                card.classList.remove('expanded');
+                return;
+            }
+
+            // Collapse all other questions first
+            document.querySelectorAll('.question-card').forEach(c => c.classList.remove('expanded'));
+
+            // Expand this question
+            card.classList.add('expanded');
+
+            // If content already loaded, don't reload
+            if (answerDiv.dataset.loaded === 'true') {
+                return;
+            }
+
+            const questionData = window.codingQuestionsData[index];
+
+            // Display coding problem details
+            answerDiv.innerHTML = `
+                <div class="answer-content" style="padding: 1.5rem;">
+                    <!-- Constraints -->
+                    ${questionData.constraints ? `
+                        <div style="margin-bottom: 1.5rem;">
+                            <h4 style="color: var(--accent); margin-bottom: 0.75rem; font-size: 1rem;">📋 Constraints</h4>
+                            <div style="background: var(--bg); padding: 1rem; border-radius: 0.5rem; border-left: 3px solid var(--accent);">
+                                <code style="color: var(--text-light); font-size: 0.875rem;">${questionData.constraints}</code>
+                            </div>
+                        </div>
+                    ` : ''}
+
+                    <!-- Examples -->
+                    ${questionData.examples ? `
+                        <div style="margin-bottom: 1.5rem;">
+                            <h4 style="color: var(--accent); margin-bottom: 0.75rem; font-size: 1rem;">💡 Examples</h4>
+                            <div style="background: var(--bg); padding: 1rem; border-radius: 0.5rem; font-family: monospace; font-size: 0.875rem; white-space: pre-wrap;">
+                                ${questionData.examples}
+                            </div>
+                        </div>
+                    ` : ''}
+
+                    <!-- Hints -->
+                    ${questionData.hints ? `
+                        <div style="margin-bottom: 1.5rem;">
+                            <h4 style="color: var(--accent); margin-bottom: 0.75rem; font-size: 1rem;">💭 Hints</h4>
+                            <div style="background: var(--bg); padding: 1rem; border-radius: 0.5rem; border-left: 3px solid #f59e0b;">
+                                <p style="margin: 0; color: var(--text-light); line-height: 1.6;">${questionData.hints}</p>
+                            </div>
+                        </div>
+                    ` : ''}
+
+                    <!-- Code Practice Section -->
+                    <div style="margin-top: 1.5rem; border-top: 2px solid var(--border); padding-top: 1.5rem;">
+                        <h4 style="color: var(--accent); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                            <span>💻</span> Your Solution
+                        </h4>
+                        <textarea
+                            id="code-solution-${index}"
+                            style="width: 100%; min-height: 250px; padding: 1rem; border: 2px solid var(--border); border-radius: 0.5rem; background: var(--bg); color: var(--text); font-size: 0.875rem; resize: vertical; font-family: 'Courier New', monospace;"
+                            placeholder="// Write your code here\n// Language: Python, JavaScript, Java, Go, etc.\n\nfunction solution() {\n    // Your implementation\n}"
+                        ></textarea>
+                        <button
+                            onclick="reviewCodeWithAI(${index})"
+                            style="margin-top: 0.75rem; padding: 0.75rem 1.5rem; background: var(--accent); color: white; border: none; border-radius: 0.5rem; font-weight: 500; cursor: pointer; transition: background 0.2s;"
+                            onmouseover="this.style.background='var(--accent-light)'"
+                            onmouseout="this.style.background='var(--accent)'"
+                        >
+                            Get AI Code Review
+                        </button>
+                        <div id="code-review-${index}"></div>
+                    </div>
+
+                    <!-- Source Attribution -->
+                    <div style="margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--border); font-size: 0.75rem; color: var(--text-light);">
+                        Source: ${questionData.source}
+                    </div>
+                </div>
+            `;
+
+            answerDiv.dataset.loaded = 'true';
+        }
+
+        window.toggleCodingQuestion = toggleCodingQuestion;
 
         // Toggle Question Answer (Accordion)
         async function toggleQuestionAnswer(index) {
@@ -1996,6 +2161,163 @@ Double-check that all ${questionCount} questions are complete before finishing y
         }
 
         window.evaluateMyAnswer = evaluateMyAnswer;
+
+        // AI Code Review Function
+        async function reviewCodeWithAI(index) {
+            const codeTextarea = document.getElementById(`code-solution-${index}`);
+            const reviewDiv = document.getElementById(`code-review-${index}`);
+            const questionData = window.codingQuestionsData[index];
+
+            const code = codeTextarea.value.trim();
+
+            if (!code) {
+                reviewDiv.innerHTML = '<p style="color: #f59e0b; margin-top: 1rem; padding: 0.75rem; background: #fef3c7; border-radius: 0.5rem;">Please write some code first to get AI review.</p>';
+                return;
+            }
+
+            // Show loading
+            reviewDiv.innerHTML = `
+                <div style="text-align: center; padding: 1.5rem; color: var(--text-light); margin-top: 1rem;">
+                    <div style="font-size: 2rem; margin-bottom: 0.5rem;">⏳</div>
+                    <div>Reviewing your code with Gemini AI...</div>
+                    <div style="font-size: 0.85rem; margin-top: 0.5rem; color: var(--text-light);">Auto-retry if busy</div>
+                </div>
+            `;
+
+            const prompt = `You are an expert code reviewer and programming interview coach.
+
+Review this coding solution and provide constructive feedback.
+
+Problem: ${questionData.question}
+
+Constraints: ${questionData.constraints || 'Standard constraints'}
+
+Candidate's Code:
+\`\`\`
+${code}
+\`\`\`
+
+Provide feedback in this EXACT JSON format (no markdown, no code blocks):
+
+{
+  "score": 7,
+  "correctness": "Does the code solve the problem correctly?",
+  "time_complexity": "What is the time complexity? Is it optimal?",
+  "space_complexity": "What is the space complexity? Can it be improved?",
+  "code_quality": ["Good practice 1", "Good practice 2"],
+  "improvements": ["Suggestion 1", "Suggestion 2"],
+  "final_comment": "Brief summary with actionable next steps"
+}
+
+Evaluation (JSON only):`;
+
+            try {
+                const response = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=' + CONFIG.GEMINI_API_KEY, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: prompt }] }],
+                        generationConfig: { temperature: 0.7, maxOutputTokens: 1024 }
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Gemini API error');
+                }
+
+                const result = await response.json();
+                const text = result.candidates?.[0]?.content?.parts?.[0]?.text;
+
+                if (!text) {
+                    throw new Error('No response from Gemini');
+                }
+
+                // Parse JSON
+                const cleaned = text.replace(/```json/g, '').replace(/```/g, '').trim();
+                const jsonMatch = cleaned.match(/\{[\s\S]*\}/);
+
+                if (!jsonMatch) {
+                    throw new Error('Could not parse AI response');
+                }
+
+                const review = JSON.parse(jsonMatch[0]);
+
+                // Display code review
+                reviewDiv.innerHTML = `
+                    <div style="background: var(--bg-secondary); border: 2px solid var(--accent); border-radius: 0.75rem; padding: 1.5rem; margin-top: 1.5rem;">
+                        <h3 style="margin-bottom: 1rem; color: var(--accent); font-size: 1.25rem;">💻 AI Code Review</h3>
+
+                        <div style="margin-bottom: 1.5rem;">
+                            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 0.5rem;">
+                                <span style="font-size: 2.5rem; font-weight: 700; color: var(--accent);">${review.score || 0}/10</span>
+                                <div>
+                                    <div style="font-weight: 600; color: var(--text);">${getScoreInterpretation(review.score || 0)}</div>
+                                    <div style="font-size: 0.875rem; color: var(--text-light);">Code quality assessment</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        ${review.correctness ? `
+                            <div style="margin-bottom: 1rem;">
+                                <h4 style="color: var(--accent); margin-bottom: 0.5rem; font-size: 0.9rem;">✅ Correctness</h4>
+                                <p style="margin: 0; color: var(--text-light); line-height: 1.6;">${review.correctness}</p>
+                            </div>
+                        ` : ''}
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;">
+                            ${review.time_complexity ? `
+                                <div style="background: var(--bg); padding: 1rem; border-radius: 0.5rem;">
+                                    <h4 style="color: #8b5cf6; margin-bottom: 0.5rem; font-size: 0.875rem;">⏱️ Time Complexity</h4>
+                                    <p style="margin: 0; color: var(--text-light); font-size: 0.85rem;">${review.time_complexity}</p>
+                                </div>
+                            ` : ''}
+                            ${review.space_complexity ? `
+                                <div style="background: var(--bg); padding: 1rem; border-radius: 0.5rem;">
+                                    <h4 style="color: #06b6d4; margin-bottom: 0.5rem; font-size: 0.875rem;">💾 Space Complexity</h4>
+                                    <p style="margin: 0; color: var(--text-light); font-size: 0.85rem;">${review.space_complexity}</p>
+                                </div>
+                            ` : ''}
+                        </div>
+
+                        ${review.code_quality && review.code_quality.length > 0 ? `
+                            <div style="margin-bottom: 1.25rem;">
+                                <h4 style="color: #10b981; margin-bottom: 0.75rem; font-size: 1rem;">✅ Good Practices</h4>
+                                <ul style="margin: 0; padding-left: 1.5rem; list-style: disc;">
+                                    ${review.code_quality.map(p => `<li style="margin-bottom: 0.5rem;">${p}</li>`).join('')}
+                                </ul>
+                            </div>
+                        ` : ''}
+
+                        ${review.improvements && review.improvements.length > 0 ? `
+                            <div style="margin-bottom: 1.25rem;">
+                                <h4 style="color: #f59e0b; margin-bottom: 0.75rem; font-size: 1rem;">💡 Suggested Improvements</h4>
+                                <ul style="margin: 0; padding-left: 1.5rem; list-style: disc;">
+                                    ${review.improvements.map(i => `<li style="margin-bottom: 0.5rem;">${i}</li>`).join('')}
+                                </ul>
+                            </div>
+                        ` : ''}
+
+                        <div style="background: var(--bg); border-left: 3px solid var(--accent); padding: 1rem; border-radius: 0.5rem;">
+                            <h4 style="color: var(--text); margin-bottom: 0.5rem; font-size: 0.9rem; font-weight: 600;">💬 Final Comment</h4>
+                            <p style="margin: 0; color: var(--text-light); line-height: 1.6;">${review.final_comment || 'N/A'}</p>
+                        </div>
+                    </div>
+                `;
+
+                reviewDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+            } catch (error) {
+                reviewDiv.innerHTML = `
+                    <div style="background: #fee2e2; border: 2px solid #ef4444; border-radius: 0.75rem; padding: 1.5rem; margin-top: 1rem;">
+                        <h4 style="color: #ef4444; margin-bottom: 0.5rem;">⚠️ Review Error</h4>
+                        <p style="margin: 0; color: #7f1d1d;">${error.message}</p>
+                        <p style="margin-top: 0.5rem; font-size: 0.875rem; color: #7f1d1d;">Try again in a moment if the service is busy.</p>
+                    </div>
+                `;
+            }
+        }
+
+        window.reviewCodeWithAI = reviewCodeWithAI;
 
         // Search Question (kept for backwards compatibility, but not used in new accordion UI)
         function searchQuestion(question) {
