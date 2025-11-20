@@ -8,79 +8,53 @@
 
 | File | Purpose |
 |------|---------|
-| `01_create_documents_table.sql` | Creates table for textbooks |
-| `02_create_questions_table.sql` | Creates table for interview questions |
-| `03_verify_upload.sql` | Verification queries after upload |
 | `documents_data.csv` | Textbook content (7.6 MB, 3,983 pages) |
 | `interview_questions_data.csv` | Interview questions (266 KB, 552 questions) |
+| `coding_questions.csv` | Coding problems (10 KB, 30 questions) - NEW! |
+| `setup_coding_questions.sql` | Add 30 coding questions to database - NEW! |
+
+**Note:** Original table creation SQL files (01, 02, 03) were removed since they were already executed.
 
 ---
 
-## 🚀 Quick Setup (3 Steps)
+## 🚀 Add Coding Questions (2 Steps)
 
-### STEP 1: Create Tables
+### STEP 1: Run SQL Script
 
 1. Go to your Supabase Dashboard: https://iteavenjozhzxupbxosu.supabase.co
 2. Click **SQL Editor** in the sidebar
-3. Run these SQL files **in order:**
-   - First: `01_create_documents_table.sql`
-   - Then: `02_create_questions_table.sql`
+3. Open `setup_coding_questions.sql`
+4. Copy the ENTIRE file contents
+5. Paste into query editor
+6. Click **Run** (or press F5)
+7. You should see verification results:
+   - Easy: 7
+   - Medium: 13
+   - Advanced: 10
 
-**How to run:**
-- Click **New Query**
-- Copy the entire contents of the SQL file
-- Paste into the query editor
-- Click **Run** (or press F5)
-- You should see: "Success. No rows returned"
-
----
-
-### STEP 2: Upload Data
-
-#### Upload Documents (Textbooks):
-
-1. Go to **Table Editor** in sidebar
-2. Click on the **`documents`** table
-3. Click **Insert** dropdown → **Import data from CSV**
-4. Upload file: `documents_data.csv`
-5. In the column mapping:
-   - ❌ Uncheck `id` (auto-generated)
-   - ❌ Uncheck `created_at` (auto-generated)
-   - ✅ Check: `book_name`, `page_number`, `content`
-6. Click **Import Data**
-7. Wait 1-2 minutes for upload
-
-#### Upload Questions:
-
-1. Still in **Table Editor**
-2. Click on the **`interview_questions`** table
-3. Click **Insert** → **Import data from CSV**
-4. Upload file: `interview_questions_data.csv`
-5. In the column mapping:
-   - ❌ Uncheck `id` (auto-generated)
-   - ✅ Check all other columns:
-     - `question_text`
-     - `company`
-     - `difficulty`
-     - `question_type`
-     - `topics`
-     - `source`
-     - `answer_text`
-     - `created_at`
-6. Click **Import Data**
-7. Wait ~10 seconds
+**This single script will:**
+- Add new columns (category, tags, constraints, examples, hints)
+- Insert 30 coding questions
+- Create indexes for faster queries
+- Verify success
 
 ---
 
-### STEP 3: Verify Upload
+### STEP 2: Test in Your App
 
-1. Go to **SQL Editor**
-2. Open `03_verify_upload.sql`
-3. Run the queries to verify:
-   - Documents: ~3,983 rows
-   - Questions: 552 rows
-   - Indexes are working
-   - Text search works
+1. Open [interview-coach-app.html](../interview-coach-app.html)
+2. Select **"Coding Interview"** from question type dropdown
+3. Select difficulty (Easy, Medium, or Advanced)
+4. Click **"Generate"**
+5. You should see coding questions with:
+   - Problem statement
+   - Constraints
+   - Examples
+   - Hints
+   - Code editor
+   - AI code review button
+
+**That's it! Your coding questions are ready!** 🎉
 
 ---
 
