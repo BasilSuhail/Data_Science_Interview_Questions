@@ -13,8 +13,8 @@ CREATE TABLE IF NOT EXISTS interview_questions (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     question_text TEXT NOT NULL,
     company TEXT,  -- e.g., 'Meta', 'Google', 'Amazon', NULL for generic
-    difficulty TEXT CHECK (difficulty IN ('easy', 'medium', 'hard')),
-    question_type TEXT CHECK (question_type IN ('coding', 'stats', 'ml', 'case', 'behavioral', 'mixed')),
+    difficulty TEXT,  -- 'easy', 'medium', 'hard' (no strict constraint to allow flexibility)
+    question_type TEXT,  -- 'coding', 'stats', 'ml', 'case', 'behavioral', 'mixed', 'sql', etc. (no strict constraint)
     topics TEXT,  -- Pipe-separated topics (e.g., "regression|hypothesis_testing|python")
     source TEXT,  -- Where the question came from (e.g., 'github', 'leetcode', 'glassdoor')
     answer_text TEXT,  -- Answer if available (can be NULL)
